@@ -27,7 +27,7 @@ export function formatNumber(num: number): string {
     const formatted = (num / 1_000).toFixed(1);
     return `${parseFloat(formatted)}K`; // Thousand
   }
-  return num.toString(); // Nếu nhỏ hơn 1000 thì giữ nguyên
+  return num?.toString(); // Nếu nhỏ hơn 1000 thì giữ nguyên
 }
 
 //trả về chuỗi thời gian đã trôi qua

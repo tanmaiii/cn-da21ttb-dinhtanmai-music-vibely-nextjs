@@ -10,18 +10,16 @@ const header: IPlaylist = {
   id: "1",
   title: "Favorites",
   description: "",
-  image_path: IMAGES.FAVORITES.src,
-  owner: [
-    {
-      id: "1",
-      name: "Artist",
-      image_path: IMAGES.AVATAR.src,
-      followers: 100,
-    },
-  ],
+  imagePath: IMAGES.FAVORITES.src,
+  creator: {
+    id: "1",
+    name: "Artist",
+    imagePath: IMAGES.AVATAR.src,
+    followers: 100,
+  },
   createdAt: "",
   public: true,
-  followers_count: 0,
+  likes: 0,
   total: 12,
 };
 

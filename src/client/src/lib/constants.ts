@@ -1,9 +1,9 @@
-import errorSVG from "../public/errorimg.b8621065.svg";
-import avatar from "../public/images/avatar.png";
-import favorites from "../public/images/liked-songs.png";
-import playlist from "../public/images/playlist.png";
-import song from "../public/images/song.png";
-import logo from "../public/images/logo.png";
+import errorSVG from "@/public/errorimg.b8621065.svg";
+import avatar from "@/public/images/avatar.png";
+import favorites from "@/public/images/liked-songs.png";
+import playlist from "@/public/images/playlist.png";
+import song from "@/public/images/song.png";
+import logo from "@/public/images/logo.png";
 
 export const paths = {
   HOME: "/",

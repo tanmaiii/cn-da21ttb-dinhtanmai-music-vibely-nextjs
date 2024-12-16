@@ -86,11 +86,11 @@ const RoomPage = () => {
                   </div>
                 </div>
               )}
-
+                
               <div className={`${styles.content}`}>
                 <h4>SONG IS PLAYING:</h4>
                 <div className={`${styles.item}`}>
-                  <TrackShort song={songs[1]} />
+                  <TrackShort song={songs[2]} />
                 </div>
               </div>
 

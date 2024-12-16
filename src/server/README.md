@@ -7,7 +7,7 @@ erDiagram
         name string
         email string
         password string
-        image_path string
+        imagePath string
         roleId UUID FK
         createdAt datetime
         updatedAt datetime
@@ -29,7 +29,7 @@ erDiagram
         id UUID PK
         title string
         description string
-        image_path string
+        imagePath string
         slug string
         boolean public
         genreId UUID FK
@@ -61,7 +61,7 @@ erDiagram
         id UUID PK
         title string
         description string
-        image_path string
+        imagePath string
         color string
         createdAt datetime
         updatedAt datetime
@@ -80,7 +80,7 @@ erDiagram
         slug string
         int duration
         song_path string
-        image_path string
+        imagePath string
         lyric_path string
         boolean public
         createdAt datetime

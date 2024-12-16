@@ -54,7 +54,7 @@ const payload = {
         email: (0, zod_1.string)().email("Not a valid email").nullable().optional(),
         // role: ZodEnum.create([...Object.values(ROLES)] as [string, ...string[]]).nullable().optional(),
         password: (0, zod_1.string)().min(6, "Password too short").nullable().optional(),
-        image_path: (0, zod_1.string)().nullable().optional(),
+        imagePath: (0, zod_1.string)().nullable().optional(),
     }),
 };
 exports.createUserSchema = (0, zod_1.object)(Object.assign({}, payload));

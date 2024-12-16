@@ -25,7 +25,7 @@ const renderRow = (item: ISong) => {
       <td className={styles.col_1}>
         <div>
           <Image
-            src={item.image_path ? item.image_path : IMAGES.SONG}
+            src={item.imagePath ? item.imagePath : IMAGES.SONG}
             alt={item.title}
             width={50}
             height={50}

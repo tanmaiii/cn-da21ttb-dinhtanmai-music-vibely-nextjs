@@ -34,7 +34,7 @@ const Search = () => {
               >
                 <p>{item.title}</p>
                 <Image
-                  src={item.image_path || IMAGES.SONG}
+                  src={item.imagePath || IMAGES.SONG}
                   alt={item.title}
                   width={300}
                   height={300}

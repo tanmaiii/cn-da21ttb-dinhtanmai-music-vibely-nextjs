@@ -18,6 +18,10 @@ interface ITrack extends Props {
   song: ISong;
 }
 
+interface ITrackArtist extends Props {
+  artist: IArtist;
+}
+
 const Track = (props: ITrack) => {
   const { num, primary, isLoading = false, song } = props;
   return (
@@ -49,7 +53,7 @@ const Track = (props: ITrack) => {
               <Skeleton height={60} width={60} />
             ) : (
               <Image
-                src={song.image_path ? song.image_path : IMAGES.SONG}
+                src={song.imagePath ? song.imagePath : IMAGES.SONG}
                 alt="image.png"
                 width={50}
                 height={50}
@@ -93,7 +97,7 @@ const Track = (props: ITrack) => {
         </div>
         <div className={`${styles.Track_swapper_col3} pc-2 t-2 m-0`}>
           <span>
-            {isLoading ? <Skeleton width={60} /> : formatNumber(song.listen)}
+            {isLoading ? <Skeleton width={60} /> : formatNumber(song.listens)}
           </span>
         </div>
         <div className={`${styles.Track_swapper_col4} pc-2 t-2 m-4`}>
@@ -127,11 +131,11 @@ const TrackShort = (props: ITrack) => {
             </div>
           )}
           <div className={`${styles.TrackShort_swapper_left_image}`}>
-            {isLoading ? (
+            {isLoading || !song ? (
               <Skeleton height={50} width={50} />
             ) : (
               <Image
-                src={song?.image_path ? song.image_path : IMAGES.SONG}
+                src={song.imagePath ? song.imagePath : IMAGES.SONG}
                 alt="song"
                 quality={90}
                 width={50}
@@ -189,10 +193,6 @@ const TrackShort = (props: ITrack) => {
   );
 };
 
-interface ITrackArtist extends Props {
-  artist: IArtist;
-}
-
 const TrackArtist = (props: ITrackArtist) => {
   const { artist, isLoading = false } = props;
   return (
@@ -204,7 +204,7 @@ const TrackArtist = (props: ITrackArtist) => {
               <Skeleton height={"100%"} circle />
             ) : (
               <Image
-                src={artist?.image_path ? artist.image_path : IMAGES.AVATAR}
+                src={artist?.imagePath ? artist.imagePath : IMAGES.AVATAR}
                 alt="song"
                 quality={90}
                 width={50}

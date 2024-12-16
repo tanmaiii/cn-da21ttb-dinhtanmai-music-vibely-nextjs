@@ -28,7 +28,7 @@ exports.attributesPlaylist = [
     "id",
     "slug",
     "title",
-    "image_path",
+    "imagePath",
     "description",
     "createdAt",
     "public",

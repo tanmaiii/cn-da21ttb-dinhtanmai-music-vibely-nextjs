@@ -139,7 +139,7 @@ const ChatRoomRequest = () => {
                   </div>
                   <div className={`${styles.item_img}`}>
                     <Image
-                      src={song.image_path ? song.image_path : IMAGES.AVATAR}
+                      src={song.imagePath ? song.imagePath : IMAGES.AVATAR}
                       alt="image.png"
                       width={50}
                       height={50}
@@ -212,7 +212,7 @@ const ChatRoomMember = () => {
                     <Link href={`${paths.ARTIST}/${artist.id}`}>
                       <Image
                         src={
-                          artist.image_path ? artist.image_path : IMAGES.AVATAR
+                          artist.imagePath ? artist.imagePath : IMAGES.AVATAR
                         }
                         alt="image.png"
                         width={50}

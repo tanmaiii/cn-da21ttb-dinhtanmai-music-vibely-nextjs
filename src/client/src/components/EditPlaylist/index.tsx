@@ -13,13 +13,13 @@ const EditPlaylist = () => {
   const [form, setForm] = React.useState({
     title: "",
     description: "",
-    image_path: "https://picsum.photos/900/900",
+    imagePath: "https://picsum.photos/900/900",
   });
   const [imageFile, setImageFile] = React.useState<File | null>(null);
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
-    setForm((prev) => ({ ...prev, image_path: "" }));
+    setForm((prev) => ({ ...prev, imagePath: "" }));
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
     const file = e.target.files && e.target.files[0];
     const size = 5 * 1024 * 1024;
@@ -49,7 +49,7 @@ const EditPlaylist = () => {
               name="image"
               className={styles.left_image}
               file={imageFile}
-              image_default={form.image_path}
+              image_default={form.imagePath}
               image={true}
               accept="image/*"
               onChange={(e) => handleChangeImage(e)}

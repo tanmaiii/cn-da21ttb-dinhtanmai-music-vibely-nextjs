@@ -43,7 +43,6 @@ const PlaylistPage = () => {
               { id: 1, name: "All", value: "All" },
               { id: 2, name: "Artist", value: "Artist" },
               { id: 3, name: "Song", value: "Song" },
-              { id: 3, name: "Song", value: "Song2" },
             ]}
             setActive={setActive}
           />

@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./style.module.scss";
 import { Section } from "@/components/Section";
 import { CardRoom } from "@/components/Card";
+import { rooms } from "@/lib/data";
 
 const Room = () => {
   return (
@@ -13,13 +14,7 @@ const Room = () => {
       <div className={`${styles.RoomPage_body}`}>
         <Section>
           {Array.from({ length: 10 }).map((_, index) => (
-            <CardRoom
-              id={index + 1}
-              key={index}
-              title={`Title ${index + 1}`}
-              author="Author"
-              img="https://picsum.photos/200/300"
-            />
+            <CardRoom id={index + 1} key={index} room={rooms[0]} />
           ))}
         </Section>
       </div>

@@ -10,7 +10,7 @@ import { useUI } from "@/context/UIContext";
 import { IMAGES, paths } from "@/lib/constants";
 import { formatNumber, isSongData } from "@/lib/utils";
 import avatarExample from "@/public/images/anime.jpg";
-import { IPlaylist, ISong } from "@/types";
+import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
 import { MotionDiv } from "../Motion";
 import styles from "./style.module.scss";
@@ -51,6 +51,21 @@ interface Props {
   data: ISong | IPlaylist;
 }
 
+interface ICardArtist {
+  index?: number;
+  className?: string;
+  isLoading?: boolean;
+  path?: string;
+  artist: IArtist;
+}
+
+interface ICardLive {
+  id: number;
+  isLoading?: boolean;
+  className?: string;
+  room: IRoom;
+}
+
 const Card = (props: Props) => {
   const { index = 1, path, isLoading = false, data, className } = props;
   // const router = useRouter();
@@ -88,7 +103,7 @@ const Card = (props: Props) => {
               <Skeleton height={"100%"} />
             ) : (
               <Image
-                src={data?.image_path || IMAGES.SONG}
+                src={data?.imagePath || IMAGES.SONG}
                 alt="image.png"
                 width={200}
                 height={200}
@@ -129,11 +144,14 @@ const Card = (props: Props) => {
               />
             ) : (
               <p className={styles.artists}>
-                {data?.owner?.map((owner, index) => (
+                {/* {data?.c?.map((owner, index) => (
                   <Link key={index} href={`${paths.ARTIST}/${owner?.id || 1}`}>
                     {owner?.name}
                   </Link>
-                ))}
+                ))} */}
+                <Link  href={`${paths.ARTIST}/${data.creator?.slug || 'artist'}`}>
+                  {data?.creator?.name || "Artist"}
+                </Link>
               </p>
             )}
             {isLoading ? (
@@ -149,8 +167,8 @@ const Card = (props: Props) => {
             ) : (
               <>
                 <div className={`${styles.tags}`}>
-                  {data?.mood &&
-                    data?.mood.slice(0, 3).map((mood) => (
+                  {data?.moods &&
+                    data?.moods.slice(0, 3).map((mood) => (
                       <div key={mood.id} data-tooltip={mood.title}>
                         <span className={`${styles.tags_tag}`}>
                           {mood.title}
@@ -167,14 +185,6 @@ const Card = (props: Props) => {
   );
 };
 
-interface ICardArtist {
-  index?: number;
-  className?: string;
-  isLoading?: boolean;
-  path?: string;
-  artist: IArtist;
-}
-
 const CardArtist = (props: ICardArtist) => {
   const { index, className, path, isLoading = false, artist } = props;
   const router = useRouter();
@@ -184,7 +194,7 @@ const CardArtist = (props: ICardArtist) => {
     if (path) {
       router.push(path);
     } else {
-      router.push(`${paths.ARTIST}/1123`);
+      router.push(`${paths.ARTIST}/${artist?.slug || "artist"}`);
     }
   };
 
@@ -208,7 +218,7 @@ const CardArtist = (props: ICardArtist) => {
               <Skeleton circle height={"100%"} />
             ) : (
               <Image
-                src={artist?.image_path || IMAGES.AVATAR}
+                src={artist?.imagePath || IMAGES.AVATAR}
                 alt="image.png"
                 width={200}
                 height={200}
@@ -232,22 +242,8 @@ const CardArtist = (props: ICardArtist) => {
   );
 };
 
-interface ICardLive {
-  id: number;
-  img: string;
-  title: string;
-  author: string;
-  isLoading?: boolean;
-  className?: string;
-}
-
-const CardRoom = ({
-  id,
-  img,
-  title,
-  className,
-  isLoading = false,
-}: ICardLive) => {
+const CardRoom = (props: ICardLive) => {
+  const { id, room, className, isLoading = false } = props;
   const router = useRouter();
   const classNameCol = useClassNameCol();
 
@@ -275,18 +271,10 @@ const CardRoom = ({
         <div className={`${styles.CardLive_swapper_container}`}>
           <div className={`${styles.CardLive_swapper_container_image}`}>
             {isLoading ? (
-              <Skeleton width={"100%"} height={200} />
-            ) : img ? (
-              <Image
-                src={img}
-                alt="image.png"
-                width={200}
-                height={200}
-                quality={100}
-              />
+              <Skeleton height={"100%"} />
             ) : (
               <Image
-                src={IMAGES.PLAYLIST}
+                src={room?.imagePath || IMAGES.SONG}
                 alt="image.png"
                 width={200}
                 height={200}
@@ -317,7 +305,7 @@ const CardRoom = ({
               <Skeleton width={"100%"} />
             ) : (
               <Link href={`${paths.LIVE}/123`}>
-                <h4>{title}</h4>
+                <h4>{room.title}</h4>
               </Link>
             )}
             {isLoading ? <Skeleton width={"100%"} /> : <p>42 are listening</p>}

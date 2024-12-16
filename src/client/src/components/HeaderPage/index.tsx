@@ -25,7 +25,7 @@ const HeaderPage = (props: Props) => {
             className={`${styles.HeaderPage_blur_bgAlpha}`}
             style={{
               backgroundImage: `url(${
-                data?.image_path ? fromatImg(data?.image_path) : ""
+                data?.imagePath ? fromatImg(data?.imagePath) : ""
               })`,
             }}
           ></div>
@@ -39,7 +39,7 @@ const HeaderPage = (props: Props) => {
           ) : (
             <>
               <Image
-                src={data?.image_path || IMAGES.SONG}
+                src={data?.imagePath || IMAGES.SONG}
                 width={200}
                 height={200}
                 alt=""
@@ -83,13 +83,13 @@ const HeaderPage = (props: Props) => {
             <div className={`${styles.info_desc}`}>
               <div className={`${styles.info_desc_author}`}>
                 <Image
-                  src={data?.owner[0].image_path || IMAGES.AVATAR}
+                  src={data?.creator.imagePath || IMAGES.AVATAR}
                   width={20}
                   height={20}
                   alt="image.png"
                 />
                 <Link href={`${paths.ARTIST}/${"123"}`}>
-                  {data?.owner[0].name}
+                  {data?.creator.name}
                 </Link>
               </div>
               {data?.createdAt && (
@@ -98,16 +98,16 @@ const HeaderPage = (props: Props) => {
                   <span>{moment(data?.createdAt).format("YYYY")}</span>
                 </div>
               )}
-              {isSong && data?.listen && (
+              {isSong && data?.listens && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-light fa-headphones"></i>
-                  <span>{formatNumber(data?.listen)}</span>
+                  <span>{formatNumber(data?.listens)}</span>
                 </div>
               )}
-              {data?.followers_count > 0 && (
+              {data?.likes > 0 && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-light fa-heart"></i>
-                  <span>{formatNumber(data?.followers_count)}</span>
+                  <span>{formatNumber(data?.likes)}</span>
                 </div>
               )}
               {!isSong && data?.total && (
@@ -139,7 +139,7 @@ const HeaderPageArtist = (props: ArtistProps) => {
           className={`${styles.HeaderPageArtist_blur_bgAlpha}`}
           style={{
             backgroundImage: `url(${
-              artist.image_path ? fromatImg(artist.image_path) : ""
+              artist.imagePath ? fromatImg(artist.imagePath) : ""
             })`,
           }}
         ></div>
@@ -147,7 +147,7 @@ const HeaderPageArtist = (props: ArtistProps) => {
       <div className={`${styles.HeaderPageArtist_body}`}>
         <div className={`${styles.HeaderPageArtist_body_avatar}`}>
           <Image
-            src={artist?.image_path || IMAGES.AVATAR}
+            src={artist?.imagePath || IMAGES.AVATAR}
             width={90}
             height={90}
             alt="avatar"

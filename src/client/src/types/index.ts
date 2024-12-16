@@ -13,37 +13,51 @@ export interface IPrivacy {
 export interface ISong {
   id: string;
   title: string;
+  slug?: string; // URL
   description: string;
-  image_path: string;
-  genre?: IGenre;
-  owner: IArtist[];
+  imagePath?: string;
+  genre?: IGenre; // Thể loại
+  owner: IArtist[]; // Tác giả
+  creator: IArtist; // Người tạo
   createdAt: string;
   duration: string; // 00:00
+  public: boolean; // Công khai
+  number?: number; // Số thứ tự trong playlist
+  listens: number; // Lượt nghe
+  likes: number; // Lượt thích
+  moods?: IMood[]; // Tâm trạng
+}
+
+export interface IRoom {
+  id: string;
+  title: string;
+  description: string;
+  imagePath: string;
   public: boolean;
-  number: number;
-  listen: number;
-  followers_count: number;
-  mood?: IMood[];
+  max_user: number;
+  creator: IArtist;
 }
 
 export interface IPlaylist {
   id: string;
   title: string;
+  slug?: string; // URL
   description: string;
-  image_path: string;
+  imagePath: string;
   genre?: IGenre;
-  owner: IArtist[];
+  creator: IArtist;
   createdAt: string;
   public: boolean;
   total: number;
-  followers_count: number;
-  mood?: IMood[];
+  likes: number;
+  moods?: IMood[];
 }
 
 export interface IArtist {
   id: string;
   name: string;
-  image_path: string;
+  slug?: string;
+  imagePath?: string;
   followers: number;
 }
 
@@ -68,6 +82,6 @@ export interface IGenre {
   id: string;
   title: string;
   description: string;
-  image_path: string;
+  imagePath: string;
   color: string;
 }
