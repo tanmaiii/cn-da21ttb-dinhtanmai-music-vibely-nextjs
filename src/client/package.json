@@ -1,0 +1,49 @@
+{
+  "name": "music",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
+    "@hello-pangea/dnd": "^17.0.0",
+    "@reduxjs/toolkit": "^2.3.0",
+    "@types/moment": "^2.11.29",
+    "@types/numeral": "^2.0.5",
+    "@types/react-beautiful-dnd": "^13.1.8",
+    "axios": "^1.7.7",
+    "framer-motion": "^11.11.8",
+    "jwt-decode": "^4.0.0",
+    "moment": "^2.30.1",
+    "next": "14.2.15",
+    "query-string": "^9.1.1",
+    "react": "^18",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
+    "react-intersection-observer": "^9.13.1",
+    "react-loading-skeleton": "^3.5.0",
+    "react-redux": "^9.1.2",
+    "react-slick": "^0.30.2",
+    "slick-carousel": "^1.8.1",
+    "wavesurfer.js": "^7.8.7"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/emoji-mart": "^3.0.14",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/react-slick": "^0.23.13",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.15",
+    "sass": "^1.79.4",
+    "typescript": "^5"
+  }
+}

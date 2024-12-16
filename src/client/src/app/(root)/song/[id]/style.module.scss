@@ -1,0 +1,118 @@
+@use "@/scss/index.module.scss" as *;
+
+.SongPage {
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+
+  &_header {
+    isolation: isolate;
+  }
+  &_content {
+    isolation: isolate;
+    background-color: var(--background-rgba);
+    min-height: 400px;
+    &_header {
+      padding: $space-16;
+      @include flex(center, start, row);
+      gap: $space-8;
+    }
+
+    &_nav {
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 $space-12;
+      margin-bottom: $space-12;
+      &_list {
+        @include flex(start, start, row);
+        gap: $space-16;
+        button {
+          font-size: $size-16;
+          color: var(--text-color-2);
+          font-weight: $font-medium;
+          cursor: pointer;
+          background-color: transparent;
+          height: 48px;
+          padding: $space-12 0;
+          border-bottom: 2px solid transparent;
+          transition: border-bottom 0.3s;
+
+          &.active {
+            color: var(--text-color-1);
+            border-bottom: 2px solid $color-primary;
+          }
+
+          &:hover {
+            color: var(--text-color-1);
+          }
+        }
+      }
+    }
+
+    &_body {
+      @include flex(start, space-between, row);
+      &_lyrics {
+        padding: $space-12;
+        &_list {
+          @include flex(start, start, column);
+          gap: $space-4;
+          user-select: none;
+          p {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-light;
+          }
+          & > button {
+            cursor: pointer;
+            span {
+              font-size: $size-16;
+              color: var(--text-color-2);
+              font-weight: $font-medium;
+            }
+          }
+        }
+      }
+
+      &_about {
+        width: 100%;
+        &_author {
+        }
+
+        &_genre {
+          h4 {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+            margin-bottom: $space-8;
+          }
+          &_list {
+            @include flex(start, start, row);
+            gap: $space-8;
+            button {
+              font-size: $size-16;
+              color: var(--text-color-1);
+              font-weight: $font-medium;
+              cursor: pointer;
+              background-color: $color-hover;
+              padding: $space-8 $space-12;
+              border-radius: $radius-8;
+              border: 1px solid $color-primary;
+              transition: background-color 0.3s;
+              &:hover {
+                background-color: var(--background-color-2);
+              }
+            }
+          }
+        }
+      }
+
+      &_similar {
+        width: 100%;
+      }
+    }
+  }
+}

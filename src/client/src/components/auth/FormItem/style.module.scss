@@ -1,0 +1,57 @@
+@use "@/scss/index.module.scss" as *;
+
+.FormItem {
+  @include flex(start, center, column);
+  width: 100%;
+  margin-bottom: $space-8;
+
+  label {
+    font-size: $size-16;
+    font-weight: $font-bold;
+    color: var(--text-color-1);
+    margin-bottom: $space-8;
+  }
+  &_input {
+    position: relative;
+    width: 100%;
+    margin-bottom: $space-8;
+
+    &_error {
+      input {
+        border: 1px solid $color-red !important;
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: $space-16 $space-12;
+      border-radius: $radius-8;
+      font-size: $size-16;
+      color: var(--text-color-1);
+      background-color: var(--background-color-1);
+      outline: none;
+      border: 1px solid transparent;
+
+      &:focus {
+        border: 1px solid var(--primary-color);
+      }
+    }
+    &_eye {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      i {
+        font-size: $size-18;
+        color: var(--text-color-2);
+      }
+    }
+  }
+  &_error {
+    font-size: $size-14;
+    font-weight: $font-light;
+    color: $color-red;
+    margin-top: $space-4;
+  }
+}

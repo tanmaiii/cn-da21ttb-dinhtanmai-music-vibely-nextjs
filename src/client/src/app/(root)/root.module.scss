@@ -1,0 +1,117 @@
+@use "@/scss/index.module.scss" as *;
+
+.RootLayout {
+  background-color: var(--background-color-1);
+  @include flex(start, center, row);
+  height: 100vh;
+  width: 100vw;
+
+  &_top {
+    height: calc(100vh);
+    width: 100vw;
+    flex-wrap: nowrap;
+
+    &_playingBarOpen {
+      height: calc(100vh - $height-playingBar);
+    }
+
+    @include flex(start, start, row);
+
+    &_sidebar {
+      height: 100%;
+    }
+
+    &_main {
+      @include flex(start, start, row);
+      flex-wrap: nowrap;
+      max-height: 100vh;
+      width: calc(100vw - $width-sidebar);
+      flex: 1;
+
+      &_content {
+        flex: 1;
+        position: relative;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        min-height: 100vh;
+
+        &_header {
+        }
+
+        &_body {
+          height: calc(100vh - $height-header);
+          &_list {
+            min-height: 100vh;
+          }
+        }
+      }
+
+      &_waiting {
+        @include mobile {
+          display: none !important;
+        }
+      }
+    }
+  }
+
+  &_bottom {
+    height: $height-playingBar;
+    width: 100%;
+    background-color: var(--background-color-1);
+  }
+}
+
+.Home {
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
+  min-height: 120vh;
+
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+
+  &_top {
+    &_header {
+      padding: $space-16 $space-14;
+
+      @include tablet {
+        padding: $space-12 $space-8;
+      }
+
+      @include mobile {
+        padding: $space-8 $space-4;
+      }
+      h4 {
+        font-size: $size-24;
+        font-weight: $font-bold;
+        margin-bottom: $space-16;
+      }
+    }
+  }
+}
+
+.NotFoundPage {
+  @include flex(center, center, column);
+  min-height: calc(100vh - $height-header - $height-playingBar);
+  img {
+    width: 100%;
+    max-width: 400px;
+  }
+  h1 {
+    font-size: 48px;
+    font-weight: $font-bold;
+    margin-bottom: $space-16;
+    color: var(--text-color-1);
+  }
+  h6 {
+    font-size: $size-16;
+    margin-bottom: 40px;
+    font-weight: $font-light;
+    color: var(--text-color-2);
+  }
+}

@@ -1,0 +1,170 @@
+@use "@/scss/index.module.scss" as *;
+
+.Checkbox {
+  --size: 20px;
+  height: var(--size);
+  width: var(--size);
+
+  label {
+    display: flex;
+    gap: $space-8;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    input[type="checkbox"] {
+      appearance: none;
+      --webkit-appearance: none;
+      height: var(--size);
+      width: var(--size);
+      border: 2px solid var(--border-color);
+      border-radius: $radius-4;
+      cursor: pointer;
+      position: relative;
+      @include flex(center, center);
+      &:hover {
+        border-color: $color-primary;
+      }
+      &:checked {
+        border-color: $color-primary;
+        background-color: $color-primary;
+        &::after {
+          display: block;
+        }
+      }
+    }
+
+    i {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: $color-white;
+    }
+  }
+}
+
+.Radio {
+  display: flex;
+  flex-direction: column;
+  &_label {
+    font-size: $size-16;
+    font-weight: $font-medium;
+    color: var(--text-color-1);
+  }
+  &_desc {
+    font-size: $size-14;
+    font-weight: $font-light;
+    color: var(--text-color-3);
+  }
+  &_body {
+    &_item {
+      margin-top: $space-12;
+      display: flex;
+      gap: $space-8;
+      cursor: pointer;
+      input[type="radio"] {
+        appearance: none;
+        --webkit-appearance: none;
+        height: $space-20;
+        width: $space-20;
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        @include flex(center, center);
+        &:hover {
+          border-color: $color-primary;
+        }
+        &::after {
+          content: "";
+          font-weight: 999;
+          display: none;
+          width: 10px;
+          height: 10px;
+          background-color: var(--background-color-1);
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          right: 50%;
+          transform: translate(50%, -50%);
+        }
+        &:checked {
+          border-color: $color-primary;
+          background-color: $color-primary;
+          &::after {
+            display: block;
+          }
+        }
+      }
+
+      &_title {
+        @include flex(start, center, column);
+        gap: $space-4;
+        & > span {
+          font-size: $size-16;
+          color: var(--text-color-1);
+        }
+
+        & > p {
+          // display: none;
+          font-size: $size-14;
+          color: var(--text-color-2);
+        }
+      }
+    }
+  }
+}
+
+.Pagination {
+  padding: $space-16 0;
+  & .swapper {
+    @include flex(center, center);
+    gap: $space-8;
+    & .button_control {
+      padding: $space-8 $space-16;
+      border-radius: $radius-4;
+      cursor: pointer;
+      @include flex(center, center);
+      gap: $space-8;
+      span{
+        font-size: $size-16;
+        color: var(--text-color-1);
+      }
+      &:hover {
+        background-color: $color-hover;
+      }
+    }
+
+    & .list {
+      @include flex(center, center);
+      gap: $space-8;
+      & .button {
+        --size: 40px;
+        @include flex(center, center);
+
+        width: var(--size);
+        height: var(--size);
+        padding: $space-8 $space-16;
+        background-color: var(--background-color-2);
+        color: var(--text-color-1);
+        // border: 1px solid var(--border-color);
+        border-radius: $radius-4;
+        cursor: pointer;
+        font-weight: $font-medium;
+        @include flex(center, center);
+        span{
+          font-size: $size-16;
+        }
+        &:hover {
+          background-color: $color-hover;
+        }
+        &.active {
+          background-color: $color-primary;
+          color: $color-white;
+        }
+      }
+    }
+  }
+}

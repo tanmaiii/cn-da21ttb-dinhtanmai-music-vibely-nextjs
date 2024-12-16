@@ -1,0 +1,41 @@
+@use "@/scss/index.module.scss" as *;
+
+.ArtistPage {
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+  
+  &_header {
+    isolation: isolate;
+  }
+  &_content {
+    isolation: isolate;
+    background-color: var(--background-rgba);
+    min-height: 400px;
+    &_header {
+      padding: $space-16;
+      @include flex(center, start, row);
+      gap: $space-8;
+    }
+    &_body {
+      // padding: 0 $space-16;
+      @include flex(start, space-between, column);
+      &_header {
+        padding: $space-24 $space-12;
+        h2 {
+          font-size: $size-24;
+          color: var(--text-color-1);
+          font-weight: $font-bold;
+        }
+      }
+      &_list{
+        width: 100%;
+      }
+    }
+  }
+}

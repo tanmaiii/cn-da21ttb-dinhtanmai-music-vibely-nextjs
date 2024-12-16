@@ -1,0 +1,419 @@
+@use "@/scss/index.module.scss" as *;
+
+.Track {
+  width: 100%;
+  &_swapper {
+    @include flex(center, space-between, row);
+    padding: $space-8 $space-14;
+    border-radius: $radius-8;
+    cursor: pointer;
+    margin-bottom: $space-8;
+
+    @include mobile {
+      padding: $space-8 $space-8;
+      margin-bottom: $space-4;
+    }
+
+    &:hover {
+      background-color: $color-hover;
+      .item_hover {
+        visibility: visible;
+      }
+
+      .button_play {
+        display: flex;
+      }
+    }
+
+    &_col1 {
+      @include flex(center, flex-start);
+      // gap: $space-8;
+      // padding-right: 40px;
+
+      &_num {
+        // padding: 0 $space-4;
+        @include flex(center, start);
+        position: relative;
+        min-width: 40px;
+        h4 {
+          text-align: start;
+          font-size: $size-18;
+          color: var(--text-color-1);
+          font-weight: $font-light;
+        }
+        & > .line {
+          width: 16px;
+          height: 2px;
+          background-color: $color-primary;
+          border-radius: 4px;
+          display: none;
+        }
+        &_main {
+          min-width: unset;
+          margin-right: 8px;
+          h4 {
+            text-align: right;
+            min-width: 38px;
+            font-size: $size-30;
+            color: $color-primary;
+            font-weight: $font-bold;
+            margin-right: 8px;
+          }
+          & > .line {
+            display: block;
+          }
+        }
+      }
+
+      &_image {
+        --size: 60px;
+        @include mobile {
+          --size: 50px;
+        }
+        min-width: var(--size);
+        min-height: var(--size);
+        width: var(--size);
+        height: var(--size);
+        position: relative;
+        margin-right: $space-8;
+        border-radius: $radius-4;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          overflow: hidden;
+          background-color: var(--background-color-2);
+        }
+        & > .button_play {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-radius: $radius-4;
+          display: none;
+          @include flex(center, center);
+          transition: $transition;
+          cursor: pointer;
+          display: none;
+          i {
+            font-size: 30px;
+            color: $color-white-1;
+          }
+        }
+      }
+
+      &_desc {
+        margin-right: $space-32;
+        width: 100%;
+
+        h4 {
+          font-size: $size-16;
+          font-weight: $font-medium;
+          color: var(--text-color-1);
+          @include text(1);
+          transition: $transition;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+        p {
+          @include text(1);
+          a {
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            text-decoration: none;
+            font-size: $size-14;
+            &:not(:last-child) {
+              &::after {
+                content: ", ";
+              }
+            }
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    &_col2 {
+      span {
+        font-size: $size-14;
+        font-weight: $font-light;
+        color: var(--text-color-2);
+        padding-right: 4px;
+        transition: $transition;
+        @include text(1);
+      }
+    }
+
+    &_col3 {
+      span {
+        font-size: $size-14;
+        font-weight: $font-light;
+        color: var(--text-color-2);
+        padding-right: 4px;
+        transition: $transition;
+        @include text(1);
+      }
+    }
+
+    &_col4 {
+      @include flex(center, end);
+      gap: $space-8;
+      & > .item_default {
+        visibility: visible;
+        & > span {
+          font-size: $size-14;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          padding-right: 4px;
+          transition: $transition;
+          @include text(1);
+        }
+      }
+      & > .item_hover {
+        @include flex(center, center);
+        visibility: hidden;
+        gap: $space-8;
+        @include mobile {
+          visibility: inherit;
+        }
+      }
+    }
+  }
+}
+
+.TrackShort {
+  &_swapper {
+    @include flex(center, space-between, row);
+    padding: $space-12;
+    border-radius: $radius-8;
+    cursor: pointer;
+    // margin-bottom: $space-8;
+    width: 100%;
+    position: relative;
+    // background-color: var(--background-color-1);
+
+    &:hover {
+      background-color: $color-hover;
+
+      .button_play {
+        display: flex;
+      }
+
+      .item_hover {
+        // visibility: visible;
+        display: flex;
+      }
+
+      .item_default {
+        display: none;
+      }
+    }
+
+    &_left {
+      @include flex(center, center);
+      margin-right: $space-8;
+      gap: $space-12;
+      flex: 1;
+
+      &_num {
+        @include flex(center, start, row);
+        margin-right: $space-8;
+        gap: $space-4;
+        & > h2 {
+          font-size: $size-30;
+          color: $color-primary;
+          font-weight: $font-bold;
+        }
+        & > .line {
+          width: 16px;
+          height: 2px;
+          background-color: $color-primary;
+          border-radius: 4px;
+        }
+        @include tablet {
+          & > h2 {
+            font-size: $size-24;
+          }
+        }
+        @include mobile {
+          & > h2 {
+            font-size: $size-20;
+          }
+        }
+      }
+
+      &_image {
+        --size: 50px;
+        min-width: var(--size);
+        min-height: var(--size);
+        width: var(--size);
+        height: var(--size);
+        position: relative;
+        border-radius: $radius-4;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          overflow: hidden;
+          background-color: var(--background-color-2);
+        }
+        & > .button_play {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-radius: $radius-4;
+          display: none;
+          @include flex(center, center);
+          transition: $transition;
+          cursor: pointer;
+          display: none;
+          i {
+            font-size: 30px;
+            color: $color-white-1;
+          }
+        }
+      }
+
+      &_desc {
+        width: 100%;
+        @include text(1);
+
+        h4 {
+          font-size: $size-16;
+          font-weight: $font-medium;
+          color: var(--text-color-1);
+          @include text(1);
+          transition: $transition;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+        
+        p {
+          @include text(1);
+          color: var(--text-color-2);
+
+          a {
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            text-decoration: none;
+            font-size: $size-14;
+
+            &:not(:last-child) {
+              &::after {
+                content: ", ";
+              }
+            }
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    &_right {
+      @include flex(center, end);
+      gap: $space-8;
+      & > .item_hover {
+        @include flex(center, end);
+        gap: $space-4;
+        // visibility: hidden;
+        display: none;
+      }
+
+      & > .item_default {
+        & > span {
+          font-size: $size-14;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          padding-right: 4px;
+          transition: $transition;
+        }
+      }
+    }
+  }
+}
+
+.TrackArtist {
+  width: 100%;
+  &_swapper {
+    @include flex(center, space-between, row);
+    padding: $space-12 $space-8;
+    border-radius: $radius-8;
+    cursor: pointer;
+    margin-bottom: $space-8;
+    position: relative;
+    width: 100%;
+    // max-width: 340px;
+    // background-color: var(--background-color-2);
+    &:hover {
+      background-color: $color-hover;
+      .TrackArtist_swapper_right {
+        display: flex
+      }
+    }
+
+    &_left {
+      @include flex(center, center, row);
+      flex: 1;
+
+      &_image {
+        --size: 70px;
+        min-width: var(--size);
+        min-height: var(--size);
+        width: var(--size);
+        height: var(--size);
+        position: relative;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          overflow: hidden;
+          border-radius: 50%;
+          border: 1px solid var(--border-color);
+          background-color: var(--background-color-2);
+        }
+      }
+
+      &_desc {
+        margin-left: $space-8;
+        flex: 1;
+        @include flex(start, center, column);
+
+        p {
+          font-size: $size-14;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          @include text(1);
+        }
+        h4 {
+          font-size: $size-16;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+          @include text(1);
+        }
+      }
+    }
+    &_right {
+      display: none;
+      .item_hover {
+        @include flex(center, center, row);
+        gap: $space-8;
+      }
+    }
+  }
+}

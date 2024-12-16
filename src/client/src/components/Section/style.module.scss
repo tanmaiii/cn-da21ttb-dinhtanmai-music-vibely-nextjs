@@ -1,0 +1,52 @@
+@use "@/scss/index.module.scss" as *;
+
+.Section {
+  &_header {
+    @include flex(center, space-between, row);
+    padding: $space-12 $space-14;
+
+    @include tablet {
+      padding: $space-8 $space-8;
+    }
+
+    @include mobile {
+      padding: $space-8 $space-4;
+    }
+
+    h4 {
+      font-size: $size-24;
+      font-weight: $font-bold;
+      color: var(--text-color-1);
+    }
+    a {
+      @include flex(center, center, row);
+      gap: $space-8;
+
+      &:hover {
+        span,
+        i {
+          color: var(--primary-color);
+        }
+      }
+
+      span {
+        font-size: $size-16;
+        font-weight: $font-light;
+        color: var(--text-color-1);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      i {
+        font-size: $size-16;
+        color: var(--text-color-1);
+        transition: all 0.3s;
+      }
+    }
+  }
+  &_body {
+    overflow: hidden;
+    max-width: 100%;
+    width: 100%;
+  }
+}

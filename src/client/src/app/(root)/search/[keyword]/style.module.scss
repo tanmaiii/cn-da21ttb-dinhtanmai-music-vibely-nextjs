@@ -1,0 +1,183 @@
+@use "@/scss/index.module.scss" as *;
+
+.SearchPage {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
+  min-height: 120vh;
+
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+
+  &_header {
+    padding: $space-12 0;
+    // width: 500px;
+    &_slider {
+      position: relative;
+      // height: 60px;
+      // background-color: var(--text-color-2);
+      padding: $space-8 0;
+      button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 100%;
+
+        padding: 0 $space-12;
+        i {
+          font-size: $size-16;
+          color: var(--text-color-1);
+          cursor: pointer;
+          transition: color 0.3s;
+          z-index: 2;
+
+          --size: 36px;
+          width: var(--size);
+          height: var(--size);
+          background-color: var(--background-rgba);
+          overflow: hidden;
+          border-radius: 50%;
+          @include flex(center, center);
+
+          &:hover {
+            color: var(--text-color-2);
+          }
+        }
+
+        display: none;
+        &:first-child {
+          left: 0;
+          background: linear-gradient(
+            to right,
+            var(--background-color-1),
+            transparent
+          );
+        }
+
+        &:last-child {
+          right: 0;
+          background: linear-gradient(
+            to right,
+            transparent,
+            var(--background-color-1)
+          );
+        }
+      }
+      ul {
+        @include flex(center, flex-start);
+        gap: $space-12;
+        padding: 0 12px;
+        overflow: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+
+        &.dragging {
+          scroll-behavior: auto;
+          cursor: grab;
+
+          li span {
+            user-select: none;
+            pointer-events: none;
+          }
+        }
+
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+
+        li {
+          @include flex(center, center);
+
+          span {
+            @include flex(center, center);
+
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-light;
+            padding: $space-6 $space-18;
+            background-color: var(--background-color-2);
+            border-radius: 9999px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+            &:hover {
+              color: var(--text-color-1);
+              background-color: var(--background-color-3);
+            }
+          }
+
+          &.active {
+            span {
+              border-color: unset;
+              color: var(--background-color-1);
+              background-color: var(--text-color-1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .top {
+    padding: 0 $space-12;
+    &_header {
+      font-size: $size-24;
+      font-weight: $font-bold;
+      color: var(--text-color-1);
+      margin-bottom: $space-8;
+    }
+    & .left {
+      @include flex(flex-start, flex-start, column);
+      .card {
+        width: 100%;
+        background-color: var(--background-color-2);
+        border-radius: $space-8;
+        padding: $space-24;
+        cursor: pointer;
+        transition: all 0.3s;
+        @include flex(flex-start, space-between, column);
+        &:hover {
+          background-color: var(--background-color-3);
+        }
+        &_image {
+          margin-bottom: $space-24;
+          img {
+            --size: 180px;
+            height: var(--size);
+            width: var(--size);
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            overflow: hidden;
+            border-radius: $radius-4;
+            background-color: var(--background-color-1);
+          }
+        }
+        &_desc {
+          h4 {
+            font-size: 30px;
+            font-weight: $font-bold;
+            color: var(--text-color-1);
+            margin-bottom: $space-12;
+            @include text(1);
+          }
+          span {
+            font-size: $size-16;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            @include text(1);
+          }
+        }
+      }
+    }
+
+    & .right {
+      height: 100%;
+    }
+  }
+}

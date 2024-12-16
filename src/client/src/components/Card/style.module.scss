@@ -1,0 +1,354 @@
+@use "@/scss/index.module.scss" as *;
+
+.Card {
+  width: 100%;
+
+  //test
+  overflow: hidden;
+
+  &_swapper {
+    width: 100%;
+    padding: $space-16 $space-14;
+    border-radius: $radius-8;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    // pointer-events: none;
+
+    @include tablet {
+      padding: $space-12 $space-8;
+      border-radius: $radius-4;
+    }
+
+    @include mobile {
+      padding: $space-8 $space-12;
+      border-radius: $radius-4;
+    }
+
+    &:hover {
+      // background-color: var(--background-color-2);
+    }
+
+    &_container {
+      &:hover {
+        .Card_swapper_container_image_overlay {
+          display: block;
+        }
+        .Card_swapper_container_image_buttons {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      &_image {
+        position: relative;
+        overflow: hidden;
+        border-radius: $radius-4;
+        aspect-ratio: 1/1;
+        width: 100%;
+        height: 100%;
+
+        &:hover {
+          img {
+            transform: scale(1.02);
+          }
+        }
+
+        img {
+          display: block;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          aspect-ratio: 1/1;
+          transition: all 0.2s;
+          background-color: var(--background-color-2);
+
+          @include mobile {
+            border-radius: $radius-8;
+          }
+        }
+
+        &_artist img {
+          border-radius: 50%;
+        }
+
+        &_overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: none;
+          transform: all 0.3s;
+        }
+
+        &_buttons {
+          position: absolute;
+          bottom: 10px;
+          left: 10px;
+          @include flex(center, center);
+          transition: all 0.2s;
+          // transform: translateY(70%);
+          // opacity: 0;
+          // display: none;
+        }
+      }
+
+      &_desc {
+        @include flex(unset, center, column);
+        margin-top: $space-12;
+        h4 {
+          font-size: $size-18;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+          @include text(1);
+        }
+        & .artists {
+          @include text(1);
+          a {
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            text-decoration: none;
+            font-size: $size-14;
+            &:not(:last-child) {
+              &::after {
+                content: ", ";
+              }
+            }
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        & .tags {
+          @include flex(unset, unset, row);
+          gap: $space-8;
+          margin-top: $space-8;
+          max-width: 100%;
+          & > div {
+            @include text(1);
+          }
+
+          &_tag {
+            padding: $space-6 $space-8;
+            border-radius: $radius-4;
+            background-color: var(--background-color-2);
+            font-size: $size-14;
+            color: var(--text-color-2);
+            display: block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+
+            &:hover {
+              background-color: var(--background-color-3);
+              color: var(--text-color-1);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.CardArtist {
+  width: 100%;
+
+  &_swapper {
+    width: 100%;
+    padding: $space-16 $space-14;
+    border-radius: $radius-8;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    @include tablet {
+      padding: $space-12 $space-8;
+      border-radius: $radius-4;
+    }
+
+    @include mobile {
+      padding: $space-8 $space-12;
+      border-radius: $radius-4;
+    }
+
+    &:hover {
+      background-color: $color-hover;
+    }
+
+    &_container {
+      &_image {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        // border: 0.1px solid var(--border-color);
+        border-radius: 50%;
+        aspect-ratio: 1/1;
+        box-shadow: var(--box-shadow);
+
+        img {
+          display: block;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          aspect-ratio: 1/1;
+          transition: all 0.2s;
+          background-color: var(--background-color-2);
+
+          @include mobile {
+            border-radius: $radius-8;
+          }
+        }
+      }
+
+      &_desc {
+        @include flex(center, center, column);
+        gap: $space-8;
+        margin-top: $space-8;
+        h4 {
+          font-size: $size-18;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+          @include text(1);
+        }
+        p {
+          font-size: $size-16;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          @include text(1);
+        }
+      }
+    }
+  }
+}
+
+.CardLive {
+  width: 100%;
+  &_swapper {
+    width: 100%;
+    padding: $space-16 $space-14;
+    border-radius: $radius-8;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    @include tablet {
+      padding: $space-12 $space-8;
+      border-radius: $radius-4;
+    }
+
+    @include mobile {
+      padding: $space-8 $space-12;
+      border-radius: $radius-4;
+    }
+
+    &:hover {
+      background-color: var(--background-color-2);
+    }
+
+    &_container {
+      &:hover {
+        .CardLive_swapper_container_image_overlay {
+          display: block;
+        }
+        .CardLive_swapper_container_image_buttons {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      &_image {
+        position: relative;
+
+        & > img {
+          overflow: hidden;
+          border: 3px solid $color-red;
+          border-radius: 50%;
+          display: block;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          aspect-ratio: 1/1;
+          transition: all 0.2s;
+        }
+
+        & > span {
+          background-color: $color-red;
+          color: $color-white;
+          font-size: 12px;
+          line-height: 1;
+          padding: 4px 6px;
+          font-weight: $font-bold;
+          border-radius: $radius-4;
+          position: absolute;
+          bottom: -8px;
+          right: 50%;
+          transform: translateX(50%);
+        }
+
+        &_overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: none;
+          transform: all 0.3s;
+        }
+
+        &_buttons {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          @include flex(center, center);
+          transition: all 0.2s;
+          transform: translateY(70%);
+          opacity: 0;
+        }
+
+        &_avatar {
+          --size: 40px;
+          width: var(--size);
+          height: var(--size);
+          position: absolute;
+          bottom: 20px;
+          right: 10px;
+          @include flex(center, center);
+          transition: all 0.2s;
+          transform: translateY(70%);
+          border: 2px solid $color-white;
+          border-radius: 50%;
+          background-color: var(--background-color-2);
+
+          & > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+        }
+      }
+
+      &_desc {
+        @include flex(center, center, column);
+        margin-top: $space-8;
+        h4 {
+          font-size: $size-16;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+          margin-top: $space-8;
+          @include text(1);
+        }
+        p {
+          font-size: $size-16;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          margin-top: $space-4;
+          @include text(1);
+        }
+      }
+    }
+  }
+}

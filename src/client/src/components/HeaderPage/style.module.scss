@@ -1,0 +1,364 @@
+@use "@/scss/index.module.scss" as *;
+
+.HeaderPage {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: $radius-12;
+  border-top-right-radius: $radius-12;
+  padding-bottom: 200px;
+  margin-bottom: -200px;
+  z-index: 1;
+
+  &_blur {
+    &_alpha {
+      background: linear-gradient(transparent, var(--background-color-1));
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      position: absolute;
+    }
+
+    &_bgAlpha {
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: 50% center;
+      background-size: cover;
+      filter: blur(100px);
+      position: absolute;
+      inset: 0px;
+      display: block;
+      background-color: $color-primary;
+    }
+  }
+
+  & > .body {
+    z-index: 2;
+    position: relative;
+    padding: 60px $space-24 $space-24 $space-24;
+    @include flex(end, unset);
+    gap: $space-20;
+    overflow: hidden;
+    // max-width: 70%;
+
+    @include tablet {
+      max-width: 90%;
+    }
+
+    @include mobile {
+      @include flex(center, center, column);
+      margin-top: 40px;
+      padding: $space-24;
+      max-width: 100%;
+    }
+
+    & > .avatar {
+      --size: 300px;
+      min-width: var(--size);
+      min-height: var(--size);
+      width: var(--size);
+      height: var(--size);
+      border-radius: $radius-4;
+      overflow: hidden;
+      //   box-shadow: themed("box-shadow");
+      background-color: var(--background-color-1);
+      position: relative;
+      &:hover {
+        & > .edit {
+          visibility: visible;
+        }
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      & > .edit {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba($color: #000000, $alpha: 0.6);
+        width: 100%;
+        height: 100%;
+        @include flex(center, center, column);
+        cursor: pointer;
+        visibility: hidden;
+        gap: $space-12;
+
+        i {
+          font-size: 36px;
+          color: $color-white-1;
+        }
+        span {
+          font-size: $size-16;
+          font-weight: $font-medium;
+          color: $color-white-1;
+        }
+      }
+    }
+
+    & .info {
+      @include flex(start, center, column);
+      gap: $space-4;
+
+      @include mobile {
+        @include flex(center, center, column);
+      }
+
+      & > p {
+        @include flex(center, start, row);
+        gap: $space-4;
+
+        & > span {
+          font-size: $size-16;
+          font-weight: $font-light;
+          color: var(--text-color-1);
+          @include flex(center, unset);
+          gap: $space-4;
+          @include mobile {
+            justify-content: center;
+          }
+        }
+      }
+
+      & > h4 {
+        font-weight: $font-bold;
+        color: var(--text-color-1);
+        overflow: hidden;
+        // font-size: 60px;
+        @include text(2);
+        @include mobile {
+          align-items: center;
+          max-width: 100%;
+        }
+      }
+
+      & > span {
+        font-size: $size-16;
+        font-weight: $font-light;
+        color: var(--text-color-1);
+        @include flex(center, unset);
+
+        @include mobile {
+          @include flex(center, center);
+        }
+      }
+
+      &_desc {
+        @include flex(center, start, row);
+        margin-top: $space-8;
+        &_author {
+          @include flex(center, start, row);
+          gap: $space-4;
+          margin-right: $space-12;
+          img {
+            --size: 30px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background-color: var(--background-color-2);
+            object-fit: cover;
+          }
+          a {
+            font-size: $size-16;
+            font-weight: $font-light;
+            color: var(--text-color-1);
+            @include flex(center, unset);
+            gap: $space-4;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        &_item {
+          @include flex(center, start, row);
+          gap: $space-4;
+          margin-right: $space-12;
+          i {
+            font-size: $size-14;
+            color: var(--text-color-2);
+          }
+          span {
+            font-size: $size-14;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            @include flex(center, unset);
+            gap: $space-4;
+            @include mobile {
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.HeaderPageArtist {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: $radius-12;
+  border-top-right-radius: $radius-12;
+  padding-bottom: 200px;
+  margin-bottom: -200px;
+  z-index: 1;
+
+  &_blur {
+    &_alpha {
+      background: linear-gradient(transparent, var(--background-color-1));
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      position: absolute;
+    }
+
+    &_bgAlpha {
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: 50% top;
+      background-size: cover;
+      filter: blur(100px);
+      position: absolute;
+      inset: 0px;
+      display: block;
+      background-color: $color-primary;
+    }
+  }
+
+  &_body {
+    z-index: 2;
+    position: relative;
+    padding: 125px $space-24 $space-24 $space-24;
+    @include flex(end, unset);
+    gap: $space-20;
+    overflow: hidden;
+    // max-width: 70%;
+
+    @include tablet {
+      max-width: 90%;
+    }
+
+    @include mobile {
+      @include flex(center, center, column);
+      margin-top: 40px;
+      padding: $space-24;
+      max-width: 100%;
+    }
+
+    &_avatar {
+      --size: 200px;
+      min-width: var(--size);
+      min-height: var(--size);
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      overflow: hidden;
+      //   box-shadow: themed("box-shadow");
+      background-color: var(--background-color-1);
+      position: relative;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_info {
+      @include flex(start, center, column);
+      gap: $space-4;
+
+      @include mobile {
+        @include flex(center, center, column);
+      }
+
+      & > p {
+        @include flex(center, start, row);
+        gap: $space-4;
+
+        span {
+          font-size: $size-16;
+          font-weight: $font-light;
+          color: var(--text-color-2);
+          @include flex(center, unset);
+          gap: $space-4;
+          @include mobile {
+            justify-content: center;
+          }
+        }
+      }
+
+      & > h4 {
+        font-weight: $font-bold;
+        color: var(--text-color-1);
+        overflow: hidden;
+        // font-size: 60px;
+        @include text(2);
+        @include mobile {
+          align-items: center;
+          max-width: 100%;
+        }
+      }
+
+      & > span {
+        font-size: $size-16;
+        font-weight: $font-light;
+        color: $color-white-3;
+        @include flex(center, unset);
+
+        @include mobile {
+          @include flex(center, center);
+        }
+      }
+
+      &_desc {
+        @include flex(center, center, row);
+        &_author {
+          @include flex(center, start, row);
+          gap: $space-4;
+          margin-right: $space-12;
+          img {
+            --size: 30px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          a {
+            font-size: $size-16;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            @include flex(center, unset);
+            gap: $space-4;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        &_item {
+          @include flex(center, center, row);
+          gap: $space-4;
+          margin-right: $space-12;
+          i {
+            font-size: $size-14;
+            color: var(--text-color-2);
+          }
+          span {
+            font-size: $size-14;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            line-height: 1;
+            @include flex(center, unset);
+            gap: $space-4;
+            @include mobile {
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

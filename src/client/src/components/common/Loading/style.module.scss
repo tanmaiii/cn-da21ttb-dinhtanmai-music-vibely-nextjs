@@ -1,0 +1,24 @@
+@use "@/scss/index.module.scss" as *;
+
+.SectionLoading {
+  overflow: hidden;
+  &_list {
+    @include flex(start, start, row);
+    flex-wrap: wrap;
+  }
+}
+
+.PageLoading {
+  &_header {
+    // padding: 0 $space-12;
+    width: 100%;
+    margin-bottom: $space-12;
+  }
+  &_list {
+    @include flex(unset, unset, column);
+    width: 100%;
+    flex-wrap: wrap;
+    gap: $space-12;
+    // padding: 0 $space-12;
+  }
+}

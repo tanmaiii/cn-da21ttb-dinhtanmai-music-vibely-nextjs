@@ -1,0 +1,96 @@
+@use "@/scss/index.module.scss" as *;
+
+.Button {
+  &:disabled {
+    opacity: 0;
+  }
+
+  @include tooltip(bottom, center);
+  cursor: pointer;
+  &:not(.Button_Label) {
+    i {
+      @include flex(center, center);
+      --size: 44px;
+      width: var(--size);
+      height: var(--size);
+      font-size: $size-20;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      border-radius: 50%;
+      opacity: 1;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &.small i {
+      font-size: 18px;
+      --size: 34px;
+    }
+    &.medium i {
+      font-size: 20px;
+      --size: 40px;
+    }
+
+    &.large i {
+      font-size: 26px;
+      --size: 54px;
+    }
+  }
+
+  &_Icon i {
+    color: var(--text-color-1);
+  }
+
+  &_IconPrimary i {
+    color: $color-white-1;
+    background-color: $color-primary;
+    // border: 1px solid var(--border-color);
+  }
+
+  &_IconRound i {
+    border-radius: 50%;
+    color: var(--text-color-1);
+    background-color: var(--background-rgba);
+  }
+
+  &_IconSquare i {
+    border-radius: $radius-4;
+    color: var(--text-color-1);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color-3);
+  }
+
+  &_Label {
+    width: max-content;
+    height: max-content;
+    padding: $space-10 $space-16;
+    background-color: var(--background-color-3);
+    border: 1px solid var(--border-color);
+    @include flex(center, center);
+    border-radius: $radius-8;
+    transition: opacity 0.3s;
+    gap: $space-4;
+
+    label {
+      color: var(--text-color-1);
+      font-size: $size-16;
+      font-weight: $font-medium;
+      cursor: pointer;
+      display: block;
+    }
+
+    i {
+      font-size: $size-20;
+      color: var(--text-color-1);
+    }
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    &_line label {
+      background-color: unset;
+    }
+  }
+}

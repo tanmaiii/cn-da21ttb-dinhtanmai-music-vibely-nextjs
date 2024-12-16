@@ -1,0 +1,84 @@
+@use "@/scss/index.module.scss" as *;
+
+.Header {
+  height: $height-header;
+  //   background-color: var(--background-color-2);
+  @include flex(center, space-between);
+  padding: 0 $space-28;
+
+  @include mobile {
+    padding: 0 $space-12;
+  }
+
+  position: sticky;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: $z-index-header;
+
+  &_shrink {
+    background-color: var(--background-rgba);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--background-rgba);
+  }
+
+  &_left {
+    @include flex(center, center, row);
+    &_BtnSidebar {
+      display: none;
+      @include mobile {
+        display: block;
+      }
+    }
+    &_search {
+      @include flex(center, center, row);
+      padding: $space-8 $space-12;
+      height: 40px;
+      width: max-content;
+      background-color: var(--background-color-2);
+      border-radius: $radius-20;
+      @include mobile {
+        display: none;
+      }
+      button {
+        i {
+          font-size: $size-18;
+          color: var(--text-color-1);
+        }
+      }
+      input {
+        width: 100%;
+        font-size: $size-16;
+        color: var(--text-color-1);
+        background-color: transparent;
+        padding: 0 $space-8;
+        outline: none;
+        min-width: 300px;
+      }
+    }
+  }
+
+  &_right {
+    @include flex(center, center, row);
+    gap: $space-8;
+    &_user {
+      @include flex(center, center);
+      gap: $space-8;
+      cursor: pointer;
+      &_image {
+        cursor: pointer;
+        --size: 40px;
+        height: var(--size);
+        img {
+          width: var(--size);
+          height: var(--size);
+          //   border: 2px solid var(--primary-color);
+          object-fit: cover;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}

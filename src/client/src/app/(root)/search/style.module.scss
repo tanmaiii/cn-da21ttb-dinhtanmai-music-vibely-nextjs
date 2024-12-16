@@ -1,0 +1,107 @@
+@use "@/scss/index.module.scss" as *;
+
+.Search {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
+  min-height: 120vh;
+
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+
+  &_history {
+    & > h4 {
+      font-size: $size-24;
+      color: var(--text-color-1);
+      font-weight: $font-bold;
+      margin-bottom: $space-12;
+    }
+    &_list {
+      @include flex(center, flex-start, row);
+      gap: $space-12;
+      margin-bottom: $space-12;
+      overflow: hidden;
+
+      &_item {
+        padding: $space-8 $space-16;
+        background-color: var(--background-color-2);
+        border-radius: $radius-20;
+        cursor: pointer;
+        width: max-content;
+
+        &:hover {
+          background-color: var(--background-color-3);
+          i,
+          span {
+            color: var(--text-color-1);
+          }
+        }
+        i {
+          font-size: $size-16;
+          color: var(--text-color-2);
+          margin-right: $space-6;
+        }
+        span {
+          font-size: $size-16;
+          color: var(--text-color-2);
+          font-weight: $font-medium;
+        }
+      }
+    }
+  }
+  &_genre {
+    & > h4 {
+      font-size: $size-24;
+      color: var(--text-color-1);
+      font-weight: $font-bold;
+      margin-bottom: $space-12;
+    }
+    &_list {
+      &_item {
+        cursor: pointer;
+        height: 200px;
+        width: 100%;
+        padding: $space-24;
+        // background-color: var(--background-color-2);
+        border-radius: $radius-12;
+        margin-bottom: $space-24;
+        transition: all 0.3s;
+        overflow: hidden;
+        position: relative;
+        p {
+          font-size: $size-24;
+          color: $color-white;
+          font-weight: $font-bold;
+        }
+
+        img {
+          width: 45%;
+          height: auto;
+          right: 0;
+          bottom: 0;
+          position: absolute;
+          transform: rotate(25deg);
+          border-radius: 4px;
+          aspect-ratio: 1/1;
+          box-shadow: var(--box-shadow);
+        }
+        @include tablet {
+          margin-bottom: $space-24;
+        }
+        @include mobile {
+          margin-bottom: 8px;
+        }
+        &:hover {
+          scale: 0.98;
+        }
+      }
+    }
+  }
+}

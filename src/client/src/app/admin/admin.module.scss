@@ -1,0 +1,56 @@
+@use "@/scss/index.module.scss" as *;
+
+.AdminLayout {
+  background-color: var(--background-color-1);
+  @include flex(start, center, row);
+  height: 100vh;
+  width: 100vw;
+
+  &_top {
+    height: calc(100vh);
+    width: 100vw;
+    flex-wrap: nowrap;
+
+    &_playingBarOpen {
+      height: calc(100vh - $height-playingBar);
+    }
+
+    @include flex(start, start, row);
+
+    &_sidebar {
+      height: 100%;
+    }
+
+    &_main {
+      @include flex(start, start, row);
+      flex-wrap: nowrap;
+      max-height: 100vh;
+      width: calc(100vw - $width-sidebar);
+      flex: 1;
+
+      &_content {
+        flex: 1;
+        position: relative;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        min-height: 100vh;
+
+        &_header {
+        }
+
+        &_body {
+          height: calc(100vh - $height-header);
+          &_list {
+            min-height: 100vh;
+          }
+        }
+      }
+
+      &_waiting {
+        @include mobile {
+          display: none !important;
+        }
+      }
+    }
+  }
+}

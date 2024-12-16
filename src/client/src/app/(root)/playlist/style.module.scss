@@ -1,0 +1,26 @@
+@use "@/scss/index.module.scss" as *;
+
+.PlaylistPage {
+  min-height: 90vh;
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+  &_top {
+    & > .header {
+      @include flex(center, flex-start, row);
+      h1 {
+        font-size: $size-24;
+        color: var(--text-color-1);
+        padding: $space-12;
+        font-weight: $font-bold;
+      }
+    }
+  }
+  &_body {
+  }
+}

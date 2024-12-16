@@ -1,0 +1,230 @@
+@use "@/scss/index.module.scss" as *;
+
+.RoomPage {
+  --size-chat: 400px;
+
+  padding: 0 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24;
+  }
+  @include mobile {
+    padding: 0 8px;
+  }
+
+  & > .top {
+    // height: calc(100vh - $height-header - 20px);
+    @include flex(flex-start, center, row);
+    gap: $space-12;
+    position: relative;
+  }
+
+  & > .bottom {
+    height: 400px;
+    margin-top: $space-32;
+    border-radius: $radius-8;
+  }
+
+  @include tablet {
+    --size-chat: 300px;
+  }
+
+  @include mobile {
+    --size-chat: 100%;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  & .content {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+
+    @include mobile {
+      height: calc(100% - var(--size-chat));
+    }
+
+    & > .swapper {
+      height: max-content;
+      & > .body {
+        height: 400px;
+        width: 100%;
+        border-radius: $radius-8;
+        padding: $space-8;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        position: relative;
+
+        &:hover {
+          & > .header,
+          & > .footer {
+            display: flex;
+          }
+        }
+
+        & > .header {
+          height: 56px;
+          @include flex(center, space-between, row);
+          padding: $space-8 $space-12;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          display: none;
+          background: linear-gradient(rgba(0, 0, 0, 0.8), transparent);
+          z-index: 2;
+          & > .left {
+            @include flex(center, start, row);
+            gap: $space-12;
+            h4 {
+              font-size: $size-18;
+              color: $color-white-1;
+              font-weight: $font-medium;
+            }
+
+            & > div {
+              i {
+                font-size: $size-16;
+                color: $color-white-2;
+                margin-right: $space-4;
+              }
+              span {
+                font-size: $size-16;
+                color: $color-white-2;
+              }
+            }
+          }
+
+          & > .right {
+            @include flex(center, center, row);
+            gap: $space-8;
+          }
+        }
+
+        & > .footer {
+          height: 56px;
+          @include flex(center, space-between, row);
+          padding: $space-8 $space-12;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+          display: none;
+          z-index: 2;
+          & > .left {
+            & > .buttonLive {
+              @include flex(center, center, row);
+              gap: $space-4;
+              background-color: $color-red;
+              color: $color-white-1;
+              padding: $space-4 $space-8;
+              border-radius: $radius-4;
+              font-size: $size-16;
+              font-weight: $font-medium;
+              & > div {
+                width: 10px;
+                height: 10px;
+                background-color: $color-white-1;
+                border-radius: 50%;
+              }
+            }
+          }
+          & > .right {
+            display: flex;
+            .btn_volumn {
+              @include flex(center, flex-end, row);
+              &:hover {
+                .btn_volumn_range {
+                  display: block;
+                }
+              }
+              &_range {
+                width: 100px;
+                display: none;
+                transition: all 0.3s;
+              }
+            }
+          }
+        }
+
+        & > .content {
+          padding: 56px $space-24;
+          z-index: 1;
+          @include flex(flex-start, flex-start, column);
+          & > h4 {
+            font-size: $size-16;
+            color: $color-white-1;
+            font-weight: $font-medium;
+            @include text(1);
+            margin-bottom: $space-12;
+          }
+          .item {
+            border-radius: $radius-8;
+            background-color: $color-dark-rgba;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            width: 300px;
+          }
+        }
+      }
+
+      & > .info {
+        padding: $space-18 0;
+        @include flex(center, space-between, row);
+
+        & > div {
+          @include flex(center, start, row);
+          gap: $space-12;
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid $color-primary;
+          }
+
+          h6 {
+            font-size: $size-20;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+            @include text(1);
+          }
+
+          h4 {
+            font-size: $size-16;
+            color: var(--text-color-2);
+            font-weight: $font-medium;
+            @include text(1);
+          }
+        }
+
+        .quantity {
+          @include flex(center, center, row);
+          gap: $space-4;
+          font-size: $size-16;
+          font-weight: $font-medium;
+          color: $color-primary;
+          i {
+            font-size: $size-18;
+            color: $color-primary;
+          }
+        }
+      }
+    }
+  }
+
+  & .chat {
+    height: calc(100vh - $height-header - 20px);
+    width: var(--size-chat);
+    position: sticky;
+    top: $height-header;
+
+    @include mobile {
+      width: 100%;
+      height: 300px;
+    }
+  }
+}

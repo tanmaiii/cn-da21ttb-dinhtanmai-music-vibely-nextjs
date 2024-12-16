@@ -1,0 +1,278 @@
+@use "@/scss/index.module.scss" as *;
+
+.Sidebar {
+  //   padding: $space-24 0;
+  @include flex(center, space-between, column);
+  height: 100%;
+  width: $width-sidebar;
+  border-right: 1.2px solid var(--border-color);
+  position: relative;
+  z-index: $z-index-sidebar;
+
+  @include tablet {
+    @media not all and (max-width: $mobile-width) {
+      width: $width-sidebar-hide;
+
+      .Sidebar_logo {
+        h2 {
+          display: none;
+        }
+      }
+
+      .Sidebar_list {
+        padding: 0 $space-4;
+      }
+
+      .Sidebar_list_item {
+        padding: $space-14;
+        @include flex(center, center);
+        @include tooltip(right, bottom);
+
+        h4 {
+          display: none;
+        }
+      }
+
+      .Sidebar_list_title {
+        padding: $space-4 0;
+        hr {
+          display: block;
+        }
+        h4 {
+          display: none;
+        }
+      }
+
+      .Sidebar_footer {
+        padding: 0 $space-4;
+        &_button {
+          padding: $space-14;
+          @include flex(center, center);
+          @include tooltip(right, bottom);
+          h4 {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  @include mobile {
+    position: fixed;
+    transform: translateX(-100%);
+    width: $width-sidebar;
+    min-width: $width-sidebar;
+    background-color: var(--background-color-2);
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+    &_OpenMobile {
+      transform: translateX(0);
+    }
+  }
+
+  @media not all and (max-width: $mobile-width) {
+    &_hide {
+      width: $width-sidebar-hide;
+      .Sidebar_logo {
+        h2 {
+          display: none;
+        }
+      }
+
+      .Sidebar_list {
+        padding: 0 $space-4;
+      }
+
+      .Sidebar_list_item {
+        padding: $space-14;
+        @include flex(center, center);
+        @include tooltip(right, bottom);
+        h4 {
+          display: none;
+        }
+      }
+
+      .Sidebar_list_title {
+        padding: $space-4 0;
+        hr {
+          display: block;
+        }
+        h4 {
+          display: none;
+        }
+      }
+
+      .Sidebar_footer_button {
+        padding: $space-16 $space-12;
+        @include flex(center, center);
+        @include tooltip(right, bottom);
+        h4 {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &_logo {
+    padding: $space-24 $space-12;
+    @include flex(center, center, row);
+    width: 100%;
+    gap: $space-8;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+    h2 {
+      font-size: $size-30;
+      font-weight: $font-bold;
+      color: $color-primary;
+    }
+  }
+
+  &_list {
+    z-index: 1;
+    flex: 1;
+    @include flex(start, start, column);
+    gap: $space-4;
+    width: 100%;
+    padding: 0 $space-8;
+
+    // scroll navbar nhưng không hiển thị tooltip được ??
+
+    // overflow: auto;
+    // overflow-x: hidden;
+
+    // scrollbar-width: none; /* Firefox */
+    // -ms-overflow-style: none; /* Internet Explorer 10+ */
+
+    & > div {
+      width: 100%;
+      @include flex(start, start, column);
+      gap: $space-8;
+    }
+
+    &_title {
+      padding: $space-4 $space-24;
+      width: 100%;
+      h4 {
+        color: var(--text-color-3);
+        font-size: 12px;
+        font-weight: $font-medium;
+      }
+      hr {
+        width: 100%;
+        display: none;
+      }
+    }
+
+    &_item {
+      padding: $space-12 $space-18;
+      @include flex(center, flex-start, row);
+      gap: $space-8;
+      cursor: pointer;
+      width: max-content;
+      position: relative;
+      border-radius: $radius-8;
+      width: 100%;
+      border: 1px solid transparent;
+
+      i {
+        --size: 24px;
+        min-width: var(--size);
+        min-height: var(--size);
+        @include flex(center, center);
+        font-size: $size-18;
+        color: var(--text-color-2);
+      }
+
+      h4 {
+        font-size: $size-16;
+        font-weight: $font-medium;
+        color: var(--text-color-2);
+      }
+
+      &_active {
+        background-color: var(--background-color-2);
+        border-color: var(--border-color);
+        &::before {
+          display: block;
+        }
+
+        h4,
+        i {
+          color: var(--text-color-1);
+        }
+      }
+
+      &:hover {
+        h4,
+        i {
+          color: var(--text-color-1);
+        }
+      }
+    }
+  }
+
+  &_footer {
+    width: 100%;
+    background-color: var(--background-color-1);
+    z-index: 2;
+    padding: 0 $space-8;
+
+    &_button {
+      padding: $space-16 $space-24;
+      @include flex(center, start);
+      cursor: pointer;
+      gap: $space-8;
+      width: 100%;
+
+      &:last-child {
+        @include tablet {
+          display: none;
+        }
+      }
+      i {
+        font-size: $size-20;
+        color: var(--text-color-2);
+      }
+      h4 {
+        font-size: $size-16;
+        font-weight: $font-medium;
+        color: var(--text-color-2);
+      }
+
+      &:hover {
+        h4,
+        i {
+          color: var(--text-color-1);
+        }
+      }
+    }
+  }
+}
+
+.Sidebar_overlay {
+  @include mobile {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background-color: var(--background-rgba);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--background-rgba);
+    &_OpenMobile {
+      display: block;
+    }
+  }
+}

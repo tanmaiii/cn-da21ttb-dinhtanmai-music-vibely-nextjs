@@ -1,0 +1,39 @@
+@use "@/scss/index.module.scss" as *;
+
+.Waiting {
+  overflow-y: scroll;
+  @include flex(start, start, column);
+  width: $width-waiting;
+  height: calc(100vh - $height-header);
+  display: none;
+  
+  &.open {
+    display: flex;
+  }
+
+  &_header {
+    padding: $space-12 $space-16;
+    width: 100%;
+    @include flex(center, space-between, row);
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--background-color-1);
+    z-index: 2;
+    h3 {
+      font-size: $size-18;
+      color: var(--text-color-1);
+      font-weight: $font-bold;
+    }
+  }
+  &_list {
+    padding: $space-8 $space-8 $space-24 $space-8;
+    z-index: 1;
+
+    &_item {
+      width: 100%;
+      background-color: var(--background-color-2);
+    }
+  }
+}

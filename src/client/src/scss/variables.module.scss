@@ -1,0 +1,113 @@
+$mobile-width: 700px;
+$tablet-width: 1250px;
+
+$width-sidebar: 260px;
+$width-waiting: 300px;
+$width-sidebar-hide: 60px;
+$height-header: 50px;
+$height-playingBar: 68px;
+
+$height-header-modal: 60px;
+
+$z-index-sidebar: 9;
+$z-index-dropdown: 9;
+$z-index-header: 99;
+$z-index-playingBar: 999;
+$z-index-modal: 9999;
+$z-index-toast: 99999;
+$z-index-waiting: 99999;
+
+$transition: all 0.3s;
+
+$space-2: 2px;
+$space-4: 4px;
+$space-6: 6px;
+$space-8: 8px;
+$space-10: 10px;
+$space-12: 12px;
+$space-14: 14px;
+$space-16: 16px;
+$space-18: 18px;
+$space-20: 20px;
+$space-24: 24px;
+$space-28: 28px;
+$space-30: 30px;
+$space-32: 32px;
+$space-36: 36px;
+$space-40: 40px;
+$space-42: 42px;
+$space-46: 46px;
+
+$color-black-1: #0a0a0a;
+$color-black-2: #161616;
+$color-black-3: #151515;
+
+$color-white-1: #f9fafb;
+$color-white-2: #f2f2f2;
+$color-white-3: #dadada;
+
+$color-dark-bg-1: #010409;
+$color-dark-bg-2: #0d1117;
+$color-dark-bg-3: #151b23;
+
+// $color-dark-bg-1: #0F0F0F;
+// $color-dark-bg-2: #121212;
+// $color-dark-bg-3: #171717;
+// $color-dark-bg-4: #1F1F1F;
+
+$color-dark-text-1: #f2f2f2;
+$color-dark-text-2: #9d9d9d;
+$color-dark-text-3: #7b7b7b;
+
+$color-light-bg-1: #ffff;
+$color-light-bg-2: #f4f7fb;
+$color-light-bg-3: #eff4fa;
+
+$color-light-text-1: #404040;
+$color-light-text-2: #637381;
+$color-light-text-3: #abb4bb;
+
+$color-light-rgba: rgba($color-light-bg-1, 0.4);
+$color-dark-rgba: rgba($color-dark-bg-1, 0.4);
+
+$color-primary: #ff6337;
+$color-hover: rgba($color-primary, 0.1);
+
+$color-overlay: rgba(0, 0, 0, 0.6);
+
+$color-white: #fff;
+$color-black: #000000;
+$color-gray: #dadada;
+$color-blue: #007aff;
+$color-red: #ff3333;
+$color-pink: #e6706f;
+$color-green: #8fd888;
+$color-yellow: #efc31a;
+
+$color-error: #ff6692;
+$color-error-rgba: rgba(255, 102, 146, 0.38);
+
+$font-bold: 700;
+$font-medium: 500;
+$font-light: 400;
+
+$size-8: 8px;
+$size-12: 12px;
+$size-14: 14px;
+$size-16: 16px;
+$size-18: 18px;
+$size-20: 20px;
+$size-24: 24px;
+$size-30: 30px;
+$size-34: 34px;
+$size-36: 36px;
+$size-40: 40px;
+
+$radius-4: 4px;
+$radius-6: 6px;
+$radius-8: 8px;
+$radius-10: 10px;
+$radius-12: 12px;
+$radius-16: 16px;
+$radius-20: 20px;
+$radius-25: 25px;

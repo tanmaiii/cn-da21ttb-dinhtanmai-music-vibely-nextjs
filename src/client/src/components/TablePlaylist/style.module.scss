@@ -1,0 +1,39 @@
+@use "@/scss/index.module.scss" as *;
+
+.TablePlaylist {
+  z-index: 10;
+  min-height: 200px;
+  &_swapper {
+    &_header {
+      @include flex(center, unset);
+      padding: $space-18 $space-14;
+      border-bottom: 0.8px solid var(--border-color);
+      font-size: $size-16;
+      margin-bottom: $space-12;
+
+      &_line {
+        &:last-child {
+          @include flex(center, end);
+          span {
+           margin-right: 54px;
+          }
+        }
+        &:first-child {
+          @include flex(center, start);
+          span {
+            &:first-child {
+              width: 40px;
+              text-align: left;
+            }
+          }
+        }
+        span {
+          color: var(--text-color-1);
+          font-size: $size-16;
+        }
+      }
+    }
+    &_body {
+    }
+  }
+}

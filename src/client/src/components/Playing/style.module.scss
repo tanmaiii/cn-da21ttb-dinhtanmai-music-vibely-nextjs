@@ -1,0 +1,441 @@
+@use "@/scss/index.module.scss" as *;
+
+.PlayingBar {
+  height: $height-playingBar;
+  width: 100%;
+  z-index: $z-index-playingBar;
+  @include flex(center, space-between, row);
+  height: 100%;
+  padding: $space-8 $size-16;
+
+  // background-color: var(--background-color-1);
+
+  background-color: var(--background-rgba);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
+
+  &_left {
+    height: 100%;
+    @include flex(center, center);
+  }
+
+  &_center {
+    height: 100%;
+    @include flex(center, center);
+    flex: 1;
+    @include mobile {
+      display: none;
+    }
+  }
+  &_right {
+    height: 100%;
+    @include flex(center, center);
+    @include mobile {
+      display: none;
+    }
+  }
+}
+
+.LeftPlayingBar {
+  @include flex(center, center, row);
+  gap: $space-8;
+  max-width: 300px;
+  &_image {
+    @include flex(center, center);
+    img {
+      --size: 40px;
+      width: var(--size);
+      height: var(--size);
+      object-fit: cover;
+      overflow: hidden;
+      border-radius: $space-4;
+    }
+  }
+  &_desc {
+    h4 {
+      font-size: $size-16;
+      font-weight: 500;
+      color: var(--text-color-1);
+      @include text(1);
+    }
+    a {
+      font-size: $size-14;
+      font-weight: 400;
+      color: var(--text-color-2);
+      @include text(1);
+    }
+  }
+}
+
+.CenterPlayingBar {
+  @include flex(center, center, row);
+  gap: $space-12;
+  width: 100%;
+  &_top {
+    @include flex(center, center);
+    gap: $space-4;
+  }
+  &_bottom {
+    width: 600px;
+    @include flex(center, center, row);
+    gap: $space-8;
+    span {
+      color: var(--text-color-2);
+      font-size: $size-14;
+      font-weight: 400;
+    }
+  }
+}
+
+.RightPlayingBar {
+  @include flex(center, center, row);
+  gap: $space-8;
+  max-width: 300px;
+  &_volume {
+    @include flex(center, center, row);
+    &_slide {
+      width: 60px;
+    }
+  }
+}
+
+.ModalLyrics {
+  width: 100%;
+  height: 100%;
+  @include flex(center, center);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $z-index-modal;
+
+  transform: translateY(100%);
+  opacity: 0.6;
+  transition: transform opacity 0.8s;
+
+  &_open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &_container {
+    @include flex(center, center, column);
+    height: 100%;
+    width: 100%;
+    border-radius: $space-8;
+
+    &.isInactive {
+      .ModalLyrics_container_header {
+        opacity: 0;
+      }
+      .ModalLyrics_container_footer {
+        opacity: 0;
+      }
+    }
+
+    &_blur {
+      z-index: -1;
+      & > .image {
+        background-repeat: no-repeat;
+        background-position: 50% center;
+        background-size: cover;
+        filter: blur(30px);
+        position: absolute;
+        inset: -100px;
+        display: block;
+        background-color: $color-primary;
+      }
+      & > .overlay {
+        top: 0;
+        left: 0;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: rgba($color: $color-primary, $alpha: 0.7);
+        // opacity: 0;
+        position: absolute;
+      }
+    }
+
+    &_header {
+      width: 100%;
+      padding: $space-12;
+      &_buttons {
+        @include flex(center, flex-end, row);
+        width: 100%;
+        gap: $space-8;
+      }
+      &_navigation {
+        @include flex(center, center, row);
+        padding: $space-8 0;
+
+        ul {
+          background-color: $color-overlay;
+          padding: 4px;
+          border-radius: 26px;
+          li {
+            display: inline-block;
+            padding: $space-8 $space-14;
+            border-radius: 18px;
+            transition: all 0.3s;
+            font-size: $size-16;
+            @include mobile {
+              padding: $space-6 $space-8;
+              font-size: $size-14;
+            }
+            &.active {
+              background-color: $color-overlay;
+
+              h4 {
+                // color: $color-primary;
+              }
+            }
+
+            h4 {
+              color: $color-white;
+              font-weight: $font-medium;
+              cursor: pointer;
+              transition: $transition;
+            }
+          }
+        }
+      }
+    }
+
+    &_body {
+      flex: 1;
+      width: 100%;
+    }
+
+    &_footer {
+      @include flex(center, center, column);
+      padding: $space-12;
+      h6 {
+        color: $color-white-1;
+        font-size: $size-18;
+        font-weight: 500;
+      }
+      &_controls {
+        display: flex;
+        gap: $space-8;
+      }
+      &_slider {
+        @include flex(center, center, row);
+        gap: $space-8;
+        width: 600px;
+        @include mobile {
+          min-width: 100%;
+        }
+        span {
+          color: $color-white-1;
+          font-size: $size-14;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+.Lyrics {
+  height: 100%;
+  @include flex(center, center);
+  gap: $space-12;
+  --size: 50vh;
+
+  &_image {
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    aspect-ratio: 1/1;
+
+    @include mobile {
+      display: none;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      // aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+  }
+  &_list {
+    height: var(--size);
+    overflow: hidden auto;
+    padding: 0 $space-18;
+
+    &::-webkit-scrollbar {
+      display: none; /* Ẩn thanh cuộn */
+    }
+
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      hsla(0, 0%, 100%, 0),
+      hsla(0, 0%, 100%, 0.8) 10%,
+      #fff 25%,
+      #fff 75%,
+      hsla(0, 0%, 100%, 0.8) 90%,
+      hsla(0, 0%, 100%, 0)
+    );
+
+    ul {
+      li {
+        cursor: pointer;
+        &:hover:not(.no-time) {
+          p {
+            color: $color-white !important;
+          }
+        }
+        p {
+          font-size: $size-34;
+          color: rgba($color: $color-black, $alpha: 0.6);
+          text-align: left;
+          font-weight: $font-bold;
+          margin: $space-4 0;
+          transition: all 0.3s;
+          @include mobile {
+            font-size: $size-24;
+          }
+        }
+        &.no_time {
+        }
+        &.is_over {
+          p {
+            color: rgba($color: $color-white, $alpha: 0.6);
+          }
+        }
+        &.active {
+          p {
+            color: $color-white;
+          }
+        }
+      }
+    }
+  }
+}
+
+.Waiting {
+  // height: var(--size);
+  height: 100%;
+  @include flex(center, center);
+
+  &_swapper {
+    width: 100vw;
+    @include flex(center, center);
+    position: relative;
+    overflow-x: scroll;
+    padding-bottom: 60px;
+
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar {
+      display: none; /* Ẩn thanh cuộn */
+    }
+
+    &_button {
+      height: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      @include flex(center, center);
+      z-index: 1;
+      padding-bottom: 60px;
+      button {
+        --size: 44px;
+        width: var(--size);
+        height: var(--size);
+        @include flex(center, center);
+        font-size: $size-18;
+        border-radius: 50%;
+        background-color: var(--background-rgba);
+        color: var(--text-color-1);
+        cursor: pointer;
+        transition: $transition;
+        &:hover {
+          // background-color: rgba($color: themed("bg-2"), $alpha: 0.9);
+          background-color: $color-hover;
+        }
+      }
+      &:first-child {
+        left: 20px;
+      }
+      &:last-child {
+        right: 20px;
+      }
+    }
+
+    &_slider {
+      --size: 360px;
+      @include flex(start, start, row);
+      flex-wrap: nowrap;
+      width: 100%;
+      margin-left: calc(-1 * var(--size));
+      transition: tranform 0.3s;
+
+      &_item {
+        @include flex(center, center, column);
+        gap: $space-8;
+        border-radius: $radius-12;
+        cursor: pointer;
+        height: 100%;
+        position: relative;
+        min-width: var(--size);
+        width: var(--size);
+        height: var(--size);
+        transition: tranform 0.3s;
+        padding: $space-12;
+        position: relative;
+        &.active {
+          & > .Waiting_swapper_slider_item_image {
+            border-color: $color-white-1;
+          }
+        }
+        &:hover {
+          .Waiting_swapper_slider_item_image {
+            border-color: $color-white-1;
+          }
+          .Waiting_swapper_slider_item_info {
+            display: block;
+          }
+        }
+        &_image {
+          width: 100%;
+          height: 100%;
+          border-radius: $radius-12;
+          border: 2px solid transparent;
+          transition: border-color 0.3s;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: $radius-12;
+          }
+        }
+        &_info {
+          position: absolute;
+          display: none;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+
+          h5 {
+            font-size: $size-24;
+            font-weight: $font-medium;
+            color: $color-white-1;
+
+            @include text(1);
+            text-align: center;
+          }
+          p {
+            text-align: center;
+            font-size: $size-14;
+            font-weight: $font-light;
+            color: $color-white-2;
+            @include text(1);
+          }
+        }
+      }
+    }
+  }
+}

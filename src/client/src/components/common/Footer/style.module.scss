@@ -1,0 +1,84 @@
+@use "@/scss/index.module.scss" as *;
+
+.Footer {
+  border-top: 1px solid var(--border-color);
+  padding: $space-32 $space-32 calc($height-playingBar + $space-32) $space-32;
+ 
+  
+  @include mobile {
+    padding: $space-8 $space-12;
+  }
+  &_swapper {
+    padding: $space-12;
+    min-height: 200px;
+    flex-wrap: wrap;
+    @include mobile {
+      padding: $space-8;
+    }
+
+    &_col {
+      margin-bottom: $space-24;
+      @include mobile {
+        @include flex(center, center, column);
+      }
+      &_social {
+        @include flex(center, start);
+        gap: $space-12;
+        button {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          background-color: var(--background-color-2);
+          i {
+            color: var(--text-color-1);
+            font-size: $size-18;
+          }
+          &:hover {
+            cursor: pointer;
+            background-color: var(--background-color-2);
+          }
+        }
+      }
+      &_header {
+        font-size: $size-18;
+        font-weight: 600;
+        color: var(--text-color-1);
+        margin-bottom: $space-8;
+      }
+      &_list {
+        @include flex(unset, unset);
+        flex-direction: column;
+        gap: $space-8;
+        @include mobile {
+          @include flex(center, center, column);
+        }
+        li {
+          a {
+            color: var(--text-color-2);
+            font-size: $size-16;
+            display: block;
+            margin-bottom: $space-4;
+            transition: $transition;
+            &:hover {
+              color: var(--text-color-1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &_bottom {
+    @include flex(center, center);
+    gap: $space-12;
+    font-size: $size-14;
+    color: var(--text-color-2);
+    a {
+      color: var(--text-color-2);
+      transition: $transition;
+      &:hover {
+        color: var(--text-color-1);
+      }
+    }
+  }
+}

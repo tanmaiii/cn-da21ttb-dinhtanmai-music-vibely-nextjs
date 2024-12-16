@@ -1,0 +1,109 @@
+@use "@/scss/index.module.scss" as *;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+// Sử dụng CSS variables để hỗ trợ chuyển đổi theme
+:root {
+  --background-color-1: #{$color-dark-bg-1};
+  --background-color-2: #{$color-dark-bg-2};
+  --background-color-3: #{$color-dark-bg-3};
+  --text-color-1: #{$color-dark-text-1};
+  --text-color-2: #{$color-dark-text-2};
+  --text-color-3: #{$color-dark-text-3};
+  --border-color: hsla(0, 0%, 100%, 0.1);
+  --primary-color: #{$color-primary};
+  --background-rgba: #{$color-dark-rgba};
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+// Khi chế độ Dark Mode được kích hoạt
+[data-theme="light"] {
+  --background-color-1: #{$color-light-bg-1};
+  --background-color-2: #{$color-light-bg-2};
+  --background-color-3: #{$color-light-bg-3};
+  --text-color-1: #{$color-light-text-1};
+  --text-color-2: #{$color-light-text-2};
+  --text-color-3: #{$color-light-text-3};
+  --border-color: hsl(214.3 31.8% 91.4%);
+  --primary-color: #{$color-primary};
+  --background-rgba: #{$color-light-rgba};
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  // //
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    // background: transparent;
+    background: var(--background-color-3);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--text-color-3);
+    border: none;
+    border-radius: $radius-4;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+*[aria-disabled="true"] {
+  /* Kiểu dáng khi aria-disabled là true */
+  // opacity: 0.8 !important; /* Ví dụ: làm mờ phần tử */
+  cursor: not-allowed !important;  /* Con trỏ không thể nhấp */
+  pointer-events: none !important; /* Vô hiệu hóa tương tác */
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+a {
+  color: unset;
+  text-decoration: unset;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+}
+
+button,
+input,
+textarea {
+  outline: none;
+  background-color: unset;
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a {
+  line-height: 1.2;
+}
+
+*:disabled,
+*[aria-disabled="true"] {
+  pointer-events: none; /* Vô hiệu hóa tương tác */
+  opacity: 1; /* Giữ độ mờ */
+  color: inherit; /* Giữ màu sắc */
+  background-color: inherit; /* Giữ nền */
+  border-color: inherit; /* Giữ màu viền */
+}

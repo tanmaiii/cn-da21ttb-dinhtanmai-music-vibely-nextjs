@@ -1,0 +1,42 @@
+@use "@/scss/index.module.scss" as *;
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: scroll;
+  &_header {
+    overflow: hidden;
+    // border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-color-2);
+    & tr {
+      & th {
+        padding: $space-16 $space-12;
+        color: var(--text-color-1);
+        font-weight: $font-bold;
+        font-size: $size-16;
+        text-align: left;
+      }
+    }
+  }
+  &_body {
+    width: 100%;
+    border-bottom: $space-12;
+
+    & tr {
+      border-bottom: 1px solid var(--border-color);
+      &:hover {
+        background-color: $color-hover;
+        cursor: pointer;
+      }
+      & td {
+        padding: $space-12;
+        font-size: $size-16;
+        color: var(--text-color-2);
+        text-align: left;
+        .actions_button {
+          margin-right: $space-4;
+        }
+      }
+    }
+  }
+}

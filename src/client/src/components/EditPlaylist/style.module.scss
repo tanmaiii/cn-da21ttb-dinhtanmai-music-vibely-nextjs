@@ -1,0 +1,68 @@
+@use "@/scss/index.module.scss" as *;
+
+.EditPlaylist {
+  display: flex;
+  flex-direction: column;
+  gap: $space-24;
+  width: 60vw;
+  @include tablet {
+    width: 80vw;
+  }
+  @include mobile {
+    width: 100%;
+  }
+  & .header {
+    margin-bottom: $space-12;
+    // padding: $space-30;
+    h2 {
+      @include flex(center, flex-start, row);
+      @include font($size-24, $font-bold, var(--text-color-1));
+    }
+  }
+  & .body {
+    width: 100%;
+    // padding: 30px;
+    @include mobile {
+      flex-direction: column-reverse;
+      
+    }
+
+    & .left {
+      width: 100%;
+      & > h6 {
+        @include font($size-16, $font-medium, var(--text-color-2));
+        margin-bottom: $space-12;
+      }
+      &_image {
+        --size: 100%;
+        width: var(--size);
+        height: var(--size);
+        margin-bottom: $space-12;
+
+        @include mobile {
+          --size: 240px;
+        }
+      }
+    }
+
+    & .right {
+      width: 100%;
+      &_body {
+        @include flex(flex-start, center, column);
+        gap: $space-12;
+      }
+    }
+  }
+  & .footer {
+    @include flex(center, flex-end, row);
+    gap: $space-12;
+
+    &_button {
+      &:first-child {
+        label {
+          background-color: unset;
+        }
+      }
+    }
+  }
+}

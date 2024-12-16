@@ -1,0 +1,346 @@
+@use "@/scss/index.module.scss" as *;
+
+.RoomChat {
+  height: 100%;
+  width: 100%;
+  background-color: var(--background-color-2);
+  border-radius: $radius-8;
+  position: relative;
+
+  --height-header: 48px;
+
+  &_header {
+    @include flex(center, space-between, row);
+    height: var(--height-header);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 $space-12;
+
+    &_nav {
+      @include flex(center, center);
+      gap: $space-4;
+      padding: 3px;
+      background-color: var(--background-color-3);
+      border-radius: 20px;
+      width: max-content;
+
+      &_item {
+        @include flex(center, start, row);
+        gap: $space-12;
+        border-radius: 20px;
+        padding: $space-4 $space-16;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &.active {
+          background-color: $color-hover;
+          h4 {
+            color: $color-primary;
+          }
+        }
+
+        h4 {
+          font-size: $size-16;
+          color: var(--text-color-1);
+          font-weight: $font-medium;
+        }
+      }
+    }
+  }
+
+  &_body {
+    height: 100%;
+    &_chat {
+      overflow-y: scroll;
+      height: calc(100% - var(--height-header));
+      scroll-behavior: smooth; /* Làm cuộn mượt mà */
+      padding: $space-8 0;
+      padding-bottom: 80px;
+      &_input {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 0 $space-8;
+      }
+    }
+
+    &_member {
+      height: calc(100% - var(--height-header));
+      overflow-y: scroll;
+      scroll-behavior: smooth; /* Làm cuộn mượt mà */
+    }
+
+    &_request {
+      height: calc(100% - var(--height-header));
+      overflow-y: scroll;
+      scroll-behavior: smooth; /* Làm cuộn mượt mà */
+    }
+  }
+}
+
+.ChatRoomRequest {
+  height: 100%;
+  .swapper {
+    height: 100%;
+    .header {
+      @include flex(center, center, row);
+      width: 100%;
+      padding: $space-4 $space-12;
+      .input {
+        @include flex(center, center, row);
+        padding: $space-12 $space-16;
+        height: 50px;
+        width: 100%;
+        background-color: var(--background-color-2);
+        border-radius: 99999px;
+        border: 1px solid var(--border-color);
+        @include mobile {
+          display: none;
+        }
+        button {
+          i {
+            font-size: $size-18;
+            color: var(--text-color-1);
+          }
+        }
+        input {
+          width: 100%;
+          font-size: $size-16;
+          color: var(--text-color-1);
+          background-color: transparent;
+          padding: 0 $space-8;
+          outline: none;
+          min-width: 300px;
+        }
+      }
+    }
+
+    .list {
+      .item {
+        @include flex(center, start, row);
+        gap: $space-8;
+        padding: $space-12;
+        &_quantity {
+          @include flex(center, start, column);
+          span {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+          }
+
+          p {
+            font-size: $size-12;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+          }
+        }
+
+        &_img {
+          position: relative;
+          img {
+            --size: 50px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: $radius-4;
+            overflow: hidden;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color-3);
+          }
+        }
+
+        &_info {
+          flex: 1;
+          h4 {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+            @include text(1);
+          }
+          p {
+            font-size: $size-14;
+            color: var(--text-color-2);
+            @include text(1);
+          }
+        }
+
+        &_action {
+          padding-right: $space-12;
+          // button {
+          //   padding: $space-8 $space-12;
+          //   border-radius: 9999px;
+          //   border: 1px solid var(--border-color);
+          //   font-size: $size-14;
+          //   font-weight: $font-medium;
+          //   cursor: pointer;
+          //   color: var(--text-color-1);
+          //   transition: opacity 0.3s;
+          //   &:hover{
+          //     opacity: 0.8;
+          //   }
+          // }
+
+          // &_add{
+          //   i{
+          //     color: $color-green;
+          //   }
+          // }
+
+          &_cancel {
+            i {
+              color: $color-red;
+            }
+          }
+
+          &_request {
+            i {
+              color: $color-green;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.ChatRoomMember {
+  height: 100%;
+  & > .swapper {
+    height: 100%;
+    .header {
+      @include flex(center, center, row);
+      width: 100%;
+      padding: $space-4 $space-12;
+      .input {
+        @include flex(center, center, row);
+        padding: $space-12 $space-16;
+        height: 50px;
+        width: 100%;
+        background-color: var(--background-color-2);
+        border-radius: 99999px;
+        border: 1px solid var(--border-color);
+
+        @include mobile {
+          display: none;
+        }
+        button {
+          i {
+            font-size: $size-18;
+            color: var(--text-color-1);
+          }
+        }
+        input {
+          width: 100%;
+          font-size: $size-16;
+          color: var(--text-color-1);
+          background-color: transparent;
+          padding: 0 $space-8;
+          outline: none;
+        }
+      }
+    }
+    .list {
+      & > h4 {
+        font-size: $size-16;
+        color: var(--text-color-1);
+        font-weight: $font-medium;
+        padding: $space-12;
+      }
+      .add_user {
+        @include flex(center, flex-start, row);
+        gap: $space-8;
+        padding: $space-12;
+        & > .swapper {
+          background-color: var(--background-color-3);
+          border-radius: $radius-8;
+          width: 100%;
+          padding: $space-12;
+          height: max-content;
+          cursor: pointer;
+          transition: all 0.3s;
+          &:hover {
+            opacity: 0.8;
+          }
+          i {
+            font-size: $size-18;
+            color: var(--text-color-1);
+            margin-right: $space-8;
+          }
+          span {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+          }
+        }
+      }
+      .item {
+        @include flex(center, start, row);
+        gap: $space-8;
+        padding: $space-12;
+        cursor: pointer;
+        &:hover {
+          .item_action {
+            opacity: 1;
+          }
+        }
+        &_img {
+          position: relative;
+          img {
+            --size: 50px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color-3);
+            overflow: hidden;
+            object-fit: cover;
+          }
+          span {
+            --size: 10px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background-color: $color-green;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+          }
+        }
+
+        &_info {
+          flex: 1;
+          h4 {
+            font-size: $size-16;
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+            @include text(1);
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          p {
+            font-size: $size-14;
+            color: var(--text-color-2);
+            @include text(1);
+          }
+        }
+
+        &_action {
+          padding-right: $space-12;
+          opacity: 0;
+          &_cancel {
+            i {
+              color: $color-red;
+            }
+          }
+
+          &_request {
+            i {
+              color: $color-green;
+            }
+          }
+        }
+      }
+    }
+  }
+}

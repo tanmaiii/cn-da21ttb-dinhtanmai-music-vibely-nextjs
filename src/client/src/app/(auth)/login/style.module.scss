@@ -1,0 +1,7 @@
+@use "@/scss/index.module.scss" as *;
+
+.Login {
+  background-color: var(--background-color-1);
+  max-width: 500px;
+  padding: $space-12;
+}

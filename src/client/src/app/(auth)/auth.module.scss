@@ -1,0 +1,34 @@
+@use "@/scss/index.module.scss" as *;
+
+.AuthLayout {
+  background-color: var(--background-color-1);
+  min-height: 100vh;
+  min-width: 100vw;
+  @include flex(center, center, row);
+  &_logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    @include flex(center, center, row);
+    gap: $space-4;
+    cursor: pointer;
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+    h2 {
+      font-size: $size-30;
+      font-weight: $font-bold;
+      color: $color-black-2;
+    }
+  }
+  &_image {
+    background-color: antiquewhite;
+    height: 100vh;
+  }
+  &_main {
+    flex: 1;
+    @include flex(center, center);
+  }
+}

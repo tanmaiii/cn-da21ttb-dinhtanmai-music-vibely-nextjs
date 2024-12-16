@@ -1,0 +1,117 @@
+@use "./variables.module.scss" as *;
+
+$themes: (
+  light: (
+    bg: black,
+    text: white,
+  ),
+  dark: (
+    bg: white,
+    text: red,
+  ),
+);
+
+@mixin themify($themes) {
+  @each $theme, $map in $themes {
+    .theme-#{$theme} & {
+      $theme-map: () !global;
+
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+
+@mixin flex($align-item, $justify-content, $direction: row) {
+  display: flex;
+  align-items: $align-item;
+  justify-content: $justify-content;
+  flex-direction: $direction;
+}
+
+@mixin text($line) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+@mixin button() {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+@mixin font($size, $weight, $color: unset) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+
+@mixin tooltip($place1, $place2) {
+  position: relative;
+
+  &:hover {
+    &[data-tooltip]::after {
+      visibility: visible;
+    }
+  }
+
+  &[data-tooltip]::after {
+    position: absolute;
+    z-index: 99999;
+
+    @if $place1 == top {
+      bottom: calc(100% + 8px);
+    } @else if $place1 == bottom {
+      top: calc(100% + 8px);
+    } @else if $place1 == left {
+      right: calc(100% + 8px);
+    } @else if $place1 == right {
+      left: calc(100% + 8px);
+    }
+
+    @if $place2 == center {
+      transform: translateX(-50%);
+      left: 50%;
+    } @else if $place2 == left {
+      left: 0;
+    } @else if $place2 == right {
+      right: 0;
+    }
+
+    content: attr(data-tooltip);
+    width: max-content;
+    height: max-content;
+    padding: 10px 12px;
+    border-radius: 8px;
+    // color: rgba(#ffff, 0.9);
+    // background-color: rgba(#0000, 0.9);
+    color: rgba(#0000, 0.9);
+    background-color: rgba(#ffff, 1);
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.2);
+
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.2;
+    transform-origin: left bottom;
+    visibility: hidden;
+  }
+}
