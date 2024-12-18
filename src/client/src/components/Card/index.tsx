@@ -149,7 +149,9 @@ const Card = (props: Props) => {
                     {owner?.name}
                   </Link>
                 ))} */}
-                <Link  href={`${paths.ARTIST}/${data.creator?.slug || 'artist'}`}>
+                <Link
+                  href={`${paths.ARTIST}/${data.creator?.slug || "artist"}`}
+                >
                   {data?.creator?.name || "Artist"}
                 </Link>
               </p>

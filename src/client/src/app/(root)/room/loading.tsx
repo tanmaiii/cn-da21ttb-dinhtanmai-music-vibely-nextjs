@@ -1,16 +1,16 @@
 "use client";
 
-import { CardArtist } from "@/components/Card";
+import { Card } from "@/components/Card";
 import { LoadingTheme } from "@/components/common/Loading";
 import { Section } from "@/components/Section";
-import { exArtist } from "@/lib/data";
+import { exSong } from "@/lib/data";
 
 const Loading = () => {
   return (
     <LoadingTheme>
       <Section>
         {Array.from({ length: 20 }).map((_, index) => (
-          <CardArtist key={index} artist={exArtist} />
+          <Card key={index} data={exSong} />
         ))}
       </Section>
     </LoadingTheme>

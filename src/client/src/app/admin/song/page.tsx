@@ -47,8 +47,8 @@ const renderRow = (item: ISong) => {
           <i className="fa-regular fa-lock"></i>
         )}
       </td>
-      <td>{formatNumber(item.listen)}</td>
-      <td>{formatNumber(item.followers_count)}</td>
+      <td>{formatNumber(item.listens)}</td>
+      <td>{formatNumber(item.likes)}</td>
       <td>
         <ButtonIconSquare
           className={`pl-2`}

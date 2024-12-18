@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import styles from "./style.module.scss";
-// import img from '@/public/images/anime.jpg';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -9,8 +8,6 @@ import SildeItem from "./ItemSlide";
 import banner1 from "@/public/images/banner1.jpg";
 import banner2 from "@/public/images/banner2.jpg";
 import banner3 from "@/public/images/banner3.jpg";
-
-
 
 function SampleNextArrow(props: {
   className?: string;

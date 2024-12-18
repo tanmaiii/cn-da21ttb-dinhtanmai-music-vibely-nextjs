@@ -344,9 +344,9 @@ export const exSong: ISong = {
 };
 
 export const exArtist: IArtist = {
-  id: "id",
+  id: "2",
   name: "Sơn Tùng MTP",
-  imagePath: "imagePath",
+  imagePath: "https://picsum.photos/900/900",
   followers: 0,
 };
 

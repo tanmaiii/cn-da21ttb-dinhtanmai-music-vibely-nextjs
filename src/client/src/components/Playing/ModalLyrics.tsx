@@ -198,7 +198,7 @@ const Waiting = () => {
             >
               <div className={`${styles.Waiting_swapper_slider_item_image}`}>
                 <Image
-                  src={song.img}
+                  src={song.imagePath || img}
                   alt={song.title}
                   width={200}
                   height={200}
@@ -206,7 +206,7 @@ const Waiting = () => {
               </div>
               <div className={`${styles.Waiting_swapper_slider_item_info}`}>
                 <h5>{song.title}</h5>
-                <p>{song.author}</p>
+                <p>{song?.creator?.name || 'Vibely'}</p>
               </div>
             </li>
           ))}

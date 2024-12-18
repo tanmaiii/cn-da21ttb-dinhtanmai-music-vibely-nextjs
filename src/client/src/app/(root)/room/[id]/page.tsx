@@ -8,7 +8,7 @@ import { TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconRound } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
-import { songs } from "@/lib/data";
+import { rooms, songs } from "@/lib/data";
 import { toggleFullScreen } from "@/lib/utils";
 import imgBanner from "@/public/images/room-banner2.jpg";
 import { motion } from "framer-motion";
@@ -86,7 +86,7 @@ const RoomPage = () => {
                   </div>
                 </div>
               )}
-                
+
               <div className={`${styles.content}`}>
                 <h4>SONG IS PLAYING:</h4>
                 <div className={`${styles.item}`}>
@@ -176,17 +176,11 @@ const RoomPage = () => {
           </div>
         )}
       </div>
-      
+
       <div className={`${styles.bottom}`}>
         <SectionOneRow title="Rooms">
           {Array.from({ length: 10 }).map((_, index) => (
-            <CardRoom
-              id={index + 1}
-              key={index}
-              title={`Title ${index + 1}`}
-              author="Author"
-              img="https://picsum.photos/200/300"
-            />
+            <CardRoom id={index + 1} key={index} room={rooms[0]} />
           ))}
         </SectionOneRow>
       </div>
