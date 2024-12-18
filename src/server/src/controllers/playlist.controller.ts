@@ -123,7 +123,7 @@ export const updatePlaylistHandler = async (
       }),
     };
 
-    // Nếu có moodId, sử dụng addMoods để lưu vào bảng trung gian
+    // Nếu có moodId
     if (moodIds && moodIds.length > 0) {
       await MoodService.updatePlaylistToMood(playlist.id, moodIds);
     }

@@ -2,6 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import RoleService from "../services/Role.service";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError";
+import {
+  CreateRoleInput,
+  DeleteRoleInput,
+  UpdateRoleInput,
+  updateRoleSchema,
+} from "../schema/role.schema";
+import Permissions from "../models/Permissions";
 
 export const getAllRolesHandler = async (
   req: Request,
@@ -19,22 +26,31 @@ export const getAllRolesHandler = async (
 };
 
 export const createRoleHandler = async (
-  req: Request,
+  req: Request<{}, {}, CreateRoleInput["body"]>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const role = await RoleService.createRole(req.body);
+
+    const PermissionsIs = req.body.permissionsId;
+
+    if (PermissionsIs) {
+      await RoleService.addPermissionToRole(role.id, PermissionsIs);
+    }
+
+    const roleNew = await RoleService.getRoleById(role.id);
+
     res
       .status(StatusCodes.CREATED)
-      .json({ data: role, message: "Create role successfully" });
+      .json({ data: roleNew, message: "Create role successfully" });
   } catch (error) {
     next(error);
   }
 };
 
 export const updateRoleHandler = async (
-  req: Request,
+  req: Request<UpdateRoleInput["params"], {}, UpdateRoleInput["body"]>,
   res: Response,
   next: NextFunction
 ) => {
@@ -47,6 +63,12 @@ export const updateRoleHandler = async (
 
     await RoleService.updateRole(req.params.id, req.body);
 
+    const PermissionsIs = req.body.permissionsId;
+
+    if (PermissionsIs && PermissionsIs?.length > 0) {
+      await RoleService.updatePermissionToRole(req.params.id, PermissionsIs);
+    }
+
     const newRole = await RoleService.getRoleById(req.params.id);
 
     res
@@ -58,7 +80,7 @@ export const updateRoleHandler = async (
 };
 
 export const deleteRoleHandler = async (
-  req: Request,
+  req: Request<DeleteRoleInput["params"], {}, {}>,
   res: Response,
   next: NextFunction
 ) => {

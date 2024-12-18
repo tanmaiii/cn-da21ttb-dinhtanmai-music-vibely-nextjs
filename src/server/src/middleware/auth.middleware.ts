@@ -41,13 +41,6 @@ export const globalAuthorize = async (
 export const authorize = (requiredPermission?: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // if (req.headers.authorization === undefined) {
-      //   throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
-      // }
-
-      // const token = req.headers.authorization.split(" ")[1];
-      // const tokenInfo = TokenUtil.decodeToken(token) as JwtPayload;
-
       const userId = get(req, "identity.id") as string;
 
       if (!userId) {
@@ -59,14 +52,14 @@ export const authorize = (requiredPermission?: string) => {
       if (!user) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
       }
-
+      
       if (requiredPermission) {
         const roles = await RoleService.getRoleByName(user.role.name);
 
         if (!roles) {
           throw new ApiError(StatusCodes.FORBIDDEN, "Role not found");
         }
-
+        
         // Kiểm tra xem user có quyền cần thiết không
         const hasPermissions = roles.permissions.some((permission) => {
           return permission.name === requiredPermission;

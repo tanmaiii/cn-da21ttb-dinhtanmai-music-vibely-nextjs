@@ -48,6 +48,11 @@ export default class MoodService {
     return PlaylistMood.bulkCreate(playlistMood);
   };
 
+  static updateSongToMood = async (songId: string, moodIds: string[]) => {
+    await SongMood.destroy({ where: { songId } });
+    return MoodService.addSongToMood(songId, moodIds);
+  };
+
   static updatePlaylistToMood = async (
     playlistId: string,
     moodIds: string[]

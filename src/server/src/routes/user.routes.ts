@@ -6,6 +6,7 @@ import {
   getAllUsersHandler,
   getUserHandler,
   updateUserHandler,
+  updateUserRoleHandler,
 } from "../controllers/user.controller";
 import { uploadFile } from "../middleware";
 import { authorize } from "../middleware/auth.middleware";
@@ -13,6 +14,7 @@ import { validateData } from "../middleware/validate.middleware";
 import {
   createUserSchema,
   getUserSchema,
+  UpdateRoleUserSchema,
   updateUserSchema,
 } from "../schema/user.schema";
 import { PERMISSIONS } from "../utils/contants";
@@ -39,6 +41,13 @@ router.post(
   uploadFile,
   validateData(createUserSchema),
   createUserHandler
+);
+
+router.put(
+  "/:id/role",
+  authorize(PERMISSIONS.MANAGE_USERS),
+  validateData(UpdateRoleUserSchema),
+  updateUserRoleHandler
 );
 
 export default router;

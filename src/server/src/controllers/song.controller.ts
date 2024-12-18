@@ -168,6 +168,7 @@ export const updateSongHandler = async (
     if (!song) throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const moodIds = req.body.moodId;
 
     const data = {
       ...req.body,
@@ -183,6 +184,10 @@ export const updateSongHandler = async (
     };
 
     await SongService.updateSong(req.params.id, data);
+
+    if (moodIds && moodIds.length > 0) {
+      await MoodService.updateSongToMood(req.params.id, moodIds);
+    }
 
     const songInfo = await SongService.getSongById(req.params.id);
 
