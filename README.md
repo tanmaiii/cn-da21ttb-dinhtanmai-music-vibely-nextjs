@@ -1,5 +1,8 @@
 # Tên đề tài: Xây dựng website nghe nhạc trực tuyến theo thời gian thực bằng NextJs
 
+[![GitHub Repo Stars](https://img.shields.io/github/stars/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs?style=social)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs?style=social)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/network/members) [![GitHub License](https://img.shields.io/github/license/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/blob/main/LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/issues) [![GitHub Last Commit](https://img.shields.io/github/last-commit/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/commits/main) [![GitHub Contributors](https://img.shields.io/github/contributors/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs?style=flat&color=blue)](https://github.com/tanmaiii/cn-da21ttb-dinhtanmai-music-vibely-nextjs/graphs/contributors)
+
 - Giáo viên hướng dẫn: Nguyễn Bảo Ân
 - Thời gian thực hiện: 11/11/2024 đến ngày 05/01/2025
 - Sinh viên thực hiện: Đinh Tấn Mãi
