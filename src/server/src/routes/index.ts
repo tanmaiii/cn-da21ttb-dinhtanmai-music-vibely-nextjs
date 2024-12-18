@@ -8,8 +8,10 @@ import AuthRouter from "./auth.routes";
 import GenreRouter from "./genre.routes";
 import PlaylistRouter from "./playlist.routes";
 import RoleRouter from "./role.routes";
+import PermissionsRouter from "./permissions.routes";
 import ArtistRouter from "./artists.routes";
 import SongPlayRouter from "./song_play.routes";
+import MoodRouter from "./mood.routes";
 
 export default (): express.Router => {
   // Define your routes here
@@ -43,9 +45,13 @@ export default (): express.Router => {
 
   router.use("/role", RoleRouter);
 
+  router.use("/permissions", PermissionsRouter);
+
   router.use("/artist", ArtistRouter);
 
   router.use("/song_play", SongPlayRouter);
+
+  router.use("/mood", MoodRouter);
 
   return router;
 };

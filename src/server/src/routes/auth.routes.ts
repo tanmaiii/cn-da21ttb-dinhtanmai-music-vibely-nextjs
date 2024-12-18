@@ -16,30 +16,6 @@ import {
 } from "../schema/auth.schema";
 const router = Router();
 
-/**
- * @openapi
- * '/auth/login':
- *  post:
- *    tags:
- *    - Auth
- *    summary: login
- *    requestBody:
- *       required: true
- *       content:
- *         application/json:
- *            schema:
- *             $ref: '#/components/schemas/LoginInput'
- *    responses:
- *      200:
- *        description: Login
- *        content:
- *          application/json:
- *             schema:
- *              $ref: '#/components/schemas/LoginResponse'
- *      403:
- *        description: Forbidden
- */
-
 router.post("/validate", authorize(), validate);
 
 router.post("/register", validateData(registerSchema), register);

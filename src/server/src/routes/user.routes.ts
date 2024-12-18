@@ -15,8 +15,8 @@ import {
   getUserSchema,
   updateUserSchema,
 } from "../schema/user.schema";
-import { ROLES, PERMISSIONS } from "../utils/contants";
-const router = Router();
+import { PERMISSIONS } from "../utils/contants";
+const router: Router = Router();
 
 router.get("/", getAllUsersHandler);
 router.get("/:id", validateData(getUserSchema), getUserHandler);

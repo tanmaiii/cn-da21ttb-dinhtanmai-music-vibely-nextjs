@@ -30,4 +30,11 @@ export default class RoleService {
       where: { name },
       ...roleQueryOptions,
     });
+
+  // Tạo role
+  static createRole = async (role: Partial<Roles>) => Roles.create(role);
+
+  // Cập nhật role
+  static updateRole = async (id: string, role: Partial<Roles>) =>
+    Roles.update(role, { where: { id } });
 }

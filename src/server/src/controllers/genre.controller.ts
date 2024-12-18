@@ -64,11 +64,13 @@ export const updateGenreHandler = async (
     const data = {
       ...req.body,
       ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image")
-      })
+        imagePath: getFilePath(files, "image"),
+      }),
     };
 
-    const newGenre = await GenreService.update(req.params.id, data);
+    await GenreService.update(req.params.id, data);
+
+    const newGenre = await GenreService.getById(req.params.id);
 
     res
       .status(StatusCodes.OK)
@@ -78,3 +80,24 @@ export const updateGenreHandler = async (
     next(error);
   }
 };
+
+export const deleteGenreHandler = async (
+  req: Request<UpdateGenreInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const genre = await GenreService.getById(req.params.id);
+
+    if (!genre) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Genre not found");
+    }
+
+    await GenreService.delete(req.params.id);
+
+    res.status(StatusCodes.OK).json({ message: "Delete genre successfully" });
+    return;
+  } catch (error) {
+    next(error);
+  }
+}

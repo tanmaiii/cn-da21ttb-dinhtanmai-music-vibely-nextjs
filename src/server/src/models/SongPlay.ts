@@ -43,14 +43,4 @@ class SongPlays extends Model {
   playedAt!: Date;
 }
 
-// (async () => {
-//   try {
-//     await sequelize.query(`
-//          ALTER TABLE song_plays DROP INDEX song_plays_songId_userId_unique;
-//         `);
-//   } catch (error) {
-//     console.error("❌❌  Lỗi khi thêm khóa chính:");
-//   }
-// })();
-
 export default SongPlays;

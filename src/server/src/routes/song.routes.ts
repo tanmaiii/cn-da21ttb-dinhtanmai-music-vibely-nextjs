@@ -32,7 +32,7 @@ import {
 } from "../schema/song.schema";
 import { PERMISSIONS } from "../utils/contants";
 
-const router = Router();
+const router: Router = Router();
 
 // Lấy tất cả bài hát
 router.get("/", validateData(getAllSongSchema), getAllHandler);
@@ -98,7 +98,6 @@ router.delete(
 );
 
 // Phát nhạc
-
 router.post(
   "/:id/play",
   authorize(PERMISSIONS.PLAY_SONGS),

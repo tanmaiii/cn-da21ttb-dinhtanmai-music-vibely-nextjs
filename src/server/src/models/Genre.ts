@@ -55,6 +55,4 @@ class Genre extends Model {
   declare playlists: Playlist[];
 }
 
-// Genre.hasMany(Song, { foreignKey: "genreId" });
-
 export default Genre;

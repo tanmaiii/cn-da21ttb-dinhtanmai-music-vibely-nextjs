@@ -5,14 +5,18 @@ import SongMood from "../models/SongMood";
 export const attributesMood = ["id", "title", "description"];
 
 export default class MoodService {
-  static getMoods = () => Mood.findAll();
+  static getMoods = () =>
+    Mood.findAll({
+      attributes: attributesMood,
+    });
 
   static getMoodById = (id: string) => Mood.findByPk(id);
 
   static createMood = (mood: Partial<Mood>) => Mood.create(mood);
 
-  static updateMood = (id: string, mood: Mood) =>
-    Mood.update(mood, { where: { id } });
+  static updateMood = (id: string, mood: Partial<Mood>) => {
+    return Mood.update(mood, { where: { id } });
+  };
 
   static deleteMood = (id: string) => Mood.destroy({ where: { id } });
 

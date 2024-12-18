@@ -26,4 +26,18 @@ export default class PermissionsService {
         },
       ],
     });
+
+  // Tạo quyền
+  static createPermission = async (permission: Partial<Permissions>) =>
+    Permissions.create(permission);
+
+  // Cập nhật quyền
+  static updatePermission = async (
+    id: string,
+    permission: Partial<Permissions>
+  ) => Permissions.update(permission, { where: { id } });
+
+  // Xóa quyền
+  static deletePermission = async (id: string) =>
+    Permissions.destroy({ where: { id } });
 }

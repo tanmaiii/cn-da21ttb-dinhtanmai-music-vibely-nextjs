@@ -29,10 +29,12 @@ const params = {
   }),
 };
 
+export const getGenreSchema = object({ ...params });
 export const createGenreSchema = object({ ...payload });
 export const updateGenreSchema = object({ ...payloadUpdate, ...params });
-export const getGenreSchema = object({ ...params });
+export const deleteGenreSchema = object({ ...params });
 
+export type GetGenreInput = TypeOf<typeof getGenreSchema>;
 export type CreateGenreInput = TypeOf<typeof createGenreSchema>;
 export type UpdateGenreInput = TypeOf<typeof updateGenreSchema>;
-export type GetGenreInput = TypeOf<typeof getGenreSchema>;
+export type DeleteGenreInput = TypeOf<typeof deleteGenreSchema>;

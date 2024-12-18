@@ -13,6 +13,8 @@ INSERT INTO
     Permissions (id, name)
 VALUES
     (UUID(), 'MANAGE_USERS'),
+    (UUID(), 'MANAGE_MOODS'),
+    (UUID(), 'MANAGE_GENRE'),
     (UUID(), 'READ_SONGS'),
     (UUID(), 'CREATE_SONGS'),
     (UUID(), 'UPDATE_SONGS'),
@@ -168,7 +170,9 @@ VALUES
     (@adminRoleId, @createPlaylistsPermission),
     (@adminRoleId, @updatePlaylistsPermission),
     (@adminRoleId, @deletePlaylistsPermission),
-    (@adminRoleId, @playSongPermission);
+    (@adminRoleId, @playSongPermission),
+    (@adminRoleId, @manageGenresPermission),
+    (@adminRoleId, @manageMoodsPermission);
 
 -- Assign permissions to Artist
 INSERT INTO
@@ -182,7 +186,7 @@ VALUES
     (@artistRoleId, @createPlaylistsPermission),
     (@artistRoleId, @updatePlaylistsPermission),
     (@artistRoleId, @deletePlaylistsPermission),
-    (@artistRoleId, @playSongPermission);
+    (@artistRoleId, @playSongPermission),
 
 -- Assign permissions to User
 INSERT INTO
@@ -193,4 +197,4 @@ VALUES
     (@userRoleId, @createPlaylistsPermission),
     (@userRoleId, @updatePlaylistsPermission),
     (@userRoleId, @deletePlaylistsPermission),
-    (@userRoleId, @playSongPermission);
+    (@userRoleId, @playSongPermission),

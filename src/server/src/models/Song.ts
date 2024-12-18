@@ -87,7 +87,7 @@ class Song extends Model {
 
   @ForeignKey(() => User) //Khóa ngoại thể loại
   @Column({
-    allowNull: false,
+    allowNull: true,
     type: DataType.UUID,
   })
   userId: string;

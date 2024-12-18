@@ -11,10 +11,10 @@ import {
 import Playlist from "./Playlist";
 import Roles from "./Roles";
 import Song from "./Song";
-import SongPlayService from "../services/SongPlay.service";
 import SongPlays from "./SongPlay";
 import Follows from "./Follows";
 import { formatStringToSlug } from "../utils/commonUtils";
+import RoomChat from "./RoomChat";
 
 @Table({
   timestamps: true,
@@ -59,6 +59,9 @@ class User extends Model {
 
   @HasMany(() => Playlist)
   playlists: Playlist[];
+
+  @HasMany(() => RoomChat)
+  roomChats: RoomChat[];
 
   @HasMany(() => SongPlays)
   plays!: SongPlays[];

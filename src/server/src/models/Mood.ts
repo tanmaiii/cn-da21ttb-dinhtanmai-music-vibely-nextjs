@@ -34,9 +34,7 @@ class Mood extends Model {
   playlists!: Playlist[];
 }
 
-
 export default Mood;
-
 
 export const getMoods = () => Mood.findAll();
 export const getMoodById = (id: string) => Mood.findByPk(id);

@@ -21,9 +21,8 @@ import {
   updatePlaylistSchema,
 } from "../schema/playlist.schema";
 import { PERMISSIONS } from "../utils/contants";
-import { unLikeSongHandler } from "../controllers/song.controller";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", validateData(getAllPlaylistSchema), getAllPlaylistHandler);
 router.get("/:id", validateData(getPlaylistSchema), getPlaylistHandler);
@@ -53,7 +52,6 @@ router.get(
   validateData(getSongInPlaylistSchema),
   getSongInPlaylistHandler
 );
-
 router.post(
   "/:id/like",
   authorize(),

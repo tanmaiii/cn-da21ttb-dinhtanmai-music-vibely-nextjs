@@ -1,9 +1,8 @@
 import {
-  BelongsTo,
   Column,
   ForeignKey,
   Model,
-  Table,
+  Table
 } from "sequelize-typescript";
 import Playlist from "./Playlist";
 import Song from "./Song";

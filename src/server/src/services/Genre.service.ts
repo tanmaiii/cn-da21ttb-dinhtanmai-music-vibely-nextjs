@@ -34,4 +34,21 @@ export default class GenreService {
 
     return Genre.update(genre, { where: { id } });
   }
+
+  static async delete(id: string) {
+    const genre = await Genre.findByPk(id);
+    if (genre) {
+      const imagePath = genre.imagePath;
+      if (imagePath) {
+        try {
+          fs.unlinkSync(`./uploads/images/${imagePath}`);
+        } catch (error) {
+          console.error("Lỗi khi xóa ảnh:", error);
+          // Không throw lỗi để tránh làm gián đoạn việc xóa
+        }
+      }
+
+      await Genre.destroy({ where: { id } });
+    }
+  }
 }
