@@ -10,35 +10,35 @@ import Room from "./Room";
 import Song from "./Song";
 
 @Table({
-  tableName: "room_playlists",
+  tableName: "room_song",
   timestamps: true,
 })
-class RoomPlaylist extends Model {
+class RoomSong extends Model {
   @ForeignKey(() => Room)
   @Column({
     type: DataType.UUID,
-    allowNull: true,
+    allowNull: false,
   })
   roomId!: string;
 
   @ForeignKey(() => Song)
   @Column({
     type: DataType.UUID,
-    allowNull: true,
+    allowNull: false,
   })
   songId!: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0, // Vị trí của bài hát trong danh sách
+  })
+  index!: number;
 
   @BelongsTo(() => Room)
   room: Room;
 
   @BelongsTo(() => Song)
   song!: Song;
-
-  @Column({
-    type: DataType.INTEGER,
-    defaultValue: 0, // Vị trí của bài hát trong danh sách
-  })
-  order!: number;
 }
 
-export default RoomPlaylist;
+export default RoomSong;

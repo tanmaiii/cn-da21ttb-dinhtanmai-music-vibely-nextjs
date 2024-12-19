@@ -44,7 +44,6 @@ export default class GenreService {
           fs.unlinkSync(`./uploads/images/${imagePath}`);
         } catch (error) {
           console.error("Lỗi khi xóa ảnh:", error);
-          // Không throw lỗi để tránh làm gián đoạn việc xóa
         }
       }
 

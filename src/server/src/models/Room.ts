@@ -1,8 +1,20 @@
-import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import { SIZE } from "../utils/contants";
 import RoomMember from "./RoomMember";
-import RoomPlaylist from "./RoomPlaylist";
+import RoomPlaylist from "./RoomSong";
 import RoomChat from "./RoomChat";
+import User from "./User";
+import RoomCurrentPlaying from "./RoomCurrentPlaying";
+import Song from "./Song";
 
 @Table({
   tableName: "rooms",
@@ -29,7 +41,23 @@ class Room extends Model {
   })
   description!: string;
 
-  @HasMany(() => RoomMember)
+  @Column({
+    allowNull: true,
+    type: DataType.STRING,
+  })
+  declare imagePath: string;
+
+  @ForeignKey(() => User) //Khóa ngoại thể loại
+  @Column({
+    allowNull: true,
+    type: DataType.UUID,
+  })
+  userId: string;
+
+  @BelongsTo(() => User)
+  creator: User; // Người tạo
+
+  @BelongsToMany(() => User, () => RoomMember)
   members!: RoomMember[];
 
   @HasMany(() => RoomPlaylist)
@@ -37,6 +65,9 @@ class Room extends Model {
 
   @HasMany(() => RoomChat)
   chats!: RoomChat[];
+
+  @BelongsToMany(() => Song, () => RoomCurrentPlaying)
+  currentPlaying!: RoomCurrentPlaying;
 }
 
 export default Room;

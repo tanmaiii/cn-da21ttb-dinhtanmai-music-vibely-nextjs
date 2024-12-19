@@ -1,6 +1,5 @@
 import { array, object, string, TypeOf } from "zod";
 import { SIZE } from "../utils/contants";
-import { get } from "lodash";
 
 const payload = {
   body: object({

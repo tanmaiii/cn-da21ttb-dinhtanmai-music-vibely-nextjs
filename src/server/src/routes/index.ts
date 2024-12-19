@@ -12,6 +12,8 @@ import PermissionsRouter from "./permissions.routes";
 import ArtistRouter from "./artists.routes";
 import SongPlayRouter from "./song_play.routes";
 import MoodRouter from "./mood.routes";
+import RoomRouter from "./room.routes";
+import RoomChatRouter from "./room_chat.routes";
 
 export default (): express.Router => {
   // Define your routes here
@@ -52,6 +54,10 @@ export default (): express.Router => {
   router.use("/song_play", SongPlayRouter);
 
   router.use("/mood", MoodRouter);
+
+  router.use("/room", RoomRouter);
+  
+  router.use("/room-chat", RoomChatRouter);
 
   return router;
 };

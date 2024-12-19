@@ -15,6 +15,7 @@ import SongPlays from "./SongPlay";
 import Follows from "./Follows";
 import { formatStringToSlug } from "../utils/commonUtils";
 import RoomChat from "./RoomChat";
+import Room from "./Room";
 
 @Table({
   timestamps: true,
@@ -59,6 +60,9 @@ class User extends Model {
 
   @HasMany(() => Playlist)
   playlists: Playlist[];
+
+  @HasMany(() => Room)
+  rooms: Room[];
 
   @HasMany(() => RoomChat)
   roomChats: RoomChat[];

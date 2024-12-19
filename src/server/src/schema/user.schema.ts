@@ -55,6 +55,7 @@ const payload = {
     email: string().email("Not a valid email").nullable().optional(),
     password: string().min(6, "Password too short").nullable().optional(),
     imagePath: string().nullable().optional(),
+    roleId: string().nullable().optional(),
   }),
 };
 

@@ -96,7 +96,7 @@ export const updateUserHandler = async (
 ) => {
   try {
     const { id } = req.params;
-    const { password, ...userUpdateInfo } = req.body;
+    const { password, roleId, ...userUpdateInfo } = req.body;
 
     let hashPassword;
     if (password) {

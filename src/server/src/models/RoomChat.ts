@@ -1,4 +1,11 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import Room from "./Room";
 import User from "./User";
 
@@ -7,38 +14,31 @@ import User from "./User";
   timestamps: true,
 })
 class RoomChat extends Model {
-    @Column({
-        primaryKey: true,
-        type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,
-    })
-    declare id: string;
+  @ForeignKey(() => Room)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  roomId!: string;
 
-    @ForeignKey(() => Room)
-    @Column({
-        type: DataType.UUID,
-        allowNull: false,
-    })
-    roomId!: string;
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  userId!: string;
 
-    @ForeignKey(() => User)
-    @Column({
-        type: DataType.UUID,
-        allowNull: false,
-    })
-    userId!: string;
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  content!: string;
 
-    @Column({
-        type: DataType.TEXT,
-        allowNull: false,
-    })
-    content!: string;
+  @BelongsTo(() => Room)
+  room: Room;
 
-    @BelongsTo(() => Room)
-    room: Room;
-
-    @BelongsTo(() => User)
-    user!: User;
+  @BelongsTo(() => User)
+  user!: User;
 }
 
 export default RoomChat;

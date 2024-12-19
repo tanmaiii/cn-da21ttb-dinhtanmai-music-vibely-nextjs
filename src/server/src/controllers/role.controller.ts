@@ -1,14 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import RoleService from "../services/Role.service";
 import { StatusCodes } from "http-status-codes";
-import ApiError from "../utils/ApiError";
 import {
   CreateRoleInput,
   DeleteRoleInput,
-  UpdateRoleInput,
-  updateRoleSchema,
+  UpdateRoleInput
 } from "../schema/role.schema";
-import Permissions from "../models/Permissions";
+import RoleService from "../services/Role.service";
+import ApiError from "../utils/ApiError";
 
 export const getAllRolesHandler = async (
   req: Request,

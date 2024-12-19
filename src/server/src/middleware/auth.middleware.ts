@@ -8,6 +8,18 @@ import ApiError from "../utils/ApiError";
 import TokenUtil from "../utils/jwt";
 import SongService from "../services/Song.service";
 
+export interface IIdentity {
+  id: string;
+  name: string;
+  email: string;
+  slug: string;
+  imagePath: string;
+  role: {
+    id: string;
+    name: string;
+  };
+}
+
 export const globalAuthorize = async (
   req: Request,
   res: Response,
@@ -52,14 +64,14 @@ export const authorize = (requiredPermission?: string) => {
       if (!user) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
       }
-      
+
       if (requiredPermission) {
         const roles = await RoleService.getRoleByName(user.role.name);
 
         if (!roles) {
           throw new ApiError(StatusCodes.FORBIDDEN, "Role not found");
         }
-        
+
         // Kiểm tra xem user có quyền cần thiết không
         const hasPermissions = roles.permissions.some((permission) => {
           return permission.name === requiredPermission;
