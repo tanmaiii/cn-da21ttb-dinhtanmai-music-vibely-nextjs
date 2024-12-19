@@ -4,8 +4,8 @@ import {
   createPlaylistHandler,
   getAllPlaylistHandler,
   getPlaylistHandler,
-  getSongInPlaylistHandler,
   likePlaylistHandler,
+  removeSongToPlaylistHandler,
   unLikePlaylistHandler,
   updatePlaylistHandler,
 } from "../controllers/playlist.controller";
@@ -15,7 +15,6 @@ import {
   createPlaylistSchema,
   getAllPlaylistSchema,
   getPlaylistSchema,
-  getSongInPlaylistSchema,
   likePlaylistSchema,
   unLikePlaylistSchema,
   updatePlaylistSchema,
@@ -46,11 +45,10 @@ router.post(
   validateData(addSongToPlaylistSchema),
   addSongToPlaylistHandler
 );
-router.get(
+router.delete(
   "/:id/song",
-  authorize(PERMISSIONS.READ_PLAYLISTS),
-  validateData(getSongInPlaylistSchema),
-  getSongInPlaylistHandler
+  authorize(PERMISSIONS.UPDATE_PLAYLISTS),
+  removeSongToPlaylistHandler
 );
 router.post(
   "/:id/like",

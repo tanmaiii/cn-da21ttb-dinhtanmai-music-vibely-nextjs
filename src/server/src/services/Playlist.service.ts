@@ -157,19 +157,9 @@ export default class PlaylistService {
   static addSong = (playlistSong: Partial<PlaylistSong>) =>
     PlaylistSong.create(playlistSong);
 
-  static getAllSongs = (playlistId: string) =>
-    Playlist.findAll({
-      where: { id: playlistId },
-      attributes: [],
-      // include: [
-      //   {
-      //     model: Song,
-      //     as: "songs",
-      //     through: { attributes: [] },
-      //     ...songQueryOptions,
-      //   },
-      // ],
-    });
+  static checkSongInPlaylist = async (playlistId: string, songId: string) => {
+    return await PlaylistSong.findOne({ where: { playlistId, songId } });
+  };
 
   static removeSong = (playlistSong: Partial<PlaylistSong>) =>
     PlaylistSong.destroy({ where: playlistSong });

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { get } from "lodash";
 import {
-  addSongToPlaylistInput,
+  AddSongToPlaylistInput,
   CreatePlaylistInput,
   GetAllPlaylistInput,
   GetPlaylistInput,
@@ -145,9 +145,9 @@ export const updatePlaylistHandler = async (
 
 export const addSongToPlaylistHandler = async (
   req: Request<
-    addSongToPlaylistInput["params"],
+    AddSongToPlaylistInput["params"],
     {},
-    addSongToPlaylistInput["body"]
+    AddSongToPlaylistInput["body"]
   >,
   res: Response,
   next: NextFunction
@@ -160,15 +160,12 @@ export const addSongToPlaylistHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const existSongInPlaylist = await PlaylistService.getAllSongs(
-      existPlaylist.id
+    const existSongInPlaylist = await PlaylistService.checkSongInPlaylist(
+      req.params.id,
+      req.body.songId
     );
 
-    if (
-      existSongInPlaylist.some((song) =>
-        song.songs.some((s) => s.id === req.body.songId)
-      )
-    ) {
+    if (existSongInPlaylist) {
       throw new ApiError(StatusCodes.BAD_REQUEST, "Song already in playlist");
     }
 
@@ -189,23 +186,42 @@ export const addSongToPlaylistHandler = async (
   }
 };
 
-export const getSongInPlaylistHandler = async (
-  req: Request<addSongToPlaylistInput["params"]>,
+export const removeSongToPlaylistHandler = async (
+  req: Request<
+    AddSongToPlaylistInput["params"],
+    {},
+    AddSongToPlaylistInput["body"]
+  >,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const existPlaylist = await PlaylistService.getById(req.params.id);
+    const existSong = await SongService.getSongById(req.body.songId);
 
-    if (!existPlaylist) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
+    if (!existPlaylist || !existSong) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const songs = await PlaylistService.getAllSongs(existPlaylist.id);
+    const existSongInPlaylist = await PlaylistService.checkSongInPlaylist(
+      req.params.id,
+      req.body.songId
+    );
+
+    if (!existSongInPlaylist) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Song not in playlist");
+    }
+
+    const body = {
+      playlistId: req.params.id,
+      songId: req.body.songId,
+    };
+
+    await PlaylistService.removeSong(body);
 
     res
       .status(StatusCodes.OK)
-      .json({ data: songs, message: "Get songs in playlist successfully" });
+      .json({ message: "Remove song to playlist successfully" });
 
     return;
   } catch (error) {

@@ -66,6 +66,7 @@ export const getSongDetailHandler = async (
   }
 };
 
+// Lấy chi tiết bài hát theo slug
 export const getSongDetailBySlugHandler = async (
   req: Request<GetSongSlugInput["params"], {}, {}>,
   res: Response,
@@ -83,6 +84,11 @@ export const getSongDetailBySlugHandler = async (
     next(error);
   }
 };
+
+// Lấy danh sách bài hát theo playlist
+export const getAllSongByPlaylist = async () => {
+    
+}
 
 // Lấy lời bài hát
 export const getLyricsSongHandler = async (
