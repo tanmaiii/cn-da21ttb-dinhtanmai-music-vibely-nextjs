@@ -4,6 +4,7 @@ import {
   createPlaylistHandler,
   getAllPlaylistHandler,
   getPlaylistHandler,
+  getSongInPlaylistHandler,
   likePlaylistHandler,
   removeSongToPlaylistHandler,
   unLikePlaylistHandler,
@@ -38,6 +39,12 @@ router.put(
   uploadFile,
   validateData(updatePlaylistSchema),
   updatePlaylistHandler
+);
+router.get(
+  "/:id/song",
+  authorize(PERMISSIONS.READ_PLAYLISTS),
+  validateData(getPlaylistSchema),
+  getSongInPlaylistHandler
 );
 router.post(
   "/:id/song",

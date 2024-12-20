@@ -17,6 +17,7 @@ import ApiError from "../utils/ApiError";
 import { getFilePath, SortOptions } from "../utils/commonUtils";
 import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
+import PlaylistSongService from "../services/PlaylistSong.service";
 
 export const getAllPlaylistHandler = async (
   req: Request<{}, GetAllPlaylistInput["query"], {}>,
@@ -160,7 +161,7 @@ export const addSongToPlaylistHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const existSongInPlaylist = await PlaylistService.checkSongInPlaylist(
+    const existSongInPlaylist = await PlaylistSongService.checkSongInPlaylist(
       req.params.id,
       req.body.songId
     );
@@ -174,7 +175,7 @@ export const addSongToPlaylistHandler = async (
       songId: req.body.songId,
     };
 
-    const playlist = await PlaylistService.addSong(body);
+    const playlist = await PlaylistSongService.addSong(body);
 
     res
       .status(StatusCodes.CREATED)
@@ -203,7 +204,7 @@ export const removeSongToPlaylistHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const existSongInPlaylist = await PlaylistService.checkSongInPlaylist(
+    const existSongInPlaylist = await PlaylistSongService.checkSongInPlaylist(
       req.params.id,
       req.body.songId
     );
@@ -217,13 +218,34 @@ export const removeSongToPlaylistHandler = async (
       songId: req.body.songId,
     };
 
-    await PlaylistService.removeSong(body);
+    await PlaylistSongService.removeSong(body);
 
     res
       .status(StatusCodes.OK)
       .json({ message: "Remove song to playlist successfully" });
 
     return;
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSongInPlaylistHandler = async (
+  req: Request<GetPlaylistInput["params"]>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const playlistId = req.params.id;
+    const playlist = await PlaylistService.getById(playlistId);
+
+    if (!playlist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
+    }
+
+    const songs = await PlaylistSongService.getAll(playlistId);
+
+    res.json({ data: songs, message: "Get songs in playlist successfully" });
   } catch (error) {
     next(error);
   }

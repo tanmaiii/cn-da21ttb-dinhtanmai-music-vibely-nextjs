@@ -7,6 +7,7 @@ import User from "../models/User";
 import { attributesMood } from "./Mood.service";
 import { attributesUser } from "./User.service";
 import { SortOptions } from "../utils/commonUtils";
+import PlaylistSong from "../models/PlaylistSong";
 
 interface GetAllOptions {
   page: number;
@@ -178,6 +179,26 @@ export default class SongService {
     } as any);
 
     return song;
+  };
+
+  static getSongByPlaylist = async (playlistId: string, userId?: string) => {
+    const whereCondition: any = userId
+      ? {
+          [Op.or]: [{ public: true }, { userId }],
+        }
+      : { public: true };
+
+    return PlaylistSong.findAll({
+      where: { playlistId },
+      // include: [
+      //   {
+      //     model: Song,
+      //     attributes: songQueryOptions.attributes as string[],
+      //     include: songQueryOptions.include,
+      //     where: whereCondition,
+      //   },
+      // ],
+    });
   };
 
   static getPathAudio = async (id: string) => {

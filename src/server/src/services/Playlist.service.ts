@@ -153,14 +153,4 @@ export default class PlaylistService {
     Playlist.update(playlist, { where: { id } });
 
   static delete = (id: string) => Playlist.destroy({ where: { id } });
-
-  static addSong = (playlistSong: Partial<PlaylistSong>) =>
-    PlaylistSong.create(playlistSong);
-
-  static checkSongInPlaylist = async (playlistId: string, songId: string) => {
-    return await PlaylistSong.findOne({ where: { playlistId, songId } });
-  };
-
-  static removeSong = (playlistSong: Partial<PlaylistSong>) =>
-    PlaylistSong.destroy({ where: playlistSong });
 }

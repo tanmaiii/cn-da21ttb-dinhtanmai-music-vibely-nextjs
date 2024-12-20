@@ -3,6 +3,7 @@ import PlaylistLikes from "../models/PlaylistLikes";
 import SongLikes from "../models/SongLikes";
 
 export default class LikeService {
+  //Song
   static getLikeSong = async (userId: string, songId: string) => {
     return await SongLikes.findOne({ where: { userId, songId } });
   };
@@ -16,6 +17,7 @@ export default class LikeService {
     await existLike.destroy();
   };
 
+  // Playlist
   static getLikePlaylist = async (userId: string, playlistId: string) => {
     return await PlaylistLikes.findOne({ where: { userId, playlistId } });
   };
@@ -32,6 +34,7 @@ export default class LikeService {
     return true;
   };
 
+  // User
   static getFollow = async (userId: string, artistId: string) => {
     return await Follows.findOne({
       where: { followerId: userId, followingId: artistId },
