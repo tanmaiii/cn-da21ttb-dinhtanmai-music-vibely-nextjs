@@ -4,6 +4,7 @@ import favorites from "@/public/images/liked-songs.png";
 import playlist from "@/public/images/playlist.png";
 import song from "@/public/images/song.png";
 import logo from "@/public/images/logo.png";
+import google from "@/public/images/google.png";
 
 export const paths = {
   HOME: "/",
@@ -104,6 +105,7 @@ export const IMAGES = {
   FAVORITES: favorites,
   ERROR: errorSVG,
   LOGO: logo,
+  GOOGLE: google,
 };
 
 export const navRoomPage = [

@@ -3,40 +3,50 @@
 import React from "react";
 import styles from "./style.module.scss";
 
-interface Props {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeValue?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type: string;
-  placeholder: string;
   name: string;
   label?: string;
   error?: string;
 }
 
-const FormItem = (props: Props) => {
+const FormItem = ({
+  type: defaultType,
+  name,
+  onChangeValue,
+  label,
+  error,
+  ...rest
+}: Props) => {
   const [keyword, setKeyword] = React.useState<string>("");
-  const [type, setType] = React.useState<string>(props.type);
+  const [type, setType] = React.useState<string>(defaultType);
 
-  const habdleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
+    if (onChangeValue) {
+      onChangeValue(e);
+    }
   };
+
   return (
     <div className={`${styles.FormItem}`}>
-      {props.label && <label htmlFor={props.name}>{props.label}</label>} 
+      {label && <label htmlFor={name}>{label}</label>}
       <div
         className={`${styles.FormItem_input} ${
-          props.error && styles.FormItem_input_error
+          error && styles.FormItem_input_error
         }`}
       >
         <input
           type={type}
-          placeholder={props.placeholder}
-          name={props.name}
+          name={name}
           value={keyword}
-          onChange={habdleChange}
+          onChange={handleChange}
           autoComplete="off"
+          {...rest}
         />
-        {props.type === "password" && (
+        {defaultType === "password" && (
           <button
             className={`${styles.FormItem_input_eye}`}
             onClick={() =>
@@ -51,9 +61,7 @@ const FormItem = (props: Props) => {
           </button>
         )}
       </div>
-      {props.error && (
-        <span className={`${styles.FormItem_error}`}>{props.error}</span>
-      )}
+      {error && <span className={`${styles.FormItem_error}`}>{error}</span>}
     </div>
   );
 };

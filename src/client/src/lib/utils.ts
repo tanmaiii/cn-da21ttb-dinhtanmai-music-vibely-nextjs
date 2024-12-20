@@ -137,7 +137,7 @@ export function isSongData(data: ISong | IPlaylist): data is ISong {
 }
 
 //Chuyển đổi kích thước file từ byte sang các đơn vị khác như KB, MB, GB, TB
-function formatFileSize(size: number): string {
+export function formatFileSize(size: number): string {
   const units = ["Bytes", "KB", "MB", "GB", "TB"];
   let index = 0;
 
@@ -150,5 +150,3 @@ function formatFileSize(size: number): string {
   // Trả về chuỗi với 2 chữ số thập phân
   return `${parseFloat(size.toFixed(2))} ${units[index]}`;
 }
-
-export default formatFileSize;

@@ -22,11 +22,12 @@ const router: Router = Router();
 
 router.get("/", getAllUsersHandler);
 router.get("/:id", validateData(getUserSchema), getUserHandler);
-router.delete(
-  "/:id",
+router.post(
+  "/",
   authorize(PERMISSIONS.MANAGE_USERS),
-  validateData(getUserSchema),
-  deleteUserHandler
+  uploadFile,
+  validateData(createUserSchema),
+  createUserHandler
 );
 router.put(
   "/:id",
@@ -35,14 +36,12 @@ router.put(
   validateData(updateUserSchema),
   updateUserHandler
 );
-router.post(
-  "/",
+router.delete(
+  "/:id",
   authorize(PERMISSIONS.MANAGE_USERS),
-  uploadFile,
-  validateData(createUserSchema),
-  createUserHandler
+  validateData(getUserSchema),
+  deleteUserHandler
 );
-
 router.put(
   "/:id/role",
   authorize(PERMISSIONS.MANAGE_USERS),

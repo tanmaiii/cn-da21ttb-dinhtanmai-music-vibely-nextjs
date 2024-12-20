@@ -1,6 +1,7 @@
 "use server";
 
 import { Card } from "@/components/Card";
+import { exArtist } from "./data";
 
 const MAX_LIMIT = 16;
 
@@ -30,8 +31,10 @@ export async function fetchData(page: number) {
       data={{
         id: item.id,
         title: item.name,
+        slug: item.name,
         description: item.kind,
         imagePath: `https://shikimori.one/${item.image.original}`,
+        creator: exArtist,
         owner: [
           {
             id: "123123",
@@ -50,9 +53,9 @@ export async function fetchData(page: number) {
         duration: item.score,
         public: true,
         number: item.episodes,
-        listen: item.episodes_aired,
-        followers_count: item.episodes,
-        mood: [
+        listens: item.episodes_aired,
+        likes: item.episodes,
+        moods: [
           {
             id: "123123",
             title: "Happy",

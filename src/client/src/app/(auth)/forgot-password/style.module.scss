@@ -1,0 +1,7 @@
+@use "@/scss/index.module.scss" as *;
+
+.Login {
+  background-color: var(--background-color-2);
+  max-width: 500px;
+  border-radius: $radius-8;
+}
