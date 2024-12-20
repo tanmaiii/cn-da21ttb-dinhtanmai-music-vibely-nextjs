@@ -1,21 +1,11 @@
 @use "@/scss/index.module.scss" as *;
 
-.Register {
-  // width: 500px;
-  // height: max-content;
-  // min-height: 400px;
-  // min-width: 400px;
+.Auth {
   background-color: var(--background-color-2);
   padding: $space-46 $space-32;
   border-radius: $radius-8;
   @include flex(center, center, column);
   box-shadow: var(--box-shadow);
-
-  // @include mobile {
-  //   width: 100%;
-  //   height: 100vh;
-  //   border-radius: 0;
-  // }
 
   &_logo {
     @include flex(center, center, column);
@@ -82,6 +72,7 @@
       padding: $space-16 $space-12;
       border-radius: $radius-4;
       border: 2px solid var(--border-color);
+      background-color: var(--background-color-1);
       @include flex(center, center);
       font-size: $size-18;
       font-weight: $font-medium;

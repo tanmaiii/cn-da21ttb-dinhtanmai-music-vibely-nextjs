@@ -30,7 +30,7 @@
       color: var(--text-color-1);
       background-color: var(--background-color-1);
       outline: none;
-      border: 1px solid transparent;
+      border: 1px solid var(--border-color);
 
       &:focus {
         border: 1px solid var(--primary-color);

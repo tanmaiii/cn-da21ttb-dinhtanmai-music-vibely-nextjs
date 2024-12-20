@@ -1,9 +1,11 @@
 import React from "react";
+import styles from "./style.module.scss";
+import ForgotPassword from "@/components/auth/ForgotPassword";
 
 const ForgotPasswordPage = () => {
   return (
-    <div>
-      <h1>Forgot Password Page</h1>
+    <div className={styles.ForgotPassword}>
+      <ForgotPassword />
     </div>
   );
 };
