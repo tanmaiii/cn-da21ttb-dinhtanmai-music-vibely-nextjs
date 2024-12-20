@@ -13,11 +13,11 @@ erDiagram
         updatedAt datetime
     }
     ROLES {
-        UUID UUID PK
-        name  string
+        id UUID PK
+        name string
     }
     PERMISSIONS {
-        UUID UUID PK
+        id UUID PK
         name string
         description string
     }
@@ -31,7 +31,7 @@ erDiagram
         description string
         imagePath string
         slug string
-        boolean public
+        public boolean
         genreId UUID FK
         userId UUID FK
         deletedAt datetime
@@ -53,7 +53,7 @@ erDiagram
     PLAYLIST_SONG {
         playlistId UUID FK
         songId UUID FK
-        index int 
+        index int
         createdAt datetime
         updatedAt datetime
     }
@@ -78,16 +78,16 @@ erDiagram
         title string
         description string
         slug string
-        int duration
-        song_path string
+        duration int
+        songPath string
         imagePath string
-        lyric_path string
-        boolean public
+        lyricPath string
+        public boolean
         createdAt datetime
         updatedAt datetime
         deletedAt datetime
-        genreId string FK
-        userId string FK
+        genreId UUID FK
+        userId UUID FK
     }
     SONG_LIKES {
         songId UUID FK
@@ -102,7 +102,7 @@ erDiagram
         updatedAt datetime
     }
     SONG_PLAY {
-        playedAt datetime FK
+        playedAt datetime
         songId UUID FK
         userId UUID FK
         createdAt datetime
@@ -111,6 +111,36 @@ erDiagram
     REFRESH_TOKENS {
         id UUID PK
         token string
+        createdAt datetime
+        updatedAt datetime
+    }
+
+    ROOMS {
+        id UUID PK
+        name string
+        description string
+        createdAt datetime
+        updatedAt datetime
+    }
+
+    ROOM_SONG{
+        roomId UUID FK
+        songId UUID FK
+        index int
+    }
+
+    ROOM_MEMBERS {
+        roomId UUID FK
+        userId UUID FK
+        joinedAt datetime
+        role string
+    }
+
+    ROOM_CHATS {
+        id UUID PK
+        roomId UUID FK
+        userId UUID FK
+        content string
         createdAt datetime
         updatedAt datetime
     }
@@ -135,4 +165,11 @@ erDiagram
     PLAYLISTS ||--o{ PLAYLIST_SONG : "playlistId"
     MOODS ||--o{ PLAYLIST_MOOD : "moodId"
     MOODS ||--o{ SONG_MOOD : "moodId"
+
+    ROOMS ||--o{ ROOM_MEMBERS : "id"
+    USERS ||--o{ ROOM_MEMBERS : "userId"
+    ROOMS ||--o{ ROOM_SONG : "id"
+    ROOM_SONG ||--o{ SONGS : "id"
+    ROOMS ||--o{ ROOM_CHATS : "id"
+    USERS ||--o{ ROOM_CHATS : "userId"
 ```

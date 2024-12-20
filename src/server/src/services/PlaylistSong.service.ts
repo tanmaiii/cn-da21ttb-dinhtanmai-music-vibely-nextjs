@@ -11,7 +11,7 @@ export default class PlaylistSongService {
           model: Song,
           attributes: songQueryOptions.attributes as string[],
           include: songQueryOptions.include,
-          order: [["index", "ASC"]],
+          order: [["index", "DESC"]],
         },
       ],
     });
@@ -21,15 +21,15 @@ export default class PlaylistSongService {
     return await PlaylistSong.findOne({ where: { playlistId, songId } });
   };
 
-static addSong = async (playlistSong: Partial<PlaylistSong>) => {
+  static addSong = async (playlistSong: Partial<PlaylistSong>) => {
     const lastSong = await PlaylistSong.findOne({
-        where: { playlistId: playlistSong.playlistId },
-        order: [['index', 'DESC']],
+      where: { playlistId: playlistSong.playlistId },
+      order: [["index", "DESC"]],
     });
 
     const newIndex = lastSong ? lastSong.index + 1 : 1;
     return PlaylistSong.create({ ...playlistSong, index: newIndex });
-};
+  };
 
   static removeSong = (playlistSong: Partial<PlaylistSong>) =>
     PlaylistSong.destroy({ where: playlistSong });
