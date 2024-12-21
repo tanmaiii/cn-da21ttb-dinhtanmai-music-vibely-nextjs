@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardArtist } from "@/components/Card";
 import { MotionDiv } from "@/components/Motion";
 import { SectionOneRow } from "@/components/Section";
@@ -7,25 +5,30 @@ import Slideshow from "@/components/Slideshow";
 import { TrackShort } from "@/components/Track";
 import { paths } from "@/lib/constants";
 import { artists, playlists, songs } from "@/lib/data";
-import { RootState } from "@/lib/store";
 import { fadeIn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import styles from "./root.module.scss";
-import withAuth from "@/hocs/withAuth";
+
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   const { req } = context;
+//   const token = req.cookies.token; // Giả sử token được lưu trong cookies
+
+//   if (!token) {
+//     // Nếu chưa đăng nhập, chuyển hướng đến trang login
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false, // Không phải chuyển hướng vĩnh viễn
+//       },
+//     };
+//   }
+
+//   // Tiếp tục render trang nếu đã đăng nhập
+//   return {
+//     props: {}, // Truyền dữ liệu cho trang nếu cần
+//   };
+// }
 
 const Home = () => {
-  const user = useSelector((state: RootState) => state.user);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!user) {
-      router.push(paths.LOGIN);
-    }
-  }, [user, router]);
-
   return (
     <div className={styles.Home}>
       <Slideshow />
@@ -99,4 +102,4 @@ const Home = () => {
   );
 };
 
-export default withAuth(Home);
+export default Home;

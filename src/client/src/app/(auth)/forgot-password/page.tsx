@@ -1,9 +1,6 @@
-'use client';
-
 import React from "react";
 import styles from "./style.module.scss";
 import ForgotPassword from "@/components/auth/ForgotPassword";
-import withNoAuth from "@/hocs/withNoAuth";
 
 const ForgotPasswordPage = () => {
   return (
@@ -13,4 +10,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default withNoAuth(ForgotPasswordPage);
+export default ForgotPasswordPage;

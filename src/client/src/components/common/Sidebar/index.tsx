@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./style.module.scss";
+import authService from "@/services/auth.service";
 
 interface SidebarProps {
   links: {
@@ -47,7 +48,7 @@ const Sidebar = (props: SidebarProps) => {
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
-    tokenService.clear();
+    authService.logout({ refreshToken: tokenService.refreshToken });
     dispatch(clearUser());
   };
 

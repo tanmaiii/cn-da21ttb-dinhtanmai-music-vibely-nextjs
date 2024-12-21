@@ -47,19 +47,8 @@ export async function login(
 
     const userInfo = await UserService.getById(existAccount.userId);
 
-    const accessToken = TokenUtil.generateAccessToken(userInfo.toJSON());
-    const refreshToken = TokenUtil.generateRefreshToken(existAccount);
-
-    // Lưu refresh token vào db
-    // code
-
-    const exitRefreshToken = await AccountsService.getRefeshTokenById(
-      existAccount.id
-    );
-
-    exitRefreshToken
-      ? AccountsService.updateRefreshToken(existAccount.id, refreshToken)
-      : AccountsService.createRefreshToken(existAccount.id, refreshToken);
+    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
+    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
 
     res.status(StatusCodes.OK).json({
       data: {
@@ -104,7 +93,7 @@ export async function register(
     });
 
     // Tạo account cho user
-    const newAccount = await AccountsService.create({
+    await AccountsService.create({
       userId: newUser.id,
       email,
       password: hashedPassword,
@@ -112,11 +101,8 @@ export async function register(
 
     const userInfo = await UserService.getById(newUser.id);
 
-    const accessToken = TokenUtil.generateAccessToken(userInfo.toJSON());
-    const refreshToken = TokenUtil.generateRefreshToken(newAccount.toJSON());
-
-    // Save refresh token to the database
-    await AccountsService.createRefreshToken(newAccount.id, refreshToken);
+    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
+    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
 
     res.status(StatusCodes.CREATED).json({
       data: {
@@ -181,8 +167,6 @@ export async function refreshToken(
 
     if (refreshToken === existToken.token) {
       const accountInfo = await AccountsService.getById(refreshTokenInfo.id);
-
-      console.log(accountInfo);
 
       if (!accountInfo)
         throw new ApiError(StatusCodes.NOT_FOUND, "Account not found");
@@ -299,15 +283,12 @@ export async function loginGoogle(
 
     const userInfo = await UserService.getById(user.userId);
 
-    if(!userInfo) {
+    if (!userInfo) {
       throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
-    console.log(userInfo);
-
-    const accessToken = TokenUtil.generateAccessToken(userInfo.toJSON());
-
-    const refreshToken = TokenUtil.generateRefreshToken(userInfo.toJSON());
+    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
+    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
 
     res.status(StatusCodes.CREATED).json({
       data: {

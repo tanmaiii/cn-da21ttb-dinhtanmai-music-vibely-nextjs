@@ -1,5 +1,7 @@
 import { userState } from "@/features/userSlice";
 import createHttpClient from "@/lib/createHttpClient";
+import tokenService from "@/lib/tokenService";
+import Cookies from "js-cookie";
 
 // Đăng nhập
 export interface LoginRequestDto {
@@ -66,8 +68,11 @@ class AuthSevices {
   }
 
   async login(body: LoginRequestDto): Promise<LoginResponseDto> {
-    const response = await this.client.post<LoginResponseDto>("/login", body);
-    return response.data;
+    const res = await this.client.post<LoginResponseDto>("/login", body);
+    if (res.data.data.accessToken) {
+      Cookies.set("accessToken", res.data.data.accessToken);
+    }
+    return res.data;
   }
 
   async register(body: RegisterRequestDto): Promise<RegisterResponseDto> {
@@ -92,8 +97,12 @@ class AuthSevices {
     return response.data;
   }
 
-  async logout(body: RefreshTokenResponseDto) {
-    return await this.client.post("/logout", body);
+  async logout(body: RefreshTokenRequestDto) {
+    const res =  await this.client.post("/logout", body);
+    window.location.href = "/";
+    tokenService.clear();
+    console.log(res);
+    return res;
   }
 
   async loginGoogle(body: LoginGoogleRequestDto) {
