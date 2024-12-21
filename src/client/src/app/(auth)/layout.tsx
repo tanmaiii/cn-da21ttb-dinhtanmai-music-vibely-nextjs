@@ -1,19 +1,20 @@
-import React, { useEffect } from "react";
-import styles from "./auth.module.scss";
-import Image from "next/image";
 import { IMAGES, paths } from "@/lib/constants";
-import Link from "next/link";
 import image from "@/public/images/10521038.png";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/router";
-import { RootState } from "@/lib/store";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import styles from "./auth.module.scss";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Đăng nhập | Vibely",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
 
   return (
     <div className={`${styles.AuthLayout} row no-gutters`}>

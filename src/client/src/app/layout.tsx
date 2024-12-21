@@ -10,7 +10,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthProvider from "@/context/authContex";
 
 export const metadata: Metadata = {
-  title: "Trang chủ | Sound",
+  title: "Trang chủ | Vibely",
 };
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_GOOGLE_CLIENT_ID || "";
