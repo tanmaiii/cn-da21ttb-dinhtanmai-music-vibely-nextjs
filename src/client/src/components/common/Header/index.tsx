@@ -1,7 +1,11 @@
 "use client";
 
 import Modal from "@/components/Modal";
-import { ButtonIcon, ButtonIconRound } from "@/components/ui/Button";
+import {
+  ButtonIcon,
+  ButtonIconRound,
+  ButtonLabel,
+} from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useUI } from "@/context/UIContext";
 import { useCustomToast } from "@/hooks/useToast";
@@ -11,6 +15,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import styles from "./style.module.scss";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -20,6 +26,7 @@ const Header = () => {
   const [keyword, setKeyword] = React.useState<string>("");
   const router = useRouter();
   const { toastSuccess } = useCustomToast();
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const body = document.querySelector(".RootLayout_main");
@@ -49,10 +56,6 @@ const Header = () => {
   const handleSearch = (value: string) => {
     setKeyword(value);
     router.push(`${paths.SEARCH}/${value}`);
-  };
-
-  const handleGetData = async () => {
-    router.push(`${paths.LOGIN}`);
   };
 
   return (
@@ -99,20 +102,31 @@ const Header = () => {
             icon={<i className="fa-regular fa-bell"></i>}
             onClick={() => setActiveModal(true)}
           />
-          <div className={`${styles.Header_right_user}`}>
-            <button
-              onClick={handleGetData}
-              className={`${styles.Header_right_user_image}`}
+          {user ? (
+            <div className={`${styles.Header_right_user}`}>
+              <button
+                className={`${styles.Header_right_user_image}`}
+              >
+                <Image
+                  src={profilePic}
+                  alt="avatar"
+                  width={40}
+                  height={40}
+                  quality={50}
+                />
+              </button>
+            </div>
+          ) : (
+            <ButtonLabel
+              className={`${styles.Header_right_BtnLogout}`}
+              size="small"
+              onClick={() => router.push(paths.LOGIN)}
             >
-              <Image
-                src={profilePic}
-                alt="avatar"
-                width={40}
-                height={40}
-                quality={50}
-              />
-            </button>
-          </div>
+              <label htmlFor="">
+                <span>Login</span>
+              </label>
+            </ButtonLabel>
+          )}
         </div>
       </div>
       <Modal show={activeModal} onClose={() => setActiveModal(false)}>

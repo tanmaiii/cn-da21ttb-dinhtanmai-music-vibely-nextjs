@@ -7,38 +7,30 @@ export interface userState {
   name: string;
   email: string;
   role: string;
-  avatar: string;
+  imagePath: string;
 }
 
-export const initialState: userState = {
-  id: "",
-  name: "",
-  email: "",
-  role: "",
-  avatar: "",
-};
+// export const initialState: userState = {
+//   id: "",
+//   name: "",
+//   email: "",
+//   role: "",
+//   imagePath: "",
+// };
 
 export const userSlide = createSlice({
   name: "user",
-  initialState,
+  initialState: null as userState | null,
   reducers: {
-    setUser: (state, action: PayloadAction<userState>) => {
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.role = action.payload.role;
-      state.avatar = action.payload.avatar;
+    setUser: (state, action: PayloadAction<userState | null>) => {
+      state = action.payload;
+      return state;
     },
-    clearUser: (state) => {
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.role = "";
-      state.avatar = "";
+    clearUser: () => {
+      return null;
     },
   },
 });
-
 
 export const { setUser, clearUser } = userSlide.actions;
 

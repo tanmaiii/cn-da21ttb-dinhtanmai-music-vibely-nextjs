@@ -1,3 +1,5 @@
+"use client";
+
 import { setUser } from "@/features/userSlice";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import authService from "@/services/auth.service";
@@ -12,9 +14,9 @@ export default function AuthProvider({
 
   useEffect(() => {
     (async () => {
-      const result = await authService.identify();
-      if (result.data) {
-        dispatch(setUser(result.data));
+      const { data } = await authService.identify();
+      if (data) {
+        dispatch(setUser(data));
       }
     })();
   });

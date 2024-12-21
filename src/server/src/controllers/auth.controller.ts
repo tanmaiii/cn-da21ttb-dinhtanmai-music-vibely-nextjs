@@ -16,6 +16,9 @@ import PasswordUtil from "../utils/passwordUtil";
 import AccountsService from "../services/Accounts.service";
 import RoleService from "../services/Role.service";
 import { ROLES } from "../utils/contants";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GG_CLIENT_ID);
 
 export async function login(
   req: Request<{}, {}, LoginInput["body"]>,
@@ -26,7 +29,7 @@ export async function login(
     const { email, password } = req.body;
 
     const existAccount = await AccountsService.getByEmail(email);
-    
+
     if (existAccount) {
       existAccount.toJSON();
     }
@@ -226,6 +229,93 @@ export async function logout(
 
     res.status(StatusCodes.OK).json({
       message: "Logout successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function loginGoogle(
+  req: Request<{}, {}, { credential: string }>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const token = req.body.credential;
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GG_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Token không hợp lệ");
+    }
+
+    const { email, name, picture, sub: googleId } = payload;
+
+    const user = await AccountsService.getByEmail(payload.email);
+
+    if (!user) {
+      // Lấy role mặc định
+      const defaultRole = await RoleService.getRoleByName(ROLES.USER);
+      // Tạo user
+      const newUser = await UserService.create({
+        name,
+        email,
+        imagePath: picture || "",
+        roleId: defaultRole.id,
+      });
+
+      // Tạo account cho user
+      await AccountsService.create({
+        userId: newUser.id,
+        email,
+        password: "",
+        provider: "google",
+        providerId: googleId,
+      });
+
+      const userInfo = await UserService.getById(newUser.id);
+
+      const accessToken = TokenUtil.generateAccessToken(userInfo.toJSON());
+
+      const refreshToken = TokenUtil.generateRefreshToken(userInfo.toJSON());
+
+      // Save refresh token to the database
+
+      res.status(StatusCodes.CREATED).json({
+        data: {
+          ...userInfo.toJSON(),
+          accessToken,
+          refreshToken,
+        },
+        message: "Register successfully",
+      });
+      return;
+    }
+
+    const userInfo = await UserService.getById(user.userId);
+
+    if(!userInfo) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    console.log(userInfo);
+
+    const accessToken = TokenUtil.generateAccessToken(userInfo.toJSON());
+
+    const refreshToken = TokenUtil.generateRefreshToken(userInfo.toJSON());
+
+    res.status(StatusCodes.CREATED).json({
+      data: {
+        ...userInfo.toJSON(),
+        accessToken,
+        refreshToken,
+      },
+      message: "Register successfully",
     });
   } catch (error) {
     next(error);

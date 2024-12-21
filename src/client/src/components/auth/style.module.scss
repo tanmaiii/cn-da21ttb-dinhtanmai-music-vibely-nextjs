@@ -27,13 +27,24 @@
   &_form {
     flex: 1;
     width: 100%;
+
+    &_error {
+      background-color: $color-error-bg;
+      color: $color-error;
+      font-size: $size-16;
+      font-weight: $font-light;
+      margin: $space-16 0;
+      padding: $space-10 $space-16;
+      border-radius: $radius-4;
+    }
+
     &_forgot {
       width: 100%;
       @include flex(end, end);
       a {
         color: var(--text-color-1);
         font-size: $size-16;
-        font-weight: $font-bold;
+        font-weight: $font-medium;
         text-decoration: none;
         &:hover {
           text-decoration: underline;

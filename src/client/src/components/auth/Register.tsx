@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import styles from "./style.module.scss";
-import FormItem from "./FormItem";
+import { paths } from "@/lib/constants";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
-import { IMAGES, paths } from "@/lib/constants";
-import Image from "next/image";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
+import FormItem from "./FormItem";
+import styles from "./style.module.scss";
+import * as Yup from "yup";
+import { Formik } from "formik";
 
-interface IRegisterProps {
+interface formModel {
   name: string;
   email: string;
   password: string;
@@ -16,78 +18,23 @@ interface IRegisterProps {
 }
 
 const Register = () => {
-  const [formData, setFormData] = useState<IRegisterProps>({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Email không hợp lệ")
+      .required("Email không được để trống"),
+    name: Yup.string().required("Tên không được để trống"),
+    password: Yup.string().required("Mật khẩu không được để trống"),
+    password_confirmation: Yup.string()
+      .required("Không được trống")
+      .equals([Yup.ref("password"), null], "Mật khẩu không khớp"),
   });
-  const [errors, setErrors] = useState<Partial<IRegisterProps>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const handleSuccessLoginGoogle = (credentialResponse: CredentialResponse) => {
+    console.log(credentialResponse);
   };
-
-  const validate = () => {
-    const newErrors: IRegisterProps = {
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-    };
-    let isValid = true;
-
-    if (!formData.name) {
-      newErrors.name = "Name is required";
-      isValid = false;
-    } else if (formData.name.length < 6) {
-      newErrors.name = "Name must be at least 6 characters";
-      isValid = false;
-    }
-
-    // Kiểm tra email
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email not valid";
-      isValid = false;
-    }
-
-    // Kiểm tra mật khẩu
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-      isValid = false;
-    }
-
-    if (!formData.password_confirmation) {
-      newErrors.password_confirmation = "Re-Password is required";
-      isValid = false;
-    } else if (formData.password_confirmation !== formData.password) {
-      newErrors.password_confirmation = "Re-Password not match";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log(formData);
-      toast.success("Register successfully");
-    } else {
-      toast.error("Register failed");
-    }
-  };
+  const submit = async (values: formModel) => {
+    console.log(values);
+  }
 
   return (
     <div className={`${styles.Auth}`}>
@@ -99,56 +46,77 @@ const Register = () => {
         </span>
       </div>
       <div className={`${styles.Auth_form}`}>
-        <FormItem
-          error={errors.name}
-          name="name"
-          placeholder="Name"
-          type="text"
-          value={formData.name}
-          onChangeValue={handleChange}
-        />
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+            password_confirmation: "",
+            name: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={submit}
+        >
+          {({ handleChange, handleSubmit, values, errors }) => (
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <FormItem
+                error={errors.name}
+                name="name"
+                placeholder="Name"
+                type="text"
+                value={values.name}
+                onChangeValue={handleChange}
+              />
 
-        <FormItem
-          error={errors.email}
-          name="email"
-          placeholder="Email"
-          type="text"
-          value={formData.email}
-          onChangeValue={handleChange}
-        />
+              <FormItem
+                error={errors.email}
+                name="email"
+                placeholder="Email"
+                type="text"
+                value={values.email}
+                onChangeValue={handleChange}
+              />
 
-        <FormItem
-          error={errors.password}
-          name="password"
-          placeholder="Password"
-          type="password"
-          value={formData.password}
-          onChangeValue={handleChange}
-        />
+              <FormItem
+                error={errors.password}
+                name="password"
+                placeholder="Password"
+                type="password"
+                value={values.password}
+                onChangeValue={handleChange}
+              />
 
-        <FormItem
-          error={errors.password_confirmation}
-          name="password_confirmation"
-          placeholder="Re-Password"
-          type="password"
-          value={formData.password_confirmation}
-          onChangeValue={handleChange}
-        />
+              <FormItem
+                error={errors.password_confirmation}
+                name="password_confirmation"
+                placeholder="Re-Password"
+                type="password"
+                value={values.password_confirmation}
+                onChangeValue={handleChange}
+              />
+
+              <button type="submit" className={`${styles.Auth_form_button}`}>
+                Register
+              </button>
+            </form>
+          )}
+        </Formik>
 
         <div className={`${styles.Auth_form_forgot}`}>
           <a href="/forgot-password">Forgot password?</a>
         </div>
 
-        <button onClick={handleSubmit} className={`${styles.Auth_form_button}`}>
+        {/* <button onClick={handleSubmit} className={`${styles.Auth_form_button}`}>
           Register
-        </button>
+        </button> */}
 
         <hr />
 
-        <button className={`${styles.Auth_form_button_gg}`}>
-          <Image src={IMAGES.GOOGLE} alt="google" />
-          <span>Register with Google</span>
-        </button>
+        <GoogleLogin
+          onSuccess={(res) => handleSuccessLoginGoogle(res)}
+          onError={() => {
+            toast.error("Login with google failed");
+          }}
+        />
 
         <div className={`${styles.Auth_form_redirect}`}>
           <span>You already have an account?</span>

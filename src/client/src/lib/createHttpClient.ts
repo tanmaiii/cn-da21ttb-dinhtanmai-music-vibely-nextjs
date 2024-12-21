@@ -1,25 +1,12 @@
-// import { RefreshTokenResponseDto } from "@/services/auth.service";
 import axios from "axios";
 import queryString from "query-string";
 import tokenService from "./tokenService";
 
-// const refreshToken = async () => {
-//   try {
-//     const res = await axios.post<RefreshTokenResponseDto>(
-//       `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
-//       {
-//         withcredentials: true,
-//       }
-//     );
-//     return res.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const createHttpClient = (baseurl: string) => {
   const httpClient = axios.create({
-    baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/${baseurl}`,
+    baseURL: `${API}/${baseurl}`,
     timeout: 10000,
     paramsSerializer: (params) => queryString.stringify(params),
   });

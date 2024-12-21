@@ -1,8 +1,8 @@
 "use client";
-import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { HeaderPage } from "@/components/HeaderPage";
 import Table from "@/components/TablePlaylist";
 import { TrackArtist } from "@/components/Track";
+import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { navSongPage } from "@/lib/constants";
 import { artists, lyrics, songs } from "@/lib/data";
 import React, { useEffect } from "react";
@@ -14,6 +14,10 @@ const SongPage = () => {
   const [isLoad, setIsLoad] = React.useState(true);
 
   const [nav, setNav] = React.useState(navSongPage[0].name);
+
+  useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_API_GOOGLE_CLIENT_SECRET);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {

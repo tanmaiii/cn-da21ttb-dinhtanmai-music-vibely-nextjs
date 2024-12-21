@@ -3,8 +3,13 @@ import createHttpClient from "@/lib/createHttpClient";
 
 // Đăng nhập
 export interface LoginRequestDto {
-  username: string;
+  email: string;
   password: string;
+}
+
+export interface LoginGoogleRequestDto {
+  clientId: string;
+  credential: string;
 }
 
 export interface LoginResponseDto {
@@ -12,6 +17,11 @@ export interface LoginResponseDto {
     accessToken: string;
     refreshToken: string;
   };
+  message: string;
+}
+
+export interface ValidationeResponseDto {
+  data: userState;
   message: string;
 }
 
@@ -46,7 +56,7 @@ class AuthSevices {
   private client;
 
   constructor() {
-    this.client = createHttpClient("api/song");
+    this.client = createHttpClient("api/auth");
   }
 
   async test(stringId: string) {
@@ -68,7 +78,8 @@ class AuthSevices {
 
   // Kiểm tra token
   async identify(): Promise<CheckUserRequestDto> {
-    return await this.client.get("/validate");
+    const response = await this.client.get<ValidationeResponseDto>("/validate");
+    return response.data;
   }
 
   async refreshToken(body: RefreshTokenRequestDto) {
@@ -81,6 +92,14 @@ class AuthSevices {
 
   async logout(body: RefreshTokenResponseDto) {
     return await this.client.post("/logout", body);
+  }
+
+  async loginGoogle(body: LoginGoogleRequestDto) {
+    const response = await this.client.post<LoginResponseDto>(
+      "/login-google",
+      body
+    );
+    return response.data;
   }
 }
 

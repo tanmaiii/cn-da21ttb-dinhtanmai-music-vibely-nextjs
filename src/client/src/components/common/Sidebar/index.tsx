@@ -1,12 +1,16 @@
 "use client";
 
 import { useUI } from "@/context/UIContext";
+import { clearUser } from "@/features/userSlice";
 import { IMAGES, paths } from "@/lib/constants";
+import { RootState } from "@/lib/store";
+import tokenService from "@/lib/tokenService";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./style.module.scss";
-import Image from "next/image";
 
 interface SidebarProps {
   links: {
@@ -25,6 +29,8 @@ const Sidebar = (props: SidebarProps) => {
   const [pathnameActive, setPathnameActive] = React.useState("");
   const pathname = usePathname();
   const { isSidebarOpen, toggleSidebar, theme, toggleDarkMode } = useUI();
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // const pathParts = pathname.split("/");
@@ -39,6 +45,11 @@ const Sidebar = (props: SidebarProps) => {
       setActive(false);
     }
   }, [isSidebarOpen]);
+
+  const handleLogout = () => {
+    tokenService.clear();
+    dispatch(clearUser());
+  };
 
   return (
     <>
@@ -94,6 +105,16 @@ const Sidebar = (props: SidebarProps) => {
             )}
             <h4>Theme</h4>
           </div>
+          {user && (
+            <div
+              className={`${styles.Sidebar_footer_button}`}
+              data-tooltip={"Logout"}
+              onClick={handleLogout}
+            >
+              <i className="fa-light fa-right-from-bracket"></i>
+              <h4>Logout</h4>
+            </div>
+          )}
           <div
             className={`${styles.Sidebar_footer_button}`}
             onClick={() => toggleSidebar()}
