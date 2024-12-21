@@ -20,7 +20,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log(CLIENT_ID);
 
   return (
     <html>

@@ -30,11 +30,13 @@ export interface RegisterRequestDto {
   name: string;
   email: string;
   password: string;
+  password_confirmation: string;
 }
 
 export interface RegisterResponseDto {
   data: userState & {
-    accescToken: string;
+    accessToken: string;
+    refreshToken: string;
   };
   message: string;
 }

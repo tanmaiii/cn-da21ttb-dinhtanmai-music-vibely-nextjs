@@ -13,65 +13,36 @@ import { useDispatch } from "react-redux";
 import { LoginGoogleRequestDto } from "../../services/auth.service";
 import FormItem from "./FormItem";
 import styles from "./style.module.scss";
+import * as Yup from "yup";
+import { Formik } from "formik";
 
 const Login = () => {
-  const router = useRouter();
-  const dispath = useDispatch();
   const [error, setError] = useState<string>("");
-  const [formData, setFormData] = useState<LoginRequestDto>({
-    email: "",
-    password: "",
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Email not valid").required("Email not empty"),
+    password: Yup.string()
+      .required("Password not empty")
+      .min(6, "Password must be at least 6 characters"),
   });
 
-  const [errors, setErrors] = useState<Partial<LoginRequestDto>>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const validate = () => {
-    const newErrors: LoginRequestDto = { email: "", password: "" };
-    let isValid = true;
-
-    // Kiểm tra email
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email not valid";
-      isValid = false;
-    }
-
-    // Kiểm tra mật khẩu
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const submit = async (values: LoginRequestDto) => {
+    if(loading) return;
+    setLoading(true);
     try {
-      const { data } = await authService.login(formData);
+      const { data } = await authService.login(values);
       tokenService.accessToken = data.accessToken;
       tokenService.refreshToken = data.refreshToken;
-      dispath(setUser(data));
+      dispatch(setUser(data));
       router.push("/");
       toast.success("Login successfully");
     } catch (err: unknown) {
       console.error(err);
       setError((err as Error)?.message || "Login failed");
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -86,15 +57,14 @@ const Login = () => {
       const { data } = await authService.loginGoogle(res);
       tokenService.accessToken = data.accessToken;
       tokenService.refreshToken = data.refreshToken;
-      dispath(setUser(data));
-      router.push("/"); 
+      dispatch(setUser(data));
+      router.push("/");
       toast.success("Login successfully");
     } catch (err: unknown) {
       console.error(err);
       setError((err as Error)?.message || "Login failed");
     }
   };
-
 
   return (
     <div className={`${styles.Auth}`}>
@@ -107,27 +77,45 @@ const Login = () => {
       </div>
       <div className={`${styles.Auth_form}`}>
         {error && <div className={`${styles.Auth_form_error}`}>{error}</div>}
-        <FormItem
-          name={"email"}
-          onChangeValue={handleChange}
-          placeholder="Email"
-          type="text"
-          error={errors.email}
-        />
-        <FormItem
-          name={"password"}
-          onChangeValue={handleChange}
-          placeholder="Password"
-          type="password"
-          error={errors.password}
-        />
-        <div className={`${styles.Auth_form_forgot}`}>
-          <a href="/forgot-password">Forgot password?</a>
-        </div>
-        <button onClick={handleSubmit} className={`${styles.Auth_form_button}`}>
-          Login
-        </button>
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+          }}
+          validationSchema={validationSchema}
+          validateOnChange={false} // Chỉ thực hiện validation khi blur
+          validateOnBlur={true} // Bật validation khi rời khỏi ô input
+          onSubmit={submit}
+        >
+          {({ handleChange, handleSubmit, values, errors }) => (
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <FormItem
+                error={errors.email}
+                name="email"
+                placeholder="Email"
+                type="text"
+                value={values.email}
+                onChangeValue={handleChange}
+              />
+              <FormItem
+                error={errors.password}
+                name="password"
+                placeholder="Password"
+                type="password"
+                value={values.password}
+                onChangeValue={handleChange}
+              />
+              <div className={`${styles.Auth_form_forgot}`}>
+                <a href="/forgot-password">Forgot password?</a>
+              </div>
 
+              <button type="submit" className={`${styles.Auth_form_button}`}>
+                Login
+              </button>
+            </form>
+          )}
+        </Formik>
+ 
         <hr />
 
         <GoogleLogin

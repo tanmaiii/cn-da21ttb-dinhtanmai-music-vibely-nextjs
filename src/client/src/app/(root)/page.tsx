@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardArtist } from "@/components/Card";
 import { MotionDiv } from "@/components/Motion";
 import { SectionOneRow } from "@/components/Section";
@@ -5,10 +7,25 @@ import Slideshow from "@/components/Slideshow";
 import { TrackShort } from "@/components/Track";
 import { paths } from "@/lib/constants";
 import { artists, playlists, songs } from "@/lib/data";
+import { RootState } from "@/lib/store";
 import { fadeIn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import styles from "./root.module.scss";
+import withAuth from "@/hocs/withAuth";
 
 const Home = () => {
+  const user = useSelector((state: RootState) => state.user);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push(paths.LOGIN);
+    }
+  }, [user, router]);
+
   return (
     <div className={styles.Home}>
       <Slideshow />
@@ -82,4 +99,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);

@@ -1,5 +1,7 @@
+"use client";
+
 import Register from "@/components/auth/Register";
-import React from "react";
+import withNoAuth from "@/hocs/withNoAuth";
 import style from "./style.module.scss";
 
 const RegisterPage = () => {
@@ -10,4 +12,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default withNoAuth(RegisterPage);

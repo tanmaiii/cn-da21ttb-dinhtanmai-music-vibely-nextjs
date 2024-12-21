@@ -1,40 +1,78 @@
 "use client";
 
+import { setUser } from "@/features/userSlice";
 import { paths } from "@/lib/constants";
+import tokenService from "@/lib/tokenService";
+import authService, {
+  LoginGoogleRequestDto,
+  RegisterRequestDto,
+} from "@/services/auth.service";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { Formik } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import * as Yup from "yup";
 import FormItem from "./FormItem";
 import styles from "./style.module.scss";
-import * as Yup from "yup";
-import { Formik } from "formik";
-
-interface formModel {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
 
 const Register = () => {
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Email không hợp lệ")
-      .required("Email không được để trống"),
-    name: Yup.string().required("Tên không được để trống"),
-    password: Yup.string().required("Mật khẩu không được để trống"),
+    name: Yup.string()
+      .required("Name not empty")
+      .min(6, "Name must be at least 6 characters"),
+    email: Yup.string().email("Email not valid").required("Email not empty"),
+    password: Yup.string()
+      .required("Password not empty")
+      .min(6, "Password must be at least 6 characters"),
     password_confirmation: Yup.string()
-      .required("Không được trống")
-      .equals([Yup.ref("password"), null], "Mật khẩu không khớp"),
+      .required("Password confirmation not empty")
+      .equals([Yup.ref("password"), null], "Password confirmation not match"),
   });
 
-  const handleSuccessLoginGoogle = (credentialResponse: CredentialResponse) => {
-    console.log(credentialResponse);
+  const handleSuccessLoginGoogle = async (
+    credentialResponse: CredentialResponse
+  ) => {
+    try {
+      const res: LoginGoogleRequestDto = {
+        credential: credentialResponse?.credential || "",
+        clientId: credentialResponse?.clientId || "",
+      };
+      const { data } = await authService.loginGoogle(res);
+      tokenService.accessToken = data.accessToken;
+      tokenService.refreshToken = data.refreshToken;
+      dispatch(setUser(data));
+      router.push("/");
+      toast.success("Login successfully");
+    } catch (err: unknown) {
+      console.error(err);
+      setError((err as Error)?.message || "Login failed");
+    }
   };
-  const submit = async (values: formModel) => {
-    console.log(values);
-  }
+
+  const submit = async (values: RegisterRequestDto) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const { data } = await authService.register(values);
+      tokenService.accessToken = data.accessToken;
+      tokenService.refreshToken = data.refreshToken;
+      toast.success("Register success");
+      dispatch(setUser(data));
+      router.push(paths.HOME);
+    } catch (error: unknown) {
+      console.error(error);
+      setError((error as Error)?.message || "Register failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={`${styles.Auth}`}>
@@ -46,6 +84,7 @@ const Register = () => {
         </span>
       </div>
       <div className={`${styles.Auth_form}`}>
+        {error && <div className={`${styles.Auth_form_error}`}>{error}</div>}
         <Formik
           initialValues={{
             email: "",
@@ -54,6 +93,8 @@ const Register = () => {
             name: "",
           }}
           validationSchema={validationSchema}
+          validateOnChange={false} // Chỉ thực hiện validation khi blur
+          validateOnBlur={true} // Bật validation khi rời khỏi ô input
           onSubmit={submit}
         >
           {({ handleChange, handleSubmit, values, errors }) => (
@@ -94,20 +135,16 @@ const Register = () => {
                 onChangeValue={handleChange}
               />
 
+              <div className={`${styles.Auth_form_forgot}`}>
+                <a href="/forgot-password">Forgot password?</a>
+              </div>
+
               <button type="submit" className={`${styles.Auth_form_button}`}>
                 Register
               </button>
             </form>
           )}
         </Formik>
-
-        <div className={`${styles.Auth_form_forgot}`}>
-          <a href="/forgot-password">Forgot password?</a>
-        </div>
-
-        {/* <button onClick={handleSubmit} className={`${styles.Auth_form_button}`}>
-          Register
-        </button> */}
 
         <hr />
 

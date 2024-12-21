@@ -1,5 +1,7 @@
+"use client";
+
 import Login from "@/components/auth/Login";
-import React from "react";
+import withNoAuth from "@/hocs/withNoAuth";
 import styles from "./style.module.scss";
 
 const LoginPage = () => {
@@ -10,4 +12,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withNoAuth(LoginPage);

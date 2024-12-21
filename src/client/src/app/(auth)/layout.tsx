@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./auth.module.scss";
 import Image from "next/image";
 import { IMAGES, paths } from "@/lib/constants";
 import Link from "next/link";
 import image from "@/public/images/10521038.png";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { RootState } from "@/lib/store";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <div className={`${styles.AuthLayout} row no-gutters`}>
       <Link href={paths.HOME} className={`${styles.AuthLayout_logo}`}>
