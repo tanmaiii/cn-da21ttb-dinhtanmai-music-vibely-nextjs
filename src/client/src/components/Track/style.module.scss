@@ -301,7 +301,7 @@
             text-decoration: underline;
           }
         }
-        
+
         p {
           @include text(1);
           color: var(--text-color-2);
@@ -349,7 +349,7 @@
 }
 
 .TrackArtist {
-  width: 100%;
+  // width: 100%;
   &_swapper {
     @include flex(center, space-between, row);
     padding: $space-12 $space-8;
@@ -363,7 +363,8 @@
     &:hover {
       background-color: $color-hover;
       .TrackArtist_swapper_right {
-        display: flex
+        // visibility: visible;
+        display: block;
       }
     }
 
@@ -408,7 +409,9 @@
         }
       }
     }
+
     &_right {
+      // visibility: hidden;
       display: none;
       .item_hover {
         @include flex(center, center, row);

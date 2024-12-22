@@ -49,7 +49,6 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
-    console.log("toggleDarkMode", newTheme);
     localStorage.setItem("theme", newTheme);
   };
 

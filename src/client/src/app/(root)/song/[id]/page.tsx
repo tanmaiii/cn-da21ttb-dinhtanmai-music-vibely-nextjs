@@ -16,10 +16,6 @@ const SongPage = () => {
   const [nav, setNav] = React.useState(navSongPage[0].name);
 
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_API_GOOGLE_CLIENT_SECRET);
-  }, []);
-
-  useEffect(() => {
     setTimeout(() => {
       setIsLoad(false);
     }, 3000);
@@ -88,7 +84,7 @@ const SongPage = () => {
                 className={`${styles.SongPage_content_body_about_author} row`}
               >
                 {artists.slice(0, 5).map((_, index) => (
-                  <div key={index} className="col pc-3">
+                  <div key={index} className="col pc-3 t-4 m-6">
                     <TrackArtist artist={_} />
                   </div>
                 ))}
