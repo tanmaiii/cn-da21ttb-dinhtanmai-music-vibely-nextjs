@@ -13,7 +13,7 @@ const EditPlaylist = () => {
   const [form, setForm] = React.useState({
     title: "",
     description: "",
-    imagePath: "https://picsum.photos/900/900",
+     imagePath:  "",
   });
   const [imageFile, setImageFile] = React.useState<File | null>(null);
 

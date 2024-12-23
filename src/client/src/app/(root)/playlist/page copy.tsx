@@ -1,26 +1,22 @@
 "use client";
-import { Card } from "@/components/Card";
+import { ButtonIcon } from "@/components/ui/Button";
+import LoadMore from "@/components/LoadMore";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
-import { ButtonIcon } from "@/components/ui/Button";
-import playlistService from "@/services/playlist.service";
-import { IPlaylist } from "@/types";
+import { fetchData } from "@/lib/api";
 import React, { useEffect } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
 
 const PlaylistPage = () => {
-  const [data, setData] = React.useState<IPlaylist[] | null>(null);
-  // const [page, setPage] = React.useState(1);
-  // const [totalPage, setTotalPage] = React.useState(1);
+  const [data, setData] = React.useState(null);
   const [isLoad, setIsLoad] = React.useState(true);
   const [active, setActive] = React.useState("All");
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const res = await playlistService.getAll({ page: 1 });
-      setData(res.data.data);
+      const result = await fetchData(1);
+      setData(result);
     };
 
     fetchDataAsync();
@@ -57,10 +53,8 @@ const PlaylistPage = () => {
       ) : (
         <div className={`${styles.PlaylistPage_body} row no-gutters`}>
           <Section>
-            {data.map((item: IPlaylist, index: number) => (
-              <Card key={index} data={item} />
-            ))}
-            <LoadMorePlaylist />
+            {data}
+            <LoadMore fetch={fetchData} />
           </Section>
         </div>
       )}
@@ -69,3 +63,4 @@ const PlaylistPage = () => {
 };
 
 export default PlaylistPage;
+

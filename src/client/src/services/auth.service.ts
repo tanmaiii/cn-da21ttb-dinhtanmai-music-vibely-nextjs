@@ -1,7 +1,6 @@
 import { userState } from "@/features/userSlice";
 import createHttpClient from "@/lib/createHttpClient";
 import tokenService from "@/lib/tokenService";
-import Cookies from "js-cookie";
 
 // Đăng nhập
 export interface LoginRequestDto {
@@ -69,9 +68,6 @@ class AuthSevices {
 
   async login(body: LoginRequestDto): Promise<LoginResponseDto> {
     const res = await this.client.post<LoginResponseDto>("/login", body);
-    if (res.data.data.accessToken) {
-      Cookies.set("accessToken", res.data.data.accessToken);
-    }
     return res.data;
   }
 

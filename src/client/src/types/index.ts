@@ -1,3 +1,10 @@
+import IPlaylist from "./playlist.type";
+import ISong from "./song.type";
+
+export type { default as ISong } from "./song.type";
+export type { default as IPlaylist } from "./playlist.type";
+export type { ListResponse, ResponseAPI, QueryParams } from "./common.type";
+
 export interface IMood {
   id: string;
   title: string;
@@ -10,48 +17,17 @@ export interface IPrivacy {
   description: string;
 }
 
-export interface ISong {
-  id: string;
-  title: string;
-  slug?: string; // URL
-  description: string;
-  imagePath?: string;
-  genre?: IGenre; // Thể loại
-  owner: IArtist[]; // Tác giả
-  creator: IArtist; // Người tạo
-  createdAt: string;
-  duration: string; // 00:00
-  public: boolean; // Công khai
-  number?: number; // Số thứ tự trong playlist
-  listens: number; // Lượt nghe
-  likes: number; // Lượt thích
-  moods?: IMood[]; // Tâm trạng
-}
 
 export interface IRoom {
   id: string;
   title: string;
   description: string;
-  imagePath: string;
+  imagePath?: string;
   public: boolean;
   max_user: number;
   creator: IArtist;
 }
 
-export interface IPlaylist {
-  id: string;
-  title: string;
-  slug?: string; // URL
-  description: string;
-  imagePath: string;
-  genre?: IGenre;
-  creator: IArtist;
-  createdAt: string;
-  public: boolean;
-  total: number;
-  likes: number;
-  moods?: IMood[];
-}
 
 export interface IArtist {
   id: string;
@@ -82,6 +58,6 @@ export interface IGenre {
   id: string;
   title: string;
   description: string;
-  imagePath: string;
+  imagePath?: string;
   color: string;
 }

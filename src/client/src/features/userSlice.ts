@@ -13,13 +13,6 @@ export interface userState {
   imagePath: string;
 }
 
-// export const initialState: userState = {
-//   id: "",
-//   name: "",
-//   email: "",
-//   role: "",
-//   imagePath: "",
-// };
 
 export const userSlide = createSlice({
   name: "user",

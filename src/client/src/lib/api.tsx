@@ -33,19 +33,19 @@ export async function fetchData(page: number) {
         title: item.name,
         slug: item.name,
         description: item.kind,
-        imagePath: `https://shikimori.one/${item.image.original}`,
+        imagePath: '',
         creator: exArtist,
         owner: [
           {
             id: "123123",
             name: "Tấn Mãi",
-            imagePath: "https://shikimori.one/avatars/original/123123.jpg",
+            imagePath:'',
             followers: 1000, // Add the missing followers property
           },
           {
             id: "123123",
             name: "Sơn Tùng M-TP",
-            imagePath: "https://shikimori.one/avatars/original/123123.jpg",
+            imagePath:'',
             followers: 1000, // Add the missing followers property
           },
         ],

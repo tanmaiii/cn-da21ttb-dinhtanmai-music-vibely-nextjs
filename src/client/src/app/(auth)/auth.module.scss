@@ -5,7 +5,7 @@
   min-height: 100vh;
   min-width: 100vw;
   @include flex(center, center, row);
-  background-color: antiquewhite;
+  // background-color: antiquewhite;
   &_logo {
     position: absolute;
     top: 20px;
@@ -21,26 +21,27 @@
     h2 {
       font-size: $size-30;
       font-weight: $font-bold;
-      color: $color-black-2;
+      // color: $color-black-2;
+      color: var(--text-color-1);
     }
   }
   &_image {
-    background-color: antiquewhite;
+    // background-color: antiquewhite;
     height: 100vh;
     @include flex(center, center, column);
     gap: $space-8;
     &_text {
       text-align: center;
-      color: $color-light-text-1;
+      color: var(--text-color-1);
       max-width: 600px;
       h1 {
+        color: var(--text-color-1);
         font-size: $size-30;
         font-weight: $font-bold;
-        color: $color-black-2;
       }
       span {
+        color: var(--text-color-2);
         font-size: $size-16;
-        color: $color-light-text-2;
       }
     }
     img {
@@ -54,7 +55,6 @@
     }
   }
   &_main {
-    background-color: antiquewhite;
     flex: 1;
     @include flex(center, center);
   }

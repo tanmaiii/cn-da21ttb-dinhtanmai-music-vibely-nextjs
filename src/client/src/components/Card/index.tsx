@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import { ButtonIconRound } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
 import { IMAGES, paths } from "@/lib/constants";
-import { formatNumber, isSongData } from "@/lib/utils";
+import { apiImage, formatNumber, isSongData } from "@/lib/utils";
 import avatarExample from "@/public/images/anime.jpg";
 import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
@@ -72,7 +72,7 @@ const Card = (props: Props) => {
   const classNameCol = useClassNameCol();
   const { togglePlayingBar, isPlayingBar } = useUI();
   const isSong = data && isSongData(data);
-  const link = path || `${isSong ? paths.SONG : paths.PAYLIST}/${data?.id}`;
+  const link = path || `${isSong ? paths.SONG : paths.PAYLIST}/${data?.slug}`;
 
   const handlePlay = () => {
     if (!isPlayingBar) {
@@ -103,7 +103,9 @@ const Card = (props: Props) => {
               <Skeleton height={"100%"} />
             ) : (
               <Image
-                src={data?.imagePath || IMAGES.SONG}
+                src={
+                  (data.imagePath && apiImage(data.imagePath)) || IMAGES.SONG
+                }
                 alt="image.png"
                 width={200}
                 height={200}

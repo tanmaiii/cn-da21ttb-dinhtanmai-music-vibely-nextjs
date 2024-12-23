@@ -150,3 +150,8 @@ export function formatFileSize(size: number): string {
   // Trả về chuỗi với 2 chữ số thập phân
   return `${parseFloat(size.toFixed(2))} ${units[index]}`;
 }
+
+
+export function apiImage(path: string) {
+  return `${process.env.NEXT_PUBLIC_API_URL}/image/${path}`;
+}
