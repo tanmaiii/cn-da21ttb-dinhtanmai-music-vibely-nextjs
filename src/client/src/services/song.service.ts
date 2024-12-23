@@ -1,5 +1,5 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { ISong, ListResponse, ResponseAPI } from "@/types";
+import { ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
 
 class SongService {
   private client;
@@ -8,8 +8,12 @@ class SongService {
     this.client = createHttpClient("api/song");
   }
 
-  async getAllSong(): Promise<ResponseAPI<ListResponse<ISong>>> {
-    const res = await this.client.get<ResponseAPI<ListResponse<ISong>>>("/");
+  async getAllSong(
+    params: QueryParams
+  ): Promise<ResponseAPI<ListResponse<ISong>>> {
+    const res = await this.client.get<ResponseAPI<ListResponse<ISong>>>("", {
+      params,
+    });
     return res.data;
   }
 

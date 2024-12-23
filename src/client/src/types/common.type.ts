@@ -17,6 +17,8 @@ export interface ResponseAPI<T> {
 export interface QueryParams {
   page?: number;
   limit?: number;
-  sort?: "newest" | "oldest" | "mostLikes" | "mostListens";
+  sort?: ISort;
   keyword?: string;
 }
+
+export type ISort = "newest" | "oldest" | "mostLikes" | "mostListens";

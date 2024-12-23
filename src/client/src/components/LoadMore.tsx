@@ -5,12 +5,10 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
 import loader from "@/public/images/spinner.svg";
 
-let page = 2;
-
 export type Card = JSX.Element;
 
 interface LoadMoreProps {
-  fetch: (page: number) => Promise<Card[]>;
+  fetch: () => Card[];
 }
 
 function LoadMore({ fetch }: LoadMoreProps) {
@@ -25,10 +23,11 @@ function LoadMore({ fetch }: LoadMoreProps) {
       const delay = 500;
 
       const timeoutId = setTimeout(() => {
-        fetch(page).then((res) => {
+        const res = fetch();
+
+        if (res) {
           setData([...data, ...res]);
-          page++;
-        });
+        }
 
         setIsLoading(false);
       }, delay);

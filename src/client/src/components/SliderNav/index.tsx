@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import styles from "./style.module.scss";
+import { ISort } from "@/types";
 
 interface nav {
   id: number;
   name: string;
-  value: string;
+  value: ISort;
 }
 
 interface Props {
   listNav: nav[];
-  active: string;
-  setActive: (value: string) => void;
+  active: ISort;
+  setActive: (value: ISort) => void;
 }
 
 const SliderNav = (props: Props) => {

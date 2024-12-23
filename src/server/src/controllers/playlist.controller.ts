@@ -25,7 +25,7 @@ export const getAllPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { limit = 10, page = 1, keyword, sort } = req.query;
+    const { limit = 4, page = 1, keyword, sort } = req.query;
 
     const userId = get(req, "identity.id") as string;
 

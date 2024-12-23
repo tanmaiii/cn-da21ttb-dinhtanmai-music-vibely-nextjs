@@ -3,7 +3,7 @@ import ISong from "./song.type";
 
 export type { default as ISong } from "./song.type";
 export type { default as IPlaylist } from "./playlist.type";
-export type { ListResponse, ResponseAPI, QueryParams } from "./common.type";
+export type { ListResponse, ResponseAPI, QueryParams, ISort } from "./common.type";
 
 export interface IMood {
   id: string;
