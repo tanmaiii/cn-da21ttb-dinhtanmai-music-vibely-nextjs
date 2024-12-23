@@ -289,9 +289,10 @@
 
       &_desc {
         width: 100%;
-        @include text(1);
+        // @include text(1);
 
         h4 {
+          @include text(1);
           font-size: $size-16;
           font-weight: $font-medium;
           color: var(--text-color-1);

@@ -3,6 +3,7 @@ import {
   addSongToPlaylistHandler,
   createPlaylistHandler,
   getAllPlaylistHandler,
+  getPlaylistBySlugHandler,
   getPlaylistHandler,
   getSongInPlaylistHandler,
   likePlaylistHandler,
@@ -16,6 +17,7 @@ import {
   createPlaylistSchema,
   getAllPlaylistSchema,
   getPlaylistSchema,
+  getPlaylistSlugSchema,
   likePlaylistSchema,
   unLikePlaylistSchema,
   updatePlaylistSchema,
@@ -26,6 +28,7 @@ const router: Router = Router();
 
 router.get("/", validateData(getAllPlaylistSchema), getAllPlaylistHandler);
 router.get("/:id", validateData(getPlaylistSchema), getPlaylistHandler);
+router.get("/:slug/slug", validateData(getPlaylistSlugSchema), getPlaylistBySlugHandler);
 router.post(
   "/",
   authorize(PERMISSIONS.CREATE_PLAYLIST),

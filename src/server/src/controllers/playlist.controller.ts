@@ -6,6 +6,7 @@ import {
   CreatePlaylistInput,
   GetAllPlaylistInput,
   GetPlaylistInput,
+  GetPlaylistSlugInput,
   likePlaylistInput,
   unLikePlaylistInput,
   UpdatePlaylistInput,
@@ -18,6 +19,7 @@ import { getFilePath, SortOptions } from "../utils/commonUtils";
 import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
 import PlaylistSongService from "../services/PlaylistSong.service";
+import { IIdentity } from "../middleware/auth.middleware";
 
 export const getAllPlaylistHandler = async (
   req: Request<{}, GetAllPlaylistInput["query"], {}>,
@@ -66,6 +68,25 @@ export const getPlaylistHandler = async (
     next(error);
   }
 };
+
+export const getPlaylistBySlugHandler = async (
+  req: Request<GetPlaylistSlugInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+    const playlist = await PlaylistService.getBySlug(req.params.slug, userInfo.id);
+
+    if (!playlist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
+    }
+
+    res.json({ data: playlist, message: "Get playlist successfully" });
+  } catch (error) {
+    next(error);
+  }
+}
 
 export const createPlaylistHandler = async (
   req: Request<{}, {}, CreatePlaylistInput["body"]>,

@@ -1,5 +1,5 @@
 import { IMAGES, paths } from "@/lib/constants";
-import { formatNumber, fromatImg, isSongData } from "@/lib/utils";
+import { apiImage, formatImg, formatNumber, isSongData } from "@/lib/utils";
 import { IArtist, IPlaylist, ISong } from "@/types";
 import moment from "moment";
 import Image from "next/image";
@@ -25,7 +25,7 @@ const HeaderPage = (props: Props) => {
             className={`${styles.HeaderPage_blur_bgAlpha}`}
             style={{
               backgroundImage: `url(${
-                data?.imagePath ? fromatImg(data?.imagePath) : ""
+                data?.imagePath ? formatImg(apiImage(data?.imagePath)) : ""
               })`,
             }}
           ></div>
@@ -39,7 +39,9 @@ const HeaderPage = (props: Props) => {
           ) : (
             <>
               <Image
-                src={data?.imagePath || IMAGES.SONG}
+                src={
+                  (data?.imagePath && apiImage(data?.imagePath)) || IMAGES.SONG
+                }
                 width={200}
                 height={200}
                 alt=""
@@ -83,12 +85,16 @@ const HeaderPage = (props: Props) => {
             <div className={`${styles.info_desc}`}>
               <div className={`${styles.info_desc_author}`}>
                 <Image
-                  src={data?.creator.imagePath || IMAGES.AVATAR}
+                  src={
+                    (data?.creator?.imagePath &&
+                      apiImage(data?.creator?.imagePath)) ||
+                    IMAGES.AVATAR
+                  }
                   width={20}
                   height={20}
                   alt="image.png"
                 />
-                <Link href={`${paths.ARTIST}/${"123"}`}>
+                <Link href={`${paths.ARTIST}/${data?.creator?.slug}`}>
                   {data?.creator.name}
                 </Link>
               </div>
@@ -98,16 +104,16 @@ const HeaderPage = (props: Props) => {
                   <span>{moment(data?.createdAt).format("YYYY")}</span>
                 </div>
               )}
-              {isSong && data?.listens && (
+              {isSong && data?.listens > 0 && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-light fa-headphones"></i>
-                  <span>{formatNumber(data?.listens)}</span>
+                  <span>{formatNumber(data?.listens)} listens</span>
                 </div>
               )}
               {data?.likes > 0 && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-light fa-heart"></i>
-                  <span>{formatNumber(data?.likes)}</span>
+                  <span>{formatNumber(data?.likes)} likes</span>
                 </div>
               )}
               {!isSong && data?.total && (
@@ -139,7 +145,7 @@ const HeaderPageArtist = (props: ArtistProps) => {
           className={`${styles.HeaderPageArtist_blur_bgAlpha}`}
           style={{
             backgroundImage: `url(${
-              artist.imagePath ? fromatImg(artist.imagePath) : ""
+              artist.imagePath ? formatImg(apiImage(artist?.imagePath)) : ""
             })`,
           }}
         ></div>
@@ -147,7 +153,10 @@ const HeaderPageArtist = (props: ArtistProps) => {
       <div className={`${styles.HeaderPageArtist_body}`}>
         <div className={`${styles.HeaderPageArtist_body_avatar}`}>
           <Image
-            src={artist?.imagePath || IMAGES.AVATAR}
+            src={
+              (artist?.imagePath && apiImage(artist?.imagePath)) ||
+              IMAGES.AVATAR
+            }
             width={90}
             height={90}
             alt="avatar"
@@ -155,8 +164,7 @@ const HeaderPageArtist = (props: ArtistProps) => {
         </div>
         <div className={`${styles.HeaderPageArtist_body_info}`}>
           <p>
-            <span>Genres</span>
-            <span>2021</span>
+            <span>Artist</span>
           </p>
           <h4
             style={{
@@ -165,23 +173,22 @@ const HeaderPageArtist = (props: ArtistProps) => {
           >
             {artist?.name}
           </h4>
-          {/* <span>{artist?.desc}</span> */}
           <div className={`${styles.HeaderPageArtist_body_info_desc}`}>
-            <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
-              <i className="fa-light fa-clock"></i>
-              <span>{moment(100).format("YYYY")}</span>
-            </div>
-            <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
+            {/* <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
               <i className="fa-light fa-headphones"></i>
               <span>{formatNumber(12312312)}</span>
-            </div>
+            </div> */}
             <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
               <i className="fa-light fa-heart"></i>
-              <span>{formatNumber(12312312)}</span>
+              <span>{formatNumber(artist.followers)}</span>
+            </div>
+            <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
+              <i className="fa-light fa-music"></i>
+              <span>{formatNumber(artist.songs)} songs</span>
             </div>
             <div className={`${styles.HeaderPageArtist_body_info_desc_item}`}>
               <i className="fa-thin fa-album"></i>
-              <span>{formatNumber(12312312)} songs</span>
+              <span>{formatNumber(artist.playlists)} playlists</span>
             </div>
           </div>
         </div>

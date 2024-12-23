@@ -2,38 +2,10 @@ import { Op, Sequelize, where, WhereOptions } from "sequelize";
 import Roles from "../models/Roles";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
+import Song from "../models/Song";
 
-export const attributesUser = [
-  "id",
-  "name",
-  "email",
-  "slug",
-  "imagePath",
-];
+export const attributesUser = ["id", "name", "email", "slug", "imagePath"];
 export const attributesRole = ["id", "name"];
-
-export const userQueryOptions = {
-  attributes: [
-    ...attributesUser,
-    [
-      Sequelize.literal(`
-              (
-                SELECT COUNT(*)
-                FROM follows AS f
-                WHERE f.followingId = User.id
-              )
-            `),
-      "followers",
-    ],
-  ],
-  include: [
-    {
-      model: Roles,
-      as: "role",
-      attributes: attributesRole, // Lấy tên của vai trò
-    },
-  ],
-};
 
 interface GetAllOptions {
   page: number;
@@ -45,6 +17,43 @@ interface GetAllOptions {
 }
 
 export default class UserService {
+  static userQueryOptions = {
+    attributes: [
+      ...attributesUser,
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM follows AS f
+          WHERE f.followingId = User.id
+        )`),
+        "followers",
+      ],
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM songs AS s
+          WHERE s.userId = User.id
+        )`),
+        "songs",
+      ],
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM playlists AS p
+          WHERE p.userId = User.id
+        )`),
+        "playlists",
+      ],
+    ],
+    include: [
+      {
+        model: Roles,
+        as: "role",
+        attributes: attributesRole, // Lấy tên của vai trò
+      },
+    ],
+  };
+
   static async getAll() {
     return User.findAll({
       attributes: attributesUser,
@@ -97,7 +106,7 @@ export default class UserService {
     });
 
     const users = await User.findAndCountAll({
-      ...userQueryOptions,
+      ...this.userQueryOptions,
       where: {
         [Op.and]: [whereCondition, where],
       },
@@ -130,6 +139,13 @@ export default class UserService {
       where: { email },
       include: [{ model: Roles, as: "role", attributes: attributesRole }],
     });
+  }
+
+  static async getBySlug(slug: string) {
+    return User.findOne({
+      ...this.userQueryOptions,
+      where: { slug },
+    } as any);
   }
 
   static async create(user: Partial<User>) {

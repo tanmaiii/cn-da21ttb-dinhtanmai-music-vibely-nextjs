@@ -20,8 +20,9 @@ class PlaylistService {
     return res.data;
   }
 
-  async gettBySlug(slug: string) {
-    return await this.client.get(`/${slug}/slug`);
+  async getBySlug(slug: string): Promise<ResponseAPI<IPlaylist>> {
+    const res = await this.client.get<ResponseAPI<IPlaylist>>(`/${slug}/slug`);
+    return res.data;
   }
 }
 

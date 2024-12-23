@@ -5,30 +5,31 @@ import { TrackArtist } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { navSongPage } from "@/lib/constants";
 import { artists, lyrics, songs } from "@/lib/data";
-import React, { useEffect } from "react";
+import songService from "@/services/song.service";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const SongPage = () => {
-  const [seeMore, setSeeMore] = React.useState(false);
-  const [isLoad, setIsLoad] = React.useState(true);
+  const [showEdit, setShowEdit] = useState(false);
+  const [nav, setNav] = useState("About");
+  const [seeMore, setSeeMore] = useState(false);
+  const params = useParams();
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
-  const [nav, setNav] = React.useState(navSongPage[0].name);
+  const { data, isLoading } = useQuery({
+    queryKey: ["song", slug],
+    queryFn: async () => await songService.getBySlug(slug),
+  });
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoad(false);
-    }, 3000);
-  }, []);
-
-  if (isLoad) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   return (
     <div className={`${styles.SongPage}`}>
       <div className={`${styles.SongPage_header}`}>
-        <HeaderPage data={songs[0]} />
+        {data && <HeaderPage data={data.data} />}
       </div>
       <div className={`${styles.SongPage_content}`}>
         <div className={`${styles.SongPage_content_header}`}>
@@ -61,23 +62,6 @@ const SongPage = () => {
           </div>
         </div>
         <div className={`${styles.SongPage_content_body}`}>
-          {nav == "Lyrics" && (
-            <div className={`${styles.SongPage_content_body_lyrics}`}>
-              <div className={`${styles.SongPage_content_body_lyrics_list}`}>
-                {lyrics.slice(0, 10).map((item, index) => (
-                  <p key={index}> {item.text}</p>
-                ))}
-                {seeMore &&
-                  lyrics
-                    .slice(10, lyrics.length)
-                    .map((item, index) => <p key={index}> {item.text}</p>)}
-                <button onClick={() => setSeeMore(!seeMore)}>
-                  <span>{seeMore ? "Ẩn bớt" : "...Xem thêm"}</span>
-                </button>
-              </div>
-            </div>
-          )}
-
           {nav == "About" && (
             <div className={`${styles.SongPage_content_body_about}`}>
               <div
@@ -95,8 +79,37 @@ const SongPage = () => {
                 <div
                   className={`${styles.SongPage_content_body_about_genre_list}`}
                 >
-                  <button>Hip Hop</button>
+                  <button>{data?.data?.genre?.title}</button>
                 </div>
+              </div>
+
+              <div className={`${styles.SongPage_content_body_about_moods}`}>
+                <h4>Moods</h4>
+                <div
+                  className={`${styles.SongPage_content_body_about_moods_list}`}
+                >
+                  {data &&
+                    data?.data?.moods?.map((item, index) => (
+                      <button>{item.title}</button>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {nav == "Lyrics" && (
+            <div className={`${styles.SongPage_content_body_lyrics}`}>
+              <div className={`${styles.SongPage_content_body_lyrics_list}`}>
+                {lyrics.slice(0, 10).map((item, index) => (
+                  <p key={index}> {item.text}</p>
+                ))}
+                {seeMore &&
+                  lyrics
+                    .slice(10, lyrics.length)
+                    .map((item, index) => <p key={index}> {item.text}</p>)}
+                <button onClick={() => setSeeMore(!seeMore)}>
+                  <span>{seeMore ? "Ẩn bớt" : "...Xem thêm"}</span>
+                </button>
               </div>
             </div>
           )}

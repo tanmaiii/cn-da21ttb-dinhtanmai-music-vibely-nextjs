@@ -3,6 +3,7 @@ import UserService from "../services/User.service";
 import {
   followArtistInput,
   GetAllArtistInput,
+  GetArtistBySlugInput,
   GetArtistPlaylistInput,
 } from "../schema/artist.schema";
 import LikeService from "../services/Like.service";
@@ -25,9 +26,6 @@ export const getArtistsHandler = async (
 
     const roleArtist = await RoleService.getRoleByName(ROLES.ARTIST);
 
-    console.log(roleArtist);
-    
-
     const artists = await UserService.getSongsWithPagination({
       limit: parseInt(limit as string, 10),
       page: parseInt(page as string, 10),
@@ -37,6 +35,26 @@ export const getArtistsHandler = async (
     });
 
     res.json({ data: artists, message: "Get artists successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getArtistBySlugHandler = async (
+  req: Request<GetArtistBySlugInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const artist = await UserService.getBySlug(slug);
+
+    if (!artist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Artist not found");
+    }
+
+    res.json({ data: artist, message: "Get artist by slug successfully" });
   } catch (error) {
     next(error);
   }
@@ -194,7 +212,10 @@ export const checkFollowArtistHandler = async (
 
     const existFollow = await LikeService.getFollow(userId, artistId);
 
-    res.json({ data: existFollow ? true : false, message: "Check follow artist successfully" });
+    res.json({
+      data: existFollow ? true : false,
+      message: "Check follow artist successfully",
+    });
   } catch (error) {
     next(error);
   }

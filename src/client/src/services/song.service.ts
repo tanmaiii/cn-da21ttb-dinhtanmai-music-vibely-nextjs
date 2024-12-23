@@ -17,8 +17,9 @@ class SongService {
     return res.data;
   }
 
-  async getSongById(id: string) {
-    return await this.client.get(`/song/${id}`);
+  async getBySlug(slug: string): Promise<ResponseAPI<ISong>> {
+    const res = await this.client.get<ResponseAPI<ISong>>(`/${slug}/slug`);
+    return res.data
   }
 }
 

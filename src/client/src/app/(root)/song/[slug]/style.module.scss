@@ -79,10 +79,15 @@
 
       &_about {
         width: 100%;
+        @include flex(start, start, column);
+        gap: $space-12;
         &_author {
+          width: 100%;
         }
 
-        &_genre {
+        &_genre,
+        &_moods {
+          padding: 0 $space-12;
           h4 {
             font-size: $size-16;
             color: var(--text-color-1);
@@ -95,15 +100,15 @@
             button {
               font-size: $size-16;
               color: var(--text-color-1);
-              font-weight: $font-medium;
+              font-weight: $font-light;
               cursor: pointer;
               background-color: $color-hover;
-              padding: $space-8 $space-12;
+              padding: $space-6 $space-12;
               border-radius: $radius-8;
               border: 1px solid $color-primary;
-              transition: background-color 0.3s;
+              transition: scale 0.3s;
               &:hover {
-                background-color: var(--background-color-2);
+                scale: 0.98;
               }
             }
           }

@@ -1,8 +1,10 @@
+import IArtist from './artist.type';
 import IPlaylist from "./playlist.type";
 import ISong from "./song.type";
 
 export type { default as ISong } from "./song.type";
 export type { default as IPlaylist } from "./playlist.type";
+export type { default as IArtist } from "./artist.type";
 export type { ListResponse, ResponseAPI, QueryParams, ISort } from "./common.type";
 
 export interface IMood {
@@ -28,14 +30,6 @@ export interface IRoom {
   creator: IArtist;
 }
 
-
-export interface IArtist {
-  id: string;
-  name: string;
-  slug?: string;
-  imagePath?: string;
-  followers: number;
-}
 
 export interface IArtistOverview extends IArtist {
   totalSong: number;

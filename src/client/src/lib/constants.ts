@@ -89,10 +89,10 @@ export const navSongPage = [
     id: 2,
     name: "Lyrics",
   },
-  {
-    id: 3,
-    name: "Comments",
-  },
+  // {
+  //   id: 3,
+  //   name: "Comments",
+  // },
   {
     id: 4,
     name: "Similar Songs",

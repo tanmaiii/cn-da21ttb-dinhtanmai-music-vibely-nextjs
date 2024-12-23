@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   checkFollowArtistHandler,
   followArtistHandler,
+  getArtistBySlugHandler,
   getArtistPlaylistHandler,
   getArtistsHandler,
   getArtistSongHandler,
@@ -11,6 +12,7 @@ import { validateData } from "../middleware";
 import {
   followArtistSchema,
   getAllArtistSchema,
+  getArtistBySlugSchema,
   getArtistPlaylistSchema,
   getArtistSongSchema
 } from "../schema/artist.schema";
@@ -18,6 +20,7 @@ import {
 const router = Router();
 
 router.get("/", validateData(getAllArtistSchema), getArtistsHandler);
+router.get("/:slug/slug", validateData(getArtistBySlugSchema), getArtistBySlugHandler);
 router.get(
   "/:id/playlist",
   validateData(getArtistPlaylistSchema),

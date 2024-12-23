@@ -34,9 +34,17 @@ const params = {
     }).max(SIZE.UUID, "Id is too long"),
   }),
 };
+const slug = {
+  params: object({
+    slug: string({
+      required_error: "Slug is required",
+    }).min(1),
+  }),
+};
 
 export const getAllPlaylistSchema = object({ ...querySchema });
 export const getPlaylistSchema = object({ ...params });
+export const getPlaylistSlugSchema = object({ ...slug });
 export const createPlaylistSchema = object({ ...payload });
 export const updatePlaylistSchema = object({ ...payload, ...params });
 export const likePlaylistSchema = object({ ...params });
@@ -48,6 +56,7 @@ export const getAllSongSchema = object({ ...params });
 
 export type GetAllPlaylistInput = TypeOf<typeof getAllPlaylistSchema>;
 export type GetPlaylistInput = TypeOf<typeof getPlaylistSchema>;
+export type GetPlaylistSlugInput = TypeOf<typeof getPlaylistSlugSchema>;
 export type UpdatePlaylistInput = TypeOf<typeof updatePlaylistSchema>;
 export type CreatePlaylistInput = TypeOf<typeof createPlaylistSchema>;
 export type likePlaylistInput = TypeOf<typeof likePlaylistSchema>;

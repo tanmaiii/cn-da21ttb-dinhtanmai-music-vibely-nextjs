@@ -85,7 +85,7 @@ export const formatDuration = (duration: number): string => {
 };
 
 // Hàm này nhận vào một chuỗi hoặc một đối tượng ảnh và trả về một chuỗi
-export const fromatImg = (img: string | StaticImageData) => {
+export const formatImg = (img: string | StaticImageData) => {
   return typeof img === "object" && "src" in img ? img.src : img || "";
 };
 
@@ -153,5 +153,9 @@ export function formatFileSize(size: number): string {
 
 
 export function apiImage(path: string) {
+  if (path.includes("https://lh3.googleusercontent.com")) {
+    return path;
+  }
+
   return `${process.env.NEXT_PUBLIC_API_URL}/image/${path}`;
 }

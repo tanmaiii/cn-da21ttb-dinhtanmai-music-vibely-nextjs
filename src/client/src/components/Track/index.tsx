@@ -120,6 +120,7 @@ const Track = (props: ITrack) => {
 
 const TrackShort = (props: ITrack) => {
   const { num, isLoading, song } = props;
+  
   return (
     <div aria-disabled={isLoading} className={`${styles.TrackShort}`}>
       <div className={`${styles.TrackShort_swapper}`}>

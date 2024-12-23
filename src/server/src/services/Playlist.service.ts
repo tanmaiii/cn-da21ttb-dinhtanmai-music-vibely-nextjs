@@ -142,7 +142,17 @@ export default class PlaylistService {
     return playlist;
   };
 
-  static getBySlug = (slug: string) => Playlist.findOne({ where: { slug } });
+  static getBySlug = (slug: string, userId?: string) => {
+    const whereCondition: any = userId
+      ? {
+          [Op.or]: [{ public: true }, { userId }],
+        }
+      : { public: true };
+    return Playlist.findOne({
+      ...playlistQueryOptions,
+      where: { slug, ...whereCondition },
+    } as any);
+  };
 
   static getDeleteById = async (id: string) =>
     Playlist.findByPk(id, { paranoid: false }); // Lấy bài hát đã xóa theo id

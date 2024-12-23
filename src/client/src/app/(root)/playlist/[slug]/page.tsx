@@ -1,20 +1,36 @@
 "use client";
 
-import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
-import { HeaderPage } from "@/components/HeaderPage";
-import Table from "@/components/TablePlaylist";
-import styles from "./style.module.scss";
-import { playlists, songs } from "@/lib/data";
-import Modal from "@/components/Modal";
-import { useState } from "react";
 import EditPlaylist from "@/components/EditPlaylist";
+import { HeaderPage } from "@/components/HeaderPage";
+import Modal from "@/components/Modal";
+import Table from "@/components/TablePlaylist";
+import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
+import { songs } from "@/lib/data";
+import playlistService from "@/services/playlist.service";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import Loading from "./loading";
+import styles from "./style.module.scss";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
+  const params = useParams();
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["playlist", slug],
+    queryFn: async () => await playlistService.getBySlug(slug),
+  });
+
+  if (isLoading) return <Loading />;
+
   return (
     <div className={`${styles.PlaylistPage}`}>
       <div className={`${styles.PlaylistPage_header}`}>
-        <HeaderPage data={playlists[0]} onEdit={() => setShowEdit(true)} />
+        {data && (
+          <HeaderPage data={data.data} onEdit={() => setShowEdit(true)} />
+        )}
       </div>
       <div className={`${styles.PlaylistPage_content}`}>
         <div className={`${styles.PlaylistPage_content_header}`}>

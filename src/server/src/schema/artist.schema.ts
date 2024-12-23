@@ -10,12 +10,22 @@ const params = {
   }),
 };
 
+const slug = {
+  params: object({
+    slug: string({
+      required_error: "Slug is required",
+    }).min(0, "Slug is too short"),
+  }),
+}
+
 export const getAllArtistSchema = object({ ...querySchema });
+export const getArtistBySlugSchema = object({ ...slug });
 export const getArtistSongSchema = object({ ...params, ...querySchema });
 export const getArtistPlaylistSchema = object({ ...params, ...querySchema });
 export const followArtistSchema = object({ ...params });
 
 export type GetAllArtistInput = TypeOf<typeof getAllArtistSchema>;
+export type GetArtistBySlugInput = TypeOf<typeof getArtistBySlugSchema>;
 export type GetArtistSongInput = TypeOf<typeof getArtistSongSchema>;
 export type GetArtistPlaylistInput = TypeOf<typeof getArtistPlaylistSchema>;
 export type followArtistInput = TypeOf<typeof followArtistSchema>;

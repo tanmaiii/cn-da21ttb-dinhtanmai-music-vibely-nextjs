@@ -10,24 +10,29 @@ import { artists, playlists, songs } from "@/lib/data";
 import React, { useEffect } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import artistService from "@/services/artist.service";
 
 const ArtistPage = () => {
   const [isLoad, setIsLoad] = React.useState(true);
+  const params = useParams();
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoad(false);
-    }, 3000);
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["artist", slug],
+    queryFn: async () => {
+      const res = await artistService.getBySlug(slug);
+      return res.data;
+    },
+  });
 
-  if (isLoad) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   return (
     <div className={`${styles.ArtistPage}`}>
       <div className={`${styles.ArtistPage_header}`}>
-        <HeaderPageArtist artist={artists[0]} />
+        {data && <HeaderPageArtist artist={data} />}
       </div>
       <div className={`${styles.ArtistPage_content}`}>
         <div className={`${styles.ArtistPage_content_header}`}>
