@@ -37,7 +37,12 @@ export const getAllPlaylistHandler = async (
       keyword: keyword as string,
     });
 
-    res.json({ data: playlists, message: "Get playlists successfully" });
+    res.status(StatusCodes.OK).json({
+      data: playlists,
+      message: "Get playlists successfully",
+      statusCode: StatusCodes.OK,
+    });
+    
   } catch (error) {
     next(error);
   }

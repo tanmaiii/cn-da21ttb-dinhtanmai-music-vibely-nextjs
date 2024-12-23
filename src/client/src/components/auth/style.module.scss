@@ -6,6 +6,7 @@
   border-radius: $radius-8;
   @include flex(center, center, column);
   box-shadow: var(--box-shadow);
+  width: 100%;
 
   &_logo {
     @include flex(center, center, column);
@@ -62,10 +63,10 @@
     &_button {
       width: 100%;
       margin-top: $space-12;
-      padding: $space-16 $space-12;
+      padding: $space-12 $space-8;
       border: 1px solid var(--border-color-1);
       border-radius: $radius-4;
-      font-size: $size-18;
+      font-size: $size-16;
       color: $color-white-1;
       font-weight: $font-medium;
       cursor: pointer;

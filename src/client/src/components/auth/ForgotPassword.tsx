@@ -72,8 +72,7 @@ const ForgotPassword = () => {
         </button>
 
         <div className={`${styles.Auth_form_redirect}`}>
-          <span>Don t have an account?</span>
-          <Link href={paths.REGISTER}>Register</Link>
+          <Link href={paths.LOGIN}>Return to login </Link>
         </div>
       </div>
     </div>

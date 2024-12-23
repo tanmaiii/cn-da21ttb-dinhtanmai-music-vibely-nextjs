@@ -1,6 +1,7 @@
 import { userState } from "@/features/userSlice";
 import createHttpClient from "@/lib/createHttpClient";
 import tokenService from "@/lib/tokenService";
+import { ResponseAPI } from "@/types";
 
 // Đăng nhập
 export interface LoginRequestDto {
@@ -49,6 +50,7 @@ export interface RefreshTokenRequestDto {
 
 export interface RefreshTokenResponseDto {
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface CheckUserRequestDto {
@@ -86,7 +88,7 @@ class AuthSevices {
   }
 
   async refreshToken(body: RefreshTokenRequestDto) {
-    const response = await this.client.post<RefreshTokenResponseDto>(
+    const response = await this.client.post<ResponseAPI<RefreshTokenResponseDto>>(
       "/refresh-token",
       body
     );

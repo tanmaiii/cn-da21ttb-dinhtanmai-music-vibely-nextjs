@@ -47,8 +47,12 @@ export async function login(
 
     const userInfo = await UserService.getById(existAccount.userId);
 
-    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
-    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
+    const accessToken = await AccountsService.createAccessToken(
+      userInfo.toJSON()
+    );
+    const refreshToken = await AccountsService.createRefreshToken(
+      userInfo.toJSON()
+    );
 
     res.status(StatusCodes.OK).json({
       data: {
@@ -101,8 +105,12 @@ export async function register(
 
     const userInfo = await UserService.getById(newUser.id);
 
-    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
-    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
+    const accessToken = await AccountsService.createAccessToken(
+      userInfo.toJSON()
+    );
+    const refreshToken = await AccountsService.createRefreshToken(
+      userInfo.toJSON()
+    );
 
     res.status(StatusCodes.CREATED).json({
       data: {
@@ -166,18 +174,28 @@ export async function refreshToken(
     }
 
     if (refreshToken === existToken.token) {
-      const accountInfo = await AccountsService.getById(refreshTokenInfo.id);
+      const accountInfo = await AccountsService.getByUserId(
+        refreshTokenInfo.id
+      );
 
       if (!accountInfo)
         throw new ApiError(StatusCodes.NOT_FOUND, "Account not found");
 
       const user = await UserService.getById(accountInfo.userId);
 
-      const accessToken = await TokenUtil.generateAccessToken(user.toJSON());
+      const accessTokenNew = await AccountsService.createAccessToken(
+        user.toJSON()
+      );
+      const refreshTokenNew = await AccountsService.createRefreshToken(
+        user.toJSON()
+      );
+
+      console.log("[REFRESH TOKEN]", accessTokenNew);
 
       res.status(StatusCodes.OK).json({
         data: {
-          accessToken,
+          accessToken: accessTokenNew,
+          refreshToken: refreshTokenNew,
         },
         message: "Refresh token successfully",
       });
@@ -287,8 +305,12 @@ export async function loginGoogle(
       throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
-    const accessToken = await AccountsService.createAccessToken(userInfo.toJSON());
-    const refreshToken = await AccountsService.createRefreshToken(userInfo.toJSON());
+    const accessToken = await AccountsService.createAccessToken(
+      userInfo.toJSON()
+    );
+    const refreshToken = await AccountsService.createRefreshToken(
+      userInfo.toJSON()
+    );
 
     res.status(StatusCodes.CREATED).json({
       data: {

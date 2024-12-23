@@ -10,18 +10,18 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
 import { ISort } from "@/types";
+import toast from "react-hot-toast";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "All", value: "newest" },
+  { id: 1, name: "Mới nhất", value: "newest" },
   { id: 2, name: "Cũ nhất", value: "oldest" },
-  { id: 3, name: "Yêu thích", value: "mostLikes" },
-  { id: 4, name: "Phổ biến", value: "mostListens" },
+  { id: 3, name: "Phổ biến", value: "mostLikes" },
 ];
 
 const PlaylistPage = () => {
   const [data, setData] = useState<IPlaylist[] | null>(null);
   const [isLoad, setIsLoad] = useState(true);
-  const [active, setActive] = useState<ISort>("newest");
+  const [active, setActive] = useState<ISort>("mostLikes");
   const [nextPage, setNextPage] = useState(2);
 
   useEffect(() => {

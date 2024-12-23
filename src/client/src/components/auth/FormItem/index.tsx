@@ -48,6 +48,7 @@ const FormItem = ({
         />
         {defaultType === "password" && (
           <button
+            type="button"
             className={`${styles.FormItem_input_eye}`}
             onClick={() =>
               setType(() => (type === "password" ? "text" : "password"))

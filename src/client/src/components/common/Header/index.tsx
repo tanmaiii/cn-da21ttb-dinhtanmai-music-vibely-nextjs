@@ -104,9 +104,7 @@ const Header = () => {
           />
           {user ? (
             <div className={`${styles.Header_right_user}`}>
-              <button
-                className={`${styles.Header_right_user_image}`}
-              >
+              <button className={`${styles.Header_right_user_image}`}>
                 <Image
                   src={profilePic}
                   alt="avatar"

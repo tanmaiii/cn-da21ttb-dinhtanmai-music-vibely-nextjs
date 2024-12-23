@@ -10,7 +10,7 @@ class TokenUtil {
   // Tạo token
   generateAccessToken(user: any) {
     return jwt.sign(user, this.secretKey, {
-      expiresIn: "1d", //15m
+      expiresIn: "15m", //15m
       algorithm: "HS256",
     });
   }
@@ -18,7 +18,7 @@ class TokenUtil {
   // Tạo refresh token
   generateRefreshToken(user: any) {
     return jwt.sign({ id: user.id }, this.publicKey, {
-      expiresIn: "1d",
+      expiresIn: "7d", //7d
       algorithm: "HS256",
     });
   }

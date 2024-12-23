@@ -8,11 +8,12 @@ import google from "@/public/images/google.png";
 
 export const paths = {
   HOME: "/",
-  LOGIN: "/login",
   TRENDING: "/trending",
   LIVE: "/live",
   ROOM: "/room",
   REGISTER: "/register",
+  LOGIN: "/login",
+  LOGOUT: "/logout",
   PROFILE: "/profile",
   PAYLIST: "/playlist",
   SONG: "/song",

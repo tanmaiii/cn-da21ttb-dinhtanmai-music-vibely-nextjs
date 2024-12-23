@@ -1,8 +1,9 @@
-import axios from "axios";
-import queryString from "query-string";
-import tokenService from "./tokenService";
-import { jwtDecode } from "jwt-decode";
 import authService from "@/services/auth.service";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import queryString from "query-string";
+import { paths } from "./constants";
+import tokenService from "./tokenService";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -25,23 +26,18 @@ const createHttpClient = (baseurl: string) => {
       tokenService.refreshToken &&
       !isRefreshToken
     ) {
-      const data = await authService.refreshToken({
-        refreshToken: tokenService.refreshToken,
+      authService.refreshToken({ refreshToken: tokenService.refreshToken }).then((res) => {
+        tokenService.accessToken = res.data.accessToken;
+        tokenService.refreshToken = res.data.refreshToken;
+      }).catch((error) => {
+        console.log(error);
+        window.location.href = paths.LOGOUT;
       });
-
-      if (data) {
-        const { accessToken } = data;
-        tokenService.accessToken = accessToken;
-      }
-      if (config.headers) {
-        config.headers.Authorization = `Bearer ${tokenService.accessToken}`;
-      }
-
       return config;
     }
 
     // Trường hợp không cần refresh token
-    if (tokenService.accessToken && config.headers) {
+    if (tokenService.accessToken && !isRefreshToken) {
       config.headers.Authorization = `Bearer ${tokenService.accessToken}`;
     }
 

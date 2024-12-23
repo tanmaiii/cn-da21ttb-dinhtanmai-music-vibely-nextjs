@@ -79,8 +79,7 @@ const Register = () => {
       <div className={`${styles.Auth_logo}`}>
         <h2>Create an account</h2>
         <span>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-          inventore ut qui
+          Get started with your free account
         </span>
       </div>
       <div className={`${styles.Auth_form}`}>
@@ -136,7 +135,7 @@ const Register = () => {
               />
 
               <div className={`${styles.Auth_form_forgot}`}>
-                <a href="/forgot-password">Forgot password?</a>
+                <a href="/forgot-password">Forgot password ?</a>
               </div>
 
               <button type="submit" className={`${styles.Auth_form_button}`}>
@@ -156,7 +155,7 @@ const Register = () => {
         />
 
         <div className={`${styles.Auth_form_redirect}`}>
-          <span>You already have an account?</span>
+          <span>You already have an account ?</span>
           <Link href={paths.LOGIN}>Login</Link>
         </div>
       </div>

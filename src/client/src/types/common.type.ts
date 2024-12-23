@@ -11,7 +11,7 @@ export interface ListResponse<T> {
 export interface ResponseAPI<T> {
   data: T;
   message: string;
-  status: number;
+  statusCode: number;
 }
 
 export interface QueryParams {

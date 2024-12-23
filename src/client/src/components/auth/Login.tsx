@@ -71,8 +71,7 @@ const Login = () => {
       <div className={`${styles.Auth_logo}`}>
         <h2>Login</h2>
         <span>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-          inventore ut qui
+          Login with your email and password or login with your google account
         </span>
       </div>
       <div className={`${styles.Auth_form}`}>
@@ -106,7 +105,7 @@ const Login = () => {
                 onChangeValue={handleChange}
               />
               <div className={`${styles.Auth_form_forgot}`}>
-                <a href="/forgot-password">Forgot password?</a>
+                <a href="/forgot-password">Forgot password ?</a>
               </div>
 
               <button type="submit" className={`${styles.Auth_form_button}`}>
@@ -125,7 +124,7 @@ const Login = () => {
           }}
         />
         <div className={`${styles.Auth_form_redirect}`}>
-          <span>Don&apos;t have an account?</span>
+          <span>Don&apos;t have an account ?</span>
           <Link href={paths.REGISTER}>Register</Link>
         </div>
       </div>

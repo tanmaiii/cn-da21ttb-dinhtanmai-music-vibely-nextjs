@@ -7,7 +7,7 @@ import { RootState } from "@/lib/store";
 import tokenService from "@/lib/tokenService";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./style.module.scss";
@@ -32,10 +32,9 @@ const Sidebar = (props: SidebarProps) => {
   const { isSidebarOpen, toggleSidebar, theme, toggleDarkMode } = useUI();
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
-    // const pathParts = pathname.split("/");
-    // const targetValue = `/${pathParts[1]}`;
     setPathnameActive(pathname);
   }, [pathname]);
 
@@ -48,8 +47,7 @@ const Sidebar = (props: SidebarProps) => {
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
-    authService.logout({ refreshToken: tokenService.refreshToken });
-    dispatch(clearUser());
+    router.push(paths.LOGOUT);
   };
 
   return (

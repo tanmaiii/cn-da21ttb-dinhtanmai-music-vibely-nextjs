@@ -24,6 +24,12 @@ export default class AccountsService {
     });
   }
 
+  static async getByUserId(userId: string) {
+    return Account.findOne({
+      where: { userId },
+    });
+  }
+
   static async create(payload: Partial<Account>) {
     return Account.create(payload);
   }
@@ -34,7 +40,6 @@ export default class AccountsService {
 
   static createAccessToken = async (user: any) => {
     const accessToken = await TokenUtil.generateAccessToken(user);
-
     return accessToken;
   };
 
