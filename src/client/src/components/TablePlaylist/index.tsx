@@ -1,6 +1,5 @@
-"use client"; // Thêm dòng này ở đầu file
+"use client";
 
-import { ISong } from "@/types";
 import { useState } from "react";
 import {
   DragDropContext,
@@ -10,19 +9,15 @@ import {
 } from "@hello-pangea/dnd";
 import { Track } from "../Track";
 import styles from "./style.module.scss";
+import { IResSongInPlaylist } from "../../types/playlist.type";
 
 interface Props {
-  songs: ISong[];
+  data: IResSongInPlaylist[];
 }
 
 const TablePlaylist = (props: Props) => {
-  const { songs } = props;
-  const [items, setItems] = useState(
-    Array.from({ length: 17 }, (_, index) => ({
-      id: (index + 1).toString(),
-      content: `Item ${index + 1}`,
-    }))
-  );
+  const { data } = props;
+  const [items, setItems] = useState(data);
 
   // Xử lý khi kéo thả
   const handleOnDragEnd = (result: DropResult) => {
@@ -74,23 +69,24 @@ const TablePlaylist = (props: Props) => {
             <Droppable direction="vertical" droppableId="droppable">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {songs.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Track num={index + 1} song={item} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {items &&
+                    items.map((item, index) => (
+                      <Draggable
+                        key={item.song.id}
+                        draggableId={item.song.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Track num={index + 1} song={item.song} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}

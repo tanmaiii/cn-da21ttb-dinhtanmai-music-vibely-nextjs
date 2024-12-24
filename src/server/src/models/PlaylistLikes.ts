@@ -1,4 +1,4 @@
-import { ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, ForeignKey, Model, Table } from "sequelize-typescript";
 import Playlist from "./Playlist";
 import User from "./User";
 

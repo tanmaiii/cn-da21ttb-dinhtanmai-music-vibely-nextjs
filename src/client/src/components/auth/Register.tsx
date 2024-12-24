@@ -78,9 +78,7 @@ const Register = () => {
     <div className={`${styles.Auth}`}>
       <div className={`${styles.Auth_logo}`}>
         <h2>Create an account</h2>
-        <span>
-          Get started with your free account
-        </span>
+        <span>Get started with your free account</span>
       </div>
       <div className={`${styles.Auth_form}`}>
         {error && <div className={`${styles.Auth_form_error}`}>{error}</div>}

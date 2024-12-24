@@ -1,11 +1,16 @@
-import IArtist from './artist.type';
-import IPlaylist from "./playlist.type";
+import IArtist from "./artist.type";
+import { IPlaylist } from "./playlist.type";
 import ISong from "./song.type";
 
-export type { default as ISong } from "./song.type";
-export type { default as IPlaylist } from "./playlist.type";
 export type { default as IArtist } from "./artist.type";
-export type { ListResponse, ResponseAPI, QueryParams, ISort } from "./common.type";
+export type {
+  ISort,
+  ListResponse,
+  QueryParams,
+  ResponseAPI
+} from "./common.type";
+export type { IPlaylist, IResSongInPlaylist } from "./playlist.type";
+export type { default as ISong } from "./song.type";
 
 export interface IMood {
   id: string;
@@ -19,7 +24,6 @@ export interface IPrivacy {
   description: string;
 }
 
-
 export interface IRoom {
   id: string;
   title: string;
@@ -30,12 +34,11 @@ export interface IRoom {
   creator: IArtist;
 }
 
-
-export interface IArtistOverview extends IArtist {
-  totalSong: number;
-  songs: ISong[];
-  discography: IDiscography;
-}
+// export interface IArtistOverview extends IArtist {
+//   totalSong: number;
+//   songs: ISong[];
+//   discography: IDiscography;
+// }
 
 export interface IDiscography {
   playlist: IPlaylist[];

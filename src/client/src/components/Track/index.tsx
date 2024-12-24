@@ -1,5 +1,11 @@
 import { IMAGES, paths } from "@/lib/constants";
-import { fadeIn, formatDateTime, formatNumber, padNumber } from "@/lib/utils";
+import {
+  apiImage,
+  fadeIn,
+  formatDateTime,
+  formatNumber,
+  padNumber,
+} from "@/lib/utils";
 import { IArtist, ISong } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,7 +59,7 @@ const Track = (props: ITrack) => {
               <Skeleton height={60} width={60} />
             ) : (
               <Image
-                src={song.imagePath ? song.imagePath : IMAGES.SONG}
+                src={song.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
                 alt="image.png"
                 width={50}
                 height={50}
@@ -70,18 +76,21 @@ const Track = (props: ITrack) => {
               {isLoading ? (
                 <Skeleton width={"40%"} />
               ) : (
-                <Link href={`${paths.SONG}/123`}>{song.title}</Link>
+                <Link href={`${paths.SONG}/${song.slug}`}>{song.title}</Link>
               )}
             </h4>
             {isLoading ? (
               <Skeleton width={"70%"} height={20} />
             ) : (
               <p>
-                {song?.owner.map((owner, index) => (
+                {/* {song?.owner.map((owner, index) => (
                   <Link key={index} href={`${paths.ARTIST}/${owner?.id || 1}`}>
                     {owner?.name}
                   </Link>
-                ))}
+                ))} */}
+                <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
+                  {song?.creator?.name}
+                </Link>
               </p>
             )}
           </div>
@@ -106,7 +115,9 @@ const Track = (props: ITrack) => {
           </div>
 
           <div className={`${styles.item_default}`}>
-            <span>{isLoading ? <Skeleton width={50} /> : song.duration}</span>
+            <span>
+              {isLoading ? <Skeleton width={50} /> : song.duration || 100}
+            </span>
           </div>
 
           <div className={`${styles.item_hover}`}>
@@ -120,7 +131,7 @@ const Track = (props: ITrack) => {
 
 const TrackShort = (props: ITrack) => {
   const { num, isLoading, song } = props;
-  
+
   return (
     <div aria-disabled={isLoading} className={`${styles.TrackShort}`}>
       <div className={`${styles.TrackShort_swapper}`}>

@@ -60,7 +60,10 @@ class Song extends Model {
   declare description: string;
 
   // Đường dẫn bài hát
-  @Column
+  @Column({
+    unique: true,
+    allowNull: false,
+  })
   declare slug: string;
 
   //Thời lượng bài hát
@@ -107,7 +110,7 @@ class Song extends Model {
   playlists!: Playlist[];
 
   @BelongsToMany(() => Room, () => RoomSong)
-  rooms!: Room[]; 
+  rooms!: Room[];
 
   @HasMany(() => SongPlay)
   plays!: SongPlay[];

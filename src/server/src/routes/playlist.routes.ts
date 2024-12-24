@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addSongToPlaylistHandler,
+  checkLikePlaylistHandler,
   createPlaylistHandler,
   getAllPlaylistHandler,
   getPlaylistBySlugHandler,
@@ -15,6 +16,7 @@ import { authorize, uploadFile, validateData } from "../middleware";
 import {
   addSongToPlaylistSchema,
   createPlaylistSchema,
+  getAllPlaylistLikeSchema,
   getAllPlaylistSchema,
   getPlaylistSchema,
   getPlaylistSlugSchema,
@@ -23,12 +25,44 @@ import {
   updatePlaylistSchema,
 } from "../schema/playlist.schema";
 import { PERMISSIONS } from "../utils/contants";
+import { getAllPlaylistLikedHandler } from "../controllers/playlist.controller";
 
 const router: Router = Router();
 
+// Thích
+router.get(
+  "/like",
+  authorize(),
+  validateData(getAllPlaylistLikeSchema),
+  getAllPlaylistLikedHandler
+);
+router.get(
+  "/:id/like",
+  authorize(),
+  validateData(likePlaylistSchema),
+  checkLikePlaylistHandler
+);
+router.post(
+  "/:id/like",
+  authorize(),
+  validateData(likePlaylistSchema),
+  likePlaylistHandler
+);
+router.delete(
+  "/:id/like",
+  authorize(),
+  validateData(unLikePlaylistSchema),
+  unLikePlaylistHandler
+);
+
+// Playlist
 router.get("/", validateData(getAllPlaylistSchema), getAllPlaylistHandler);
 router.get("/:id", validateData(getPlaylistSchema), getPlaylistHandler);
-router.get("/:slug/slug", validateData(getPlaylistSlugSchema), getPlaylistBySlugHandler);
+router.get(
+  "/:slug/slug",
+  validateData(getPlaylistSlugSchema),
+  getPlaylistBySlugHandler
+);
 router.post(
   "/",
   authorize(PERMISSIONS.CREATE_PLAYLIST),
@@ -43,6 +77,8 @@ router.put(
   validateData(updatePlaylistSchema),
   updatePlaylistHandler
 );
+
+// Song
 router.get(
   "/:id/song",
   authorize(PERMISSIONS.READ_PLAYLISTS),
@@ -59,18 +95,6 @@ router.delete(
   "/:id/song",
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
   removeSongToPlaylistHandler
-);
-router.post(
-  "/:id/like",
-  authorize(),
-  validateData(likePlaylistSchema),
-  likePlaylistHandler
-);
-router.delete(
-  "/:id/like",
-  authorize(),
-  validateData(unLikePlaylistSchema),
-  unLikePlaylistHandler
 );
 
 export default router;

@@ -1,16 +1,14 @@
 "use client";
 import { Card } from "@/components/Card";
+import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
 import { ButtonIcon } from "@/components/ui/Button";
 import playlistService from "@/services/playlist.service";
-import { IPlaylist } from "@/types";
-import React, { useEffect, useState } from "react";
+import { IPlaylist, ISort } from "@/types";
+import { useEffect, useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
-import { ISort } from "@/types";
-import toast from "react-hot-toast";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "Mới nhất", value: "newest" },

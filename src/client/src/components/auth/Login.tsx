@@ -36,7 +36,7 @@ const Login = () => {
       tokenService.accessToken = data.accessToken;
       tokenService.refreshToken = data.refreshToken;
       dispatch(setUser(data));
-      router.push("/");
+      router.push(paths.HOME);
       toast.success("Login successfully");
     } catch (err: unknown) {
       console.error(err);

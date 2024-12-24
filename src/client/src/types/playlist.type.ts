@@ -1,6 +1,6 @@
-import { IArtist, IGenre, IMood } from ".";
+import { IArtist, IGenre, IMood, ISong } from ".";
 
-export default interface IPlaylist {
+export interface IPlaylist {
   id: string;
   title: string;
   slug?: string; // URL
@@ -13,4 +13,10 @@ export default interface IPlaylist {
   total: number;
   likes: number;
   moods?: IMood[];
+}
+
+export interface IResSongInPlaylist {
+  songId: string;
+  playlistId: string;
+  song: ISong;
 }

@@ -9,8 +9,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        // protocol: "http",
-        // hostname: "**", // Chấp nhận tất cả hostname
+        protocol: "http",
+        hostname: "**", // Chấp nhận tất cả hostname
       },
     ],
   },

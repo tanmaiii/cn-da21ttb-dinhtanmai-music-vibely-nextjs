@@ -5,7 +5,6 @@ import { HeaderPage } from "@/components/HeaderPage";
 import Modal from "@/components/Modal";
 import Table from "@/components/TablePlaylist";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
-import { songs } from "@/lib/data";
 import playlistService from "@/services/playlist.service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -20,16 +19,27 @@ const PlaylistPage = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["playlist", slug],
-    queryFn: async () => await playlistService.getBySlug(slug),
+    queryFn: async () => {
+      const res = await playlistService.getBySlug(slug);
+      return res.data;
+    },
   });
 
-  if (isLoading) return <Loading />;
+  const { data: dataSong, isLoading: isLoadingSong } = useQuery({
+    queryKey: ["playlist", data?.id, "song"],
+    queryFn: async () => {
+      const res = data && (await playlistService.getAllSongs(data.id));
+      return res?.data;
+    },
+  });
+
+  if (isLoading || isLoadingSong) return <Loading />;
 
   return (
     <div className={`${styles.PlaylistPage}`}>
       <div className={`${styles.PlaylistPage_header}`}>
         {data && (
-          <HeaderPage data={data.data} onEdit={() => setShowEdit(true)} />
+          <HeaderPage data={data} onEdit={() => setShowEdit(true)} />
         )}
       </div>
       <div className={`${styles.PlaylistPage_content}`}>
@@ -51,7 +61,7 @@ const PlaylistPage = () => {
         </div>
 
         <div className={`${styles.PlaylistPage_content_body}`}>
-          <Table songs={songs} />
+          {dataSong && <Table data={dataSong} />}
         </div>
       </div>
       <Modal show={showEdit} onClose={() => setShowEdit(false)}>

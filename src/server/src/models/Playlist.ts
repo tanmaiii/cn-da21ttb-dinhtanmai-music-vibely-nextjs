@@ -17,6 +17,7 @@ import User from "./User";
 import Song from "./Song";
 import PlaylistSong from "./PlaylistSong";
 import PlaylistLikes from "./PlaylistLikes";
+import { uniq } from "lodash";
 
 //declare :// Khai báo thuộc tính mà không cần gán giá trị ngay lập tức
 // "!" : thuộc tính không bao giờ là null
@@ -50,7 +51,10 @@ class Playlist extends Model {
   @Column
   imagePath: string;
 
-  @Column
+  @Column({
+    unique: true,
+    allowNull: false,
+  })
   declare slug: string; // Đường dẫn bài hát
 
   @Column({
@@ -72,6 +76,9 @@ class Playlist extends Model {
 
   @BelongsTo(() => User) //Thuộc về người dùng nào
   creator: User;
+
+  @BelongsToMany(() => User, () => PlaylistLikes)
+  likes!: User[];
 
   @BelongsToMany(() => Mood, () => PlaylistMood)
   moods: Mood[];

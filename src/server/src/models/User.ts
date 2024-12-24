@@ -1,6 +1,7 @@
 import {
   BeforeCreate,
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
@@ -16,6 +17,8 @@ import Follows from "./Follows";
 import { formatStringToSlug } from "../utils/commonUtils";
 import RoomChat from "./RoomChat";
 import Room from "./Room";
+import PlaylistSong from "./PlaylistSong";
+import PlaylistLikes from "./PlaylistLikes";
 
 @Table({
   timestamps: true,
@@ -33,7 +36,10 @@ class User extends Model {
   @Column
   declare name: string;
 
-  @Column
+  @Column({
+    unique: true,
+    allowNull: false,
+  })
   declare slug: string;
 
   @Column({
@@ -58,8 +64,11 @@ class User extends Model {
   @HasMany(() => Song)
   songs: Song[];
 
-  @HasMany(() => Playlist)
-  playlists: Playlist[];
+  // @HasMany(() => Playlist)
+  // playlists: Playlist[];
+
+  @BelongsToMany(() => Playlist, () => PlaylistLikes)
+  likedPlaylists!: Playlist[];
 
   @HasMany(() => Room)
   rooms: Room[];

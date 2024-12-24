@@ -42,11 +42,14 @@ const slug = {
   }),
 };
 
+// ------------------SCHEMA-----------------------
 export const getAllPlaylistSchema = object({ ...querySchema });
 export const getPlaylistSchema = object({ ...params });
 export const getPlaylistSlugSchema = object({ ...slug });
 export const createPlaylistSchema = object({ ...payload });
 export const updatePlaylistSchema = object({ ...payload, ...params });
+
+export const getAllPlaylistLikeSchema = object({ ...querySchema });
 export const likePlaylistSchema = object({ ...params });
 export const unLikePlaylistSchema = object({ ...params });
 
@@ -54,11 +57,15 @@ export const addSongToPlaylistSchema = object({ ...params, ...bodySongId }); // 
 export const removeSongToPlaylistSchema = object({ ...params, ...bodySongId });// Xóa bài hát vào playlist
 export const getAllSongSchema = object({ ...params });
 
+//------------------TYPE-----------------------
+
 export type GetAllPlaylistInput = TypeOf<typeof getAllPlaylistSchema>;
 export type GetPlaylistInput = TypeOf<typeof getPlaylistSchema>;
 export type GetPlaylistSlugInput = TypeOf<typeof getPlaylistSlugSchema>;
 export type UpdatePlaylistInput = TypeOf<typeof updatePlaylistSchema>;
 export type CreatePlaylistInput = TypeOf<typeof createPlaylistSchema>;
+
+export type GetAllPlaylistLikeInput = TypeOf<typeof getAllPlaylistLikeSchema>;
 export type likePlaylistInput = TypeOf<typeof likePlaylistSchema>;
 export type unLikePlaylistInput = TypeOf<typeof unLikePlaylistSchema>;
 
