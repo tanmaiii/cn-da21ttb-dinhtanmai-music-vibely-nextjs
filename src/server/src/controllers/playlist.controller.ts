@@ -31,13 +31,17 @@ export const getAllPlaylistHandler = async (
   try {
     const { limit = 4, page = 1, keyword, sort } = req.query;
 
-    const userId = get(req, "identity") as IIdentity;
+    const userInfo = get(req, "identity") as IIdentity;
+
+    // if (!userInfo) {
+    //   throw new ApiError(StatusCodes.UNAUTHORIZED, "User not found");
+    // }
 
     const playlists = await PlaylistService.getAllWithPagination({
       limit: parseInt(limit as string, 10),
       page: parseInt(page as string, 10),
       sort: sort as SortOptions,
-      userId: userId.id,
+      userId: userInfo ? userInfo.id : "",
       keyword: keyword as string,
     });
 

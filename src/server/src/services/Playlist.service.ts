@@ -99,7 +99,8 @@ export default class PlaylistService {
           order[0] = ["createdAt", "ASC"];
           break;
         case "mostLikes":
-          order[0] = [[Sequelize.literal("likes"), "DESC"]];
+          order[0] = [Sequelize.literal("likes"), "DESC"];
+
           break;
         default:
           order[0] = ["createdAt", "DESC"];
@@ -139,73 +140,58 @@ export default class PlaylistService {
   }: GetAllOptions) => {
     const offset = (page - 1) * limit;
 
-    // const whereCondition: any = userId
-    //   ? {
-    //       [Op.or]: [{ public: true }, { userId }],
-    //     }
-    //   : { public: true };
+    const whereCondition: any = userId
+      ? {
+          [Op.or]: [{ public: true }, { userId }],
+        }
+      : { public: true };
 
-    // if (keyword) {
-    //   whereCondition[Op.and] = whereCondition[Op.and] || [];
-    //   whereCondition[Op.and].push({
-    //     [Op.or]: [
-    //       { title: { [Op.substring]: keyword } },
-    //       { description: { [Op.substring]: keyword } },
-    //     ],
-    //   });
-    // }
-
-    // const playlists = await User.findOne({
-    //   where: { id: userId },
-    //   attributes: [],
-    //   include: [
-    //     {
-    //       model: Playlist,
-    //       through: { attributes: [] }, // Bỏ các thông tin từ bảng trung gian (PlaylistLike)
-    //       attributes: attributesPlaylist, // Lấy các thông tin từ bảng Playlist,
-
-    //       include: [
-    //         { model: User, attributes: attributesUser, as: "creator" },
-    //         {
-    //           model: Mood,
-    //           attributes: attributesMood,
-    //           through: { attributes: [] as never[] },
-    //         },
-    //         { model: Genre, attributes: attributesMood },
-    //         {
-    //           model: User,
-    //           attributes: ["id"],
-    //           through: { attributes: [] },
-    //           as: "likes",
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   order: [["createdAt", "ASC"]],
-    // });
-
-    const playlists = await PlaylistLikes.findAll({
+    const playlistLikes = await PlaylistLikes.findAll({
       where: { userId },
+      attributes: ["playlistId"], // Lấy danh sách playlistId
+      order: [["createdAt", "DESC"]],
+    });
+
+    const playlistIds = playlistLikes.map((like) => like.playlistId); // Lấy danh sách playlistId
+
+    const totalItems = await Playlist.count({
+      where: {
+        [Op.and]: [whereCondition, { id: playlistIds }],
+      },
+    });
+
+    // Truy vấn các playlist dựa trên danh sách playlistId
+    const playlists = await Playlist.findAndCountAll({
+      where: { [Op.and]: [whereCondition, { id: playlistIds }] },
+      ...playlistQueryOptions,
+      include: [
+        { model: User, attributes: attributesUser, as: "creator" },
+        {
+          model: Mood,
+          attributes: attributesMood,
+          through: { attributes: [] as never[] },
+        },
+        { model: Genre, attributes: attributesMood },
+        // {
+        //   model: User,
+        //   attributes: ["id"],
+        //   through: { attributes: [] },
+        //   as: "likes",
+        // },
+      ],
       limit,
       offset,
-      order: [["createdAt", "ASC"]],
-      attributes: ["playlistId"],
-      include: [
-        {
-          model: Playlist,
-        },
-      ],
     } as any);
 
     return {
-      data: playlists,
+      data: playlists.rows,
       sort: "newest",
       keyword: keyword || "",
-      user: userId,
+      user: userId || "",
       limit: limit,
-      totalItems: 0,
+      totalItems: totalItems,
       currentPage: page,
-      totalPages: Math.ceil(0 / limit),
+      totalPages: Math.ceil(totalItems / limit),
     };
   };
 

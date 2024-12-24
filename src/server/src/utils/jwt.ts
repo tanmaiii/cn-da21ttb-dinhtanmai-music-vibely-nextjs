@@ -10,7 +10,7 @@ class TokenUtil {
   // Tạo token
   generateAccessToken(user: any) {
     return jwt.sign(user, this.secretKey, {
-      expiresIn: "15m", //15m
+      expiresIn: "1d", //15m
       algorithm: "HS256",
     });
   }
