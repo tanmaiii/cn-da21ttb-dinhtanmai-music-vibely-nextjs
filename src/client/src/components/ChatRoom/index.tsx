@@ -26,7 +26,7 @@ const ChatRoom = (props: IChatRoom) => {
       {
         id: prev.length + 1,
         name: "Author",
-        img: "https://picsum.photos/300/300",
+        img: "",
         text: message,
       },
     ]);
@@ -139,7 +139,7 @@ const ChatRoomRequest = () => {
                   </div>
                   <div className={`${styles.item_img}`}>
                     <Image
-                      src={song.imagePath ? song.imagePath : IMAGES.AVATAR}
+                      src={IMAGES.AVATAR}
                       alt="image.png"
                       width={50}
                       height={50}
@@ -199,21 +199,20 @@ const ChatRoomMember = () => {
         <div className={`${styles.list}`}>
           <h4>Member(12)</h4>
           <ul>
-            <li className={`${styles.add_user}`}>
+            {/* Add members (bỏ qua) */}
+            {/* <li className={`${styles.add_user}`}>
               <div className={`${styles.swapper}`}>
                 <i className="fa-solid fa-plus"></i>
                 <span>Invite members</span>
               </div>
-            </li>
+            </li> */}
             {artists.map((artist, index) => (
               <li key={index}>
                 <div className={`${styles.item}`}>
                   <div className={`${styles.item_img}`}>
                     <Link href={`${paths.ARTIST}/${artist.id}`}>
                       <Image
-                        src={
-                          artist.imagePath ? artist.imagePath : IMAGES.AVATAR
-                        }
+                        src={IMAGES.AVATAR}
                         alt="image.png"
                         width={50}
                         height={50}

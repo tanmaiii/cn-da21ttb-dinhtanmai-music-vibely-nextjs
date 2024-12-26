@@ -21,6 +21,7 @@ interface Props {
 
 interface ITrack extends Props {
   primary?: boolean;
+  dontShowPlay?: boolean;
   song: ISong;
 }
 
@@ -130,7 +131,7 @@ const Track = (props: ITrack) => {
 };
 
 const TrackShort = (props: ITrack) => {
-  const { num, isLoading, song } = props;
+  const { num, isLoading, song, dontShowPlay = false } = props;
 
   return (
     <div aria-disabled={isLoading} className={`${styles.TrackShort}`}>
@@ -147,16 +148,18 @@ const TrackShort = (props: ITrack) => {
               <Skeleton height={50} width={50} />
             ) : (
               <Image
-                src={song.imagePath ? song.imagePath : IMAGES.SONG}
+                src={IMAGES.SONG}
                 alt="song"
                 quality={90}
                 width={50}
                 height={50}
               />
             )}
-            <button className={`${styles.button_play}`}>
-              <i className="fa-solid fa-play"></i>
-            </button>
+            {!dontShowPlay && (
+              <button className={`${styles.button_play}`}>
+                <i className="fa-solid fa-play"></i>
+              </button>
+            )}
           </div>
           <div className={`${styles.TrackShort_swapper_left_desc}`}>
             {isLoading ? (
@@ -167,17 +170,20 @@ const TrackShort = (props: ITrack) => {
             ) : (
               <>
                 <h4>
-                  <Link href={paths.SONG + "/123"}>{song?.title}</Link>
+                  <Link href={paths.SONG + song?.slug}>{song?.title}</Link>
                 </h4>
                 <p>
-                  {song?.owner.map((owner, index) => (
+                  {/* {song?.owner.map((owner, index) => (
                     <Link
                       key={index}
                       href={`${paths.ARTIST}/${owner?.id || 1}`}
                     >
                       {owner.name}
                     </Link>
-                  ))}
+                  ))} */}
+                  <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
+                    {song?.creator?.name}
+                  </Link>
                 </p>
               </>
             )}
@@ -197,7 +203,9 @@ const TrackShort = (props: ITrack) => {
             />
           </div>
           <div className={`${styles.item_default}`}>
-            <span>{isLoading ? <Skeleton width={60} /> : "123M"}</span>
+            <span>
+              {isLoading ? <Skeleton width={60} /> : formatNumber(song.listens)}
+            </span>
           </div>
         </div>
       </div>

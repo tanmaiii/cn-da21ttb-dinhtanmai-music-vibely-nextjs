@@ -89,11 +89,12 @@ const Footer = () => {
       </div>
       <div className={`${styles.Footer_bottom}`}>
         <h4>
-          © 2024 - Đây là đồ án chuyên ngành của <a href="mailto:dinhtanmaivn@gmail.com">Tanmaiii</a>
+          © 2024 - Đây là đồ án chuyên ngành của <a href="mailto:dinhtanmaivn@gmail.com">Đinh Tấn Mãi - TVU</a>
         </h4>
       </div>
     </div>
   );
 };
+
 
 export default Footer;

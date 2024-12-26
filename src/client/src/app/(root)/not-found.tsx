@@ -5,11 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { IMAGES } from "@/lib/constants";
 
-const NotFoundPage = () => {
+const NotFound = () => {
   return (
     <div className={`${styles.NotFoundPage}`}>
       <div>
-        <Image src={IMAGES.ERROR} alt="404.svg" width={400} />
+        <Image src={IMAGES.ERROR} alt="" width={400} />
       </div>
       <h1>Opps</h1>
       <h6>This page you are looking for could not be found.</h6>
@@ -22,4 +22,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default NotFound;

@@ -1,13 +1,12 @@
-import { Op, Sequelize, WhereOptions, where } from "sequelize";
+import { Op, Sequelize, WhereOptions } from "sequelize";
 import Genre from "../models/Genre";
 import Mood from "../models/Mood";
 import Song from "../models/Song";
 import { default as SongPlay } from "../models/SongPlay";
 import User from "../models/User";
+import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
 import { attributesUser } from "./User.service";
-import { SortOptions } from "../utils/commonUtils";
-import PlaylistSong from "../models/PlaylistSong";
 
 interface GetAllOptions {
   page: number;

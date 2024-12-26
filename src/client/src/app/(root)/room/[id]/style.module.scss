@@ -74,7 +74,7 @@
           width: 100%;
           display: none;
           background: linear-gradient(rgba(0, 0, 0, 0.8), transparent);
-          z-index: 2;
+          z-index: 3;
           & > .left {
             @include flex(center, start, row);
             gap: $space-12;
@@ -113,7 +113,7 @@
           width: 100%;
           background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
           display: none;
-          z-index: 2;
+          z-index: 3;
           & > .left {
             & > .buttonLive {
               @include flex(center, center, row);
@@ -152,7 +152,7 @@
 
         & > .content {
           padding: 56px $space-24;
-          z-index: 1;
+          // z-index: 1;
           @include flex(flex-start, flex-start, column);
           & > h4 {
             font-size: $size-16;
@@ -160,14 +160,31 @@
             font-weight: $font-medium;
             @include text(1);
             margin-bottom: $space-12;
+            z-index: 2;
           }
           .item {
             border-radius: $radius-8;
             background-color: $color-dark-rgba;
+            // background-color: $color-light-text-3;
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
             width: 300px;
+            z-index: 2;
+          }
+
+          & .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(
+              to right,
+              rgba(255, 255, 255, 0.2),
+              transparent
+            );
+            z-index: 1;
           }
         }
       }

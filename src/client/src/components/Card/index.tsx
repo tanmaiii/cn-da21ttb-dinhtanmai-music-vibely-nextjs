@@ -9,7 +9,6 @@ import { ButtonIconRound } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
 import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatNumber, isSongData } from "@/lib/utils";
-import avatarExample from "@/public/images/anime.jpg";
 import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
 import { MotionDiv } from "../Motion";
@@ -60,7 +59,7 @@ interface ICardArtist {
 }
 
 interface ICardLive {
-  id: number;
+  id?: number;
   isLoading?: boolean;
   className?: string;
   room: IRoom;
@@ -247,12 +246,12 @@ const CardArtist = (props: ICardArtist) => {
 };
 
 const CardRoom = (props: ICardLive) => {
-  const { id, room, className, isLoading = false } = props;
+  const { id = 1, room, className, isLoading } = props;
   const router = useRouter();
   const classNameCol = useClassNameCol();
 
   const handleClick = () => {
-    router.push(`${paths.ROOM}/1123`);
+    router.push(`${paths.ROOM}/${room?.id}`);
   };
 
   return (
@@ -274,17 +273,13 @@ const CardRoom = (props: ICardLive) => {
       >
         <div className={`${styles.CardLive_swapper_container}`}>
           <div className={`${styles.CardLive_swapper_container_image}`}>
-            {isLoading ? (
-              <Skeleton height={"100%"} />
-            ) : (
-              <Image
-                src={room?.imagePath || IMAGES.SONG}
-                alt="image.png"
-                width={200}
-                height={200}
-                quality={100}
-              />
-            )}
+            <Image
+              src={room?.imagePath ? apiImage(room?.imagePath) : IMAGES.AVATAR}
+              alt="image.png"
+              width={200}
+              height={200}
+              quality={100}
+            />
             <span>LIVE</span>
 
             <div
@@ -296,7 +291,11 @@ const CardRoom = (props: ICardLive) => {
               className={`${styles.CardLive_swapper_container_image_avatar}`}
             >
               <Image
-                src={avatarExample}
+                src={
+                  (room?.creator.imagePath &&
+                    apiImage(room?.creator.imagePath)) ||
+                  IMAGES.SONG
+                }
                 alt="image.png"
                 width={50}
                 height={50}
@@ -305,14 +304,10 @@ const CardRoom = (props: ICardLive) => {
             </div>
           </div>
           <div className={`${styles.CardLive_swapper_container_desc}`}>
-            {isLoading ? (
-              <Skeleton width={"100%"} />
-            ) : (
-              <Link href={`${paths.LIVE}/123`}>
-                <h4>{room.title}</h4>
-              </Link>
-            )}
-            {isLoading ? <Skeleton width={"100%"} /> : <p>42 are listening</p>}
+            <Link href={`${paths.LIVE}/123`}>
+              <h4>{room.title}</h4>
+            </Link>
+            <p>{room.membersCount || 0} are listening</p>
           </div>
         </div>
       </div>

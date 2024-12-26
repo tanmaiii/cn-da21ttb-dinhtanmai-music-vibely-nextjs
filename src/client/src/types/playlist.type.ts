@@ -1,4 +1,4 @@
-import { IArtist, IGenre, IMood, ISong } from ".";
+import { IArtist, IGenre, IMood } from ".";
 
 export interface IPlaylist {
   id: string;
@@ -12,11 +12,6 @@ export interface IPlaylist {
   public: boolean;
   total: number;
   likes: number;
+  songsCount: number;
   moods?: IMood[];
-}
-
-export interface IResSongInPlaylist {
-  songId: string;
-  playlistId: string;
-  song: ISong;
 }

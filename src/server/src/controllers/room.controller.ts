@@ -15,6 +15,7 @@ import ApiError from "../utils/ApiError";
 import { get } from "lodash";
 import { getFilePath } from "../utils/commonUtils";
 import { IIdentity } from "../middleware/auth.middleware";
+import RoomSongService from "../services/RoomSong.service";
 
 export const getAllRoomsHandler = async (
   req: Request<{}, GetAllRoomInput["query"], {}>,
@@ -22,7 +23,16 @@ export const getAllRoomsHandler = async (
   next: NextFunction
 ) => {
   try {
-    const rooms = await RoomService.getAll();
+    const { limit = 10, page = 1, keyword, sort } = req.query;
+    const userInfo = get(req, "identity") as IIdentity;
+
+    const rooms = await RoomService.getAllWithPagination({
+      page: parseInt(page as string, 10),
+      limit: parseInt(limit as string, 10),
+      sort: sort as any,
+      userId: userInfo.id,
+      keyword: keyword as string,
+    });
 
     res
       .status(StatusCodes.OK)
@@ -74,7 +84,7 @@ export const createRoomHandler = async (
     const room = await RoomService.create(data);
 
     if (songIds) {
-      await RoomService.addSongToRoom(room.id, songIds);
+      await RoomSongService.addSongToRoom(room.id, songIds);
     }
 
     const newRoom = await RoomService.getById(room.id);
@@ -112,7 +122,7 @@ export const updateRoomHandler = async (
     await RoomService.update(req.params.id, data);
 
     if (songIds) {
-      await RoomService.updateSongToRoom(req.params.id, songIds);
+      await RoomSongService.updateSongToRoom(req.params.id, songIds);
     }
 
     const newRoom = await RoomService.getById(req.params.id);
@@ -176,7 +186,7 @@ export const addSongToRoomHandler = async (
 
     const songIds = req.body.songId;
 
-    await RoomService.addSongToRoom(req.params.id, songIds);
+    await RoomSongService.addSongToRoom(req.params.id, songIds);
 
     res
       .status(StatusCodes.OK)
@@ -214,7 +224,7 @@ export const removeSongToRoomHandler = async (
     const songIds = req.body.songId;
 
     if (songIds && songIds.length > 0) {
-      await RoomService.removeSongToRoom(req.params.id, songIds);
+      await RoomSongService.removeSongToRoom(req.params.id, songIds);
     }
 
     res
@@ -225,6 +235,29 @@ export const removeSongToRoomHandler = async (
   }
 };
 
+export const getSongsInRoomHandler = async (
+  req: Request<GetRoomSchema["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const room = await RoomService.getById(req.params.id);
+
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
+    }
+
+    const songs = await RoomSongService.getSongInRoom(req.params.id);
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: songs, message: "Get songs in room successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Thêm thành viên vào phòng
 export const addMemberToRoomHandler = async (
   req: Request<
     AddMemberToRoomInput["params"],
@@ -260,6 +293,7 @@ export const addMemberToRoomHandler = async (
   }
 };
 
+//Xóa thành viên khỏi phòng
 export const removeMemberToRoomHandler = async (
   req: Request<
     RemoveMemberToRoomInput["params"],

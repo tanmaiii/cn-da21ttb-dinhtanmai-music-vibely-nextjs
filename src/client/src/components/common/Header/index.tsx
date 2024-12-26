@@ -9,14 +9,14 @@ import {
 import Input from "@/components/ui/Input";
 import { useUI } from "@/context/UIContext";
 import { useCustomToast } from "@/hooks/useToast";
-import { paths } from "@/lib/constants";
-import profilePic from "@/public/images/anime.jpg";
+import { IMAGES, paths } from "@/lib/constants";
+import { RootState } from "@/lib/store";
+import { apiImage } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import styles from "./style.module.scss";
-import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
+import styles from "./style.module.scss";
 
 const Header = () => {
   const headerRef = React.useRef<HTMLDivElement>(null);
@@ -106,7 +106,9 @@ const Header = () => {
             <div className={`${styles.Header_right_user}`}>
               <button className={`${styles.Header_right_user_image}`}>
                 <Image
-                  src={profilePic}
+                  src={
+                    user?.imagePath ? apiImage(user.imagePath) : IMAGES.AVATAR
+                  }
                   alt="avatar"
                   width={40}
                   height={40}

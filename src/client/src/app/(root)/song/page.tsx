@@ -1,14 +1,14 @@
 "use client";
+import { Card } from "@/components/Card";
+import LoadMoreSong from "@/components/LoadMore/LoadMoreSong";
+import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
 import { ButtonIcon } from "@/components/ui/Button";
 import songService from "@/services/song.service";
-import { ISong, ISort, QueryParams } from "@/types";
+import { ISong, ISort } from "@/types";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import { Section } from "@/components/Section";
-import { Card } from "@/components/Card";
-import LoadMoreSong from "@/components/LoadMore/LoadMoreSong";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "All", value: "newest" },
@@ -61,7 +61,7 @@ const SongPage = () => {
         <div className={`${styles.SongPage_body} row no-gutters`}>
           <Section>
             {data.map((item, index) => {
-              return <Card key={index} data={item} />;
+              return <Card index={index} key={index} data={item} />;
             })}
             <LoadMoreSong
               setNextPage={setNextPage}

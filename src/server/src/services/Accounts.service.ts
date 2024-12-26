@@ -7,6 +7,7 @@ export const attributesAccount = [
   "email",
   "userId",
   "username",
+  "password",
   "provider",
   "providerId",
 ];

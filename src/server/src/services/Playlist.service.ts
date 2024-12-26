@@ -37,6 +37,12 @@ const playlistQueryOptions = {
       ),
       "likes",
     ],
+    [
+      Sequelize.literal(
+        `(SELECT COUNT(*) FROM playlist_song WHERE playlist_song.playlistId = playlist.id)`
+      ),
+      "songsCount",
+    ],
   ],
   include: [
     { model: User, attributes: attributesUser, as: "creator" },
@@ -164,21 +170,6 @@ export default class PlaylistService {
     const playlists = await Playlist.findAndCountAll({
       where: { [Op.and]: [whereCondition, { id: playlistIds }] },
       ...playlistQueryOptions,
-      include: [
-        { model: User, attributes: attributesUser, as: "creator" },
-        {
-          model: Mood,
-          attributes: attributesMood,
-          through: { attributes: [] as never[] },
-        },
-        { model: Genre, attributes: attributesMood },
-        // {
-        //   model: User,
-        //   attributes: ["id"],
-        //   through: { attributes: [] },
-        //   as: "likes",
-        // },
-      ],
       limit,
       offset,
     } as any);

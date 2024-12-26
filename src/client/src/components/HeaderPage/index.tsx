@@ -116,10 +116,10 @@ const HeaderPage = (props: Props) => {
                   <span>{formatNumber(data?.likes)} likes</span>
                 </div>
               )}
-              {!isSong && data?.total && (
+              {!isSong && data?.songsCount && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-thin fa-album"></i>
-                  <span>{formatNumber(data?.total)} songs</span>
+                  <span>{formatNumber(data?.songsCount)} songs</span>
                 </div>
               )}
             </div>

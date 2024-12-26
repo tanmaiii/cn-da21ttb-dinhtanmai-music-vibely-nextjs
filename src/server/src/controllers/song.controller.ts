@@ -21,6 +21,7 @@ import MoodService from "../services/Mood.service";
 import SongService from "../services/Song.service";
 import ApiError from "../utils/ApiError";
 import { getFilePath, SortOptions } from "../utils/commonUtils";
+import { IIdentity } from "../middleware/auth.middleware";
 
 // Lấy danh sách bài hát
 export const getAllHandler = async (
@@ -31,13 +32,13 @@ export const getAllHandler = async (
   try {
     const { limit = 10, page = 1, keyword, sort } = req.query;
 
-    const userId = get(req, "identity.id") as string;
+    const userInfo = get(req, "identity") as IIdentity;
 
     const songs = await SongService.getSongsWithPagination({
       page: parseInt(page as string, 10),
       limit: parseInt(limit as string, 10),
       sort: sort as SortOptions,
-      userId: userId as string,
+      userId: userInfo.id || '',
       keyword: keyword as string,
     });
 

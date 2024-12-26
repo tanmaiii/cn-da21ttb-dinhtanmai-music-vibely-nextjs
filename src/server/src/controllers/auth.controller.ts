@@ -5,6 +5,7 @@ import { get } from "lodash";
 import UserService from "../services/User.service";
 
 import {
+  ChangePasswordInput,
   LoginInput,
   logoutInput,
   RefreshTokenInput,
@@ -17,6 +18,7 @@ import AccountsService from "../services/Accounts.service";
 import RoleService from "../services/Role.service";
 import { ROLES } from "../utils/contants";
 import { OAuth2Client } from "google-auth-library";
+import { IIdentity } from "../middleware/auth.middleware";
 
 const client = new OAuth2Client(process.env.GG_CLIENT_ID);
 
@@ -319,6 +321,76 @@ export async function loginGoogle(
         refreshToken,
       },
       message: "Register successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function changePassword(
+  req: Request<{}, {}, ChangePasswordInput["body"]>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+
+    if (!userInfo.id) {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized");
+    }
+
+    const user = await UserService.getById(userInfo.id);
+
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    const { password, new_password } = req.body;
+
+    const account = await AccountsService.getByUserId(userInfo.id);
+
+    if (account.provider == "local") {
+      if (!PasswordUtil.compare(password, account.password)) {
+        throw new ApiError(
+          StatusCodes.UNAUTHORIZED,
+          "Old password is incorrect"
+        );
+      }
+    }
+
+    await AccountsService.update(account.id, {
+      password: PasswordUtil.hash(new_password),
+    });
+
+    res.status(StatusCodes.OK).json({
+      message: "Change password successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetPassword(
+  req: Request<{}, {}, { email: string }>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { email } = req.body;
+
+    const user = await AccountsService.getByEmail(email);
+
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    // Gửi email reset password
+    // const token = TokenUtil.generateResetPasswordToken(user.toJSON());
+
+    // await MailService.sendResetPasswordEmail(user.toJSON(), token);
+
+    res.status(StatusCodes.OK).json({
+      message: "Reset password successfully",
     });
   } catch (error) {
     next(error);

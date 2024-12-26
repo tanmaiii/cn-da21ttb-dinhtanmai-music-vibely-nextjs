@@ -72,7 +72,22 @@ export const logoutSchema = object({
   }),
 });
 
+export const changePasswordSchema = object({
+  body: object({
+    password: string(),
+    new_password: string({
+      required_error: "New password is required",
+    }).min(5, "Password too short"),
+    password_confirmation: string({
+      required_error: "Password confirmation is required",
+    }),
+  }).refine((data) => data.new_password === data.password_confirmation, {
+    message: "Passwords do not match",
+  }),
+});
+
 export type LoginInput = TypeOf<typeof loginSchema>;
 export type RegisterInput = TypeOf<typeof registerSchema>;
 export type RefreshTokenInput = TypeOf<typeof refreshTokenSchema>;
 export type logoutInput = TypeOf<typeof logoutSchema>;
+export type ChangePasswordInput = TypeOf<typeof changePasswordSchema>;

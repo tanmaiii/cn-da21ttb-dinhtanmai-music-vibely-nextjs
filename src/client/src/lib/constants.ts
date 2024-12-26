@@ -1,4 +1,4 @@
-import errorSVG from "@/public/errorimg.b8621065.svg";
+import error from "@/public/images/404-2.png";
 import avatar from "@/public/images/avatar.png";
 import favorites from "@/public/images/liked-songs.png";
 import playlist from "@/public/images/playlist.png";
@@ -104,7 +104,7 @@ export const IMAGES = {
   SONG: song,
   PLAYLIST: playlist,
   FAVORITES: favorites,
-  ERROR: errorSVG,
+  ERROR: error,
   LOGO: logo,
   GOOGLE: google,
 };

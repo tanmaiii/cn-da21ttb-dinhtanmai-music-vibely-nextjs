@@ -11,9 +11,9 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "Mới nhất", value: "newest" },
-  { id: 2, name: "Cũ nhất", value: "oldest" },
-  { id: 3, name: "Phổ biến", value: "mostLikes" },
+  { id: 1, name: "Phổ biến", value: "mostLikes" },
+  { id: 2, name: "Mới nhất", value: "newest" },
+  { id: 3, name: "Cũ nhất", value: "oldest" },
 ];
 
 const PlaylistPage = () => {
@@ -60,7 +60,7 @@ const PlaylistPage = () => {
         <div className={`${styles.PlaylistPage_body} row no-gutters`}>
           <Section>
             {data.map((item: IPlaylist, index: number) => (
-              <Card key={index} data={item} />
+              <Card index={index} key={index} data={item} />
             ))}
             <LoadMorePlaylist
               setNextPage={setNextPage}

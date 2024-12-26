@@ -9,10 +9,10 @@ import {
 } from "@hello-pangea/dnd";
 import { Track } from "../Track";
 import styles from "./style.module.scss";
-import { IResSongInPlaylist } from "../../types/playlist.type";
+import { ISong } from "@/types";
 
 interface Props {
-  data: IResSongInPlaylist[];
+  data: ISong[];
 }
 
 const TablePlaylist = (props: Props) => {
@@ -72,8 +72,8 @@ const TablePlaylist = (props: Props) => {
                   {items &&
                     items.map((item, index) => (
                       <Draggable
-                        key={item.song.id}
-                        draggableId={item.song.id}
+                        key={item?.id}
+                        draggableId={item?.id}
                         index={index}
                       >
                         {(provided) => (
@@ -82,7 +82,7 @@ const TablePlaylist = (props: Props) => {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <Track num={index + 1} song={item.song} />
+                            <Track num={index + 1} song={item} />
                           </div>
                         )}
                       </Draggable>

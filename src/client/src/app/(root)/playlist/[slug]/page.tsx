@@ -7,7 +7,7 @@ import Table from "@/components/TablePlaylist";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import playlistService from "@/services/playlist.service";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
@@ -17,7 +17,7 @@ const PlaylistPage = () => {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["playlist", slug],
     queryFn: async () => {
       const res = await playlistService.getBySlug(slug);
@@ -35,12 +35,12 @@ const PlaylistPage = () => {
 
   if (isLoading || isLoadingSong) return <Loading />;
 
+  if (error || !slug) return notFound();
+
   return (
     <div className={`${styles.PlaylistPage}`}>
       <div className={`${styles.PlaylistPage_header}`}>
-        {data && (
-          <HeaderPage data={data} onEdit={() => setShowEdit(true)} />
-        )}
+        {data && <HeaderPage data={data} onEdit={() => setShowEdit(true)} />}
       </div>
       <div className={`${styles.PlaylistPage_content}`}>
         <div className={`${styles.PlaylistPage_content_header}`}>

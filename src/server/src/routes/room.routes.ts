@@ -6,6 +6,7 @@ import {
   deleteRoomHandler,
   getAllRoomsHandler,
   getDetailRoomHandler,
+  getSongsInRoomHandler,
   removeMemberToRoomHandler,
   removeSongToRoomHandler,
   updateRoomHandler,
@@ -22,6 +23,7 @@ import {
   updateRoomSchema,
 } from "../schema/room.schema";
 import { PERMISSIONS } from "../utils/contants";
+import { GetRoomSchema } from "../schema/room.schema";
 
 const router: Router = Router();
 
@@ -57,20 +59,27 @@ router.delete(
   validateData(deleteRoomSchema),
   deleteRoomHandler
 );
+// Thêm bài hát vào phòng
 router.post(
-  // Thêm bài hát vào phòng
   "/:id/song",
   authorize(PERMISSIONS.UPDATE_ROOM),
   validateData(addSongToRoomSchema),
   addSongToRoomHandler
 );
+// Xóa bài hát vào phòng
 router.delete(
-  // Thêm bài hát vào phòng
   "/:id/song",
   authorize(PERMISSIONS.DELETE_ROOM),
   validateData(removeSongToRoomSchema),
   removeSongToRoomHandler
 );
+router.get(
+  "/:id/song",
+  authorize(PERMISSIONS.READ_ROOM),
+  validateData(getRoomSchema),
+  getSongsInRoomHandler
+);
+
 router.post(
   // Thêm thành viên vào phòng
   "/:id/member",

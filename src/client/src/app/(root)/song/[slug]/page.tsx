@@ -1,10 +1,9 @@
 "use client";
 import { HeaderPage } from "@/components/HeaderPage";
-import Table from "@/components/TablePlaylist";
 import { TrackArtist } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { navSongPage } from "@/lib/constants";
-import { artists, lyrics, songs } from "@/lib/data";
+import { artists, lyrics } from "@/lib/data";
 import songService from "@/services/song.service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -13,7 +12,7 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const SongPage = () => {
-  const [showEdit, setShowEdit] = useState(false);
+  // const [showEdit, setShowEdit] = useState(false);
   const [nav, setNav] = useState("About");
   const [seeMore, setSeeMore] = useState(false);
   const params = useParams();
@@ -90,7 +89,7 @@ const SongPage = () => {
                 >
                   {data &&
                     data?.data?.moods?.map((item, index) => (
-                      <button>{item.title}</button>
+                      <button key={index}>{item.title}</button>
                     ))}
                 </div>
               </div>
@@ -124,7 +123,7 @@ const SongPage = () => {
 
           {nav == "Similar Songs" && (
             <div className={`${styles.SongPage_content_body_similar}`}>
-              <Table songs={songs} />
+              {/* <Table songs={songs} /> */}
             </div>
           )}
         </div>

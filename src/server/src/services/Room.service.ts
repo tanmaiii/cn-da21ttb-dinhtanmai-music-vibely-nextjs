@@ -1,10 +1,24 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 import Room from "../models/Room";
 import RoomMember from "../models/RoomMember";
 import User from "../models/User";
 import { attributesUser } from "./User.service";
 import fs from "fs";
 import RoomSong from "../models/RoomSong";
+import { SortOptions } from "../utils/commonUtils";
+import { WhereOptions } from "sequelize";
+import { Op } from "sequelize";
+import Song from "../models/Song";
+import { songQueryOptions } from "./Song.service";
+
+interface GetAllOptions {
+  page: number;
+  limit: number;
+  userId?: string;
+  sort?: SortOptions;
+  keyword?: string;
+  where?: WhereOptions;
+}
 
 export const attributesRoom = [
   "id",
@@ -50,6 +64,90 @@ export default class RoomService {
       ],
       include: this.options,
     });
+  };
+
+  static getAllWithPagination = async ({
+    page = 1,
+    limit = 10,
+    userId,
+    sort,
+    keyword,
+    where,
+  }: GetAllOptions) => {
+    const offset = (page - 1) * limit;
+
+    const whereCondition: { [Op.and]?: any[] } = {};
+
+    if (keyword) {
+      whereCondition[Op.and] = whereCondition[Op.and] || [];
+      whereCondition[Op.and].push({
+        [Op.or]: [
+          { title: { [Op.substring]: keyword } },
+          { description: { [Op.substring]: keyword } },
+        ],
+      });
+    }
+
+    const order: any[] = [["createdAt", "DESC"]];
+
+    if (sort) {
+      switch (sort) {
+        case "newest":
+          order[0] = ["createdAt", "DESC"];
+          break;
+        case "oldest":
+          order[0] = ["createdAt", "ASC"];
+          break;
+        case "mostListens":
+          order[0] = [[Sequelize.literal("membersCount"), "DESC"]];
+          break;
+        default:
+          order[0] = ["createdAt", "DESC"];
+          break;
+      }
+    }
+
+    const totalItems = await Room.count({
+      where: {
+        [Op.and]: [whereCondition, where],
+      },
+    });
+
+    const rooms = await Room.findAndCountAll({
+      where: {
+        [Op.and]: [whereCondition, where],
+      },
+      attributes: [
+        ...attributesRoom,
+        [
+          Sequelize.literal(
+            `( SELECT COUNT(*) FROM room_members WHERE room_members.roomId = Room.id)`
+          ),
+          "membersCount",
+        ],
+        [
+          Sequelize.literal(
+            `( SELECT COUNT(*) FROM room_song WHERE room_song.roomId = Room.id)`
+          ),
+          "songsCount",
+        ],
+      ],
+      include: this.options,
+      limit,
+      offset,
+      order,
+    });
+
+    return {
+      data: rooms.rows,
+      sort: sort || "newest",
+      keyword: keyword || "",
+      user: userId || "",
+      limit: limit,
+      totalItems: totalItems,
+      currentPage: page,
+      totalPages: Math.ceil(totalItems / limit),
+    };
   };
 
   static getById = (id: string) => {
@@ -121,49 +219,5 @@ export default class RoomService {
 
   static removeUserToRoom = async (roomId: string, userId: string) => {
     return RoomMember.destroy({ where: { roomId, userId } });
-  };
-
-  static checkSongInRoom = async (roomId: string, songId: string) => {
-    const songInRoom = await RoomSong.findOne({ where: { roomId, songId } });
-    return !!songInRoom;
-  };
-
-  static addSongToRoom = async (roomId: string, songIds: string[]) => {
-    const room = await Room.findByPk(roomId);
-    if (!room) {
-      throw new Error("Room not found");
-    }
-
-    const roomIndex = await RoomSong.findAll({
-      where: { roomId },
-      attributes: [[Sequelize.fn("MAX", Sequelize.col("index")), "maxIndex"]],
-    });
-
-    const length = roomIndex[0]?.getDataValue("maxIndex") || 0;
-
-    let index = length || 0;
-    const songData = [];
-    for (const songId of songIds) {
-      index = index + 1;
-
-      if (await this.checkSongInRoom(roomId, songId)) {
-        continue;
-      }
-
-      songData.push({ roomId, songId, index });
-    }
-
-    return songData.length > 0 && (await RoomSong.bulkCreate(songData));
-  };
-
-  static updateSongToRoom = async (roomId: string, songIds: string[]) => {
-    await RoomSong.destroy({ where: { roomId } });
-    return await RoomService.addSongToRoom(roomId, songIds);
-  };
-
-  static removeSongToRoom = async (roomId: string, songIds: string[]) => {
-    return songIds.map(async (songId) => {
-      await RoomSong.destroy({ where: { roomId, songId } });
-    });
   };
 }

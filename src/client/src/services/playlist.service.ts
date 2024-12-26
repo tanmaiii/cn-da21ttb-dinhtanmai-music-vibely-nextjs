@@ -1,8 +1,7 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { IPlaylist } from "@/types";
+import { IPlaylist, ISong } from "@/types";
 import { ListResponse, ResponseAPI } from "@/types/common.type";
 import { QueryParams } from "../types/common.type";
-import { IResSongInPlaylist } from "../types/playlist.type";
 
 class PlaylistService {
   private client;
@@ -26,10 +25,8 @@ class PlaylistService {
     return res.data;
   }
 
-  async getAllSongs(id: string): Promise<ResponseAPI<IResSongInPlaylist[]>> {
-    const res = await this.client.get<ResponseAPI<IResSongInPlaylist[]>>(
-      `/${id}/song`
-    );
+  async getAllSongs(id: string): Promise<ResponseAPI<ISong[]>> {
+    const res = await this.client.get<ResponseAPI<ISong[]>>(`/${id}/song`);
     return res.data;
   }
 }

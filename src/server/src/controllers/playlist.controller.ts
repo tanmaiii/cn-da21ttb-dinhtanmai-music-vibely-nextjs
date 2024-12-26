@@ -279,12 +279,16 @@ export const getSongInPlaylistHandler = async (
   try {
     const playlistId = req.params.id;
     const playlist = await PlaylistService.getById(playlistId);
+    const userInfo = get(req, "identity") as IIdentity;
 
     if (!playlist) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
     }
 
-    const songs = await PlaylistSongService.getAll(playlistId);
+    const songs = await PlaylistSongService.getAll(
+      playlistId,
+      userInfo.id ?? ""
+    );
 
     res.json({ data: songs, message: "Get songs in playlist successfully" });
   } catch (error) {

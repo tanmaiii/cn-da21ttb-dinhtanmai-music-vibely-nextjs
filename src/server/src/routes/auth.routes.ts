@@ -1,6 +1,7 @@
 // src/routes/user.ts
 import { Router } from "express";
 import {
+  changePassword,
   login,
   loginGoogle,
   logout,
@@ -10,6 +11,7 @@ import {
 } from "../controllers/auth.controller";
 import { authorize, validateData } from "../middleware";
 import {
+  changePasswordSchema,
   loginSchema,
   logoutSchema,
   refreshTokenSchema,
@@ -28,5 +30,12 @@ router.post("/refresh-token", validateData(refreshTokenSchema), refreshToken);
 router.post("/logout", authorize(), validateData(logoutSchema), logout);
 
 router.post("/login-google", loginGoogle);
+
+router.post(
+  "/change-password",
+  authorize(),
+  validateData(changePasswordSchema),
+  changePassword
+);
 
 export default router;
