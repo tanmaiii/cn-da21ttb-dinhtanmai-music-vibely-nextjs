@@ -1,12 +1,13 @@
-import express, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import { get, merge } from "lodash";
+import PlaylistService from "../services/Playlist.service";
 import RoleService from "../services/Role.service";
+import SongService from "../services/Song.service";
 import UserService from "../services/User.service";
 import ApiError from "../utils/ApiError";
 import TokenUtil from "../utils/jwt";
-import SongService from "../services/Song.service";
 
 export interface IIdentity {
   id: string;
@@ -53,13 +54,13 @@ export const globalAuthorize = async (
 export const authorize = (requiredPermission?: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = get(req, "identity.id") as string;
+      const userInfo = get(req, "identity") as IIdentity;
 
-      if (!userId) {
+      if (!userInfo) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
       }
 
-      const user = await UserService.getById(userId);
+      const user = await UserService.getById(userInfo.id);
 
       if (!user) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
@@ -101,18 +102,10 @@ export const isSongAuthor = async (
   next: NextFunction
 ) => {
   try {
-    // Lấy token từ header Authorization
-    const token = req.headers.authorization.split(" ")[1];
-    const tokenInfo = TokenUtil.decodeToken(token) as JwtPayload;
-
-    if (!tokenInfo || !token) {
-      throw new ApiError(
-        StatusCodes.UNAUTHORIZED,
-        "Unauthorized: No token provided"
-      );
-    }
+    const userInfo = get(req, "identity") as IIdentity;
 
     const { id } = req.params;
+    
     if (!id) {
       throw new ApiError(StatusCodes.BAD_REQUEST, "Missing songId");
     }
@@ -125,7 +118,7 @@ export const isSongAuthor = async (
     }
 
     // Kiểm tra userId có phải là creatorId của bài hát không
-    if (song.creator.id !== tokenInfo.id) {
+    if (song.creator.id !== userInfo.id) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
         "You are not the author of this song"
@@ -133,6 +126,35 @@ export const isSongAuthor = async (
     }
 
     // Nếu hợp lệ, cho phép tiếp tục
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Middleware kiểm tra quyền sở hữu playlist
+export const isPlaylistAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+
+    const { id } = req.params;
+    if (!id) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Missing songId");
+    }
+
+    const playlist = await PlaylistService.getById(id, userInfo.id);
+
+    if (playlist.creator.id !== userInfo.id) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        "You are not the author of this playlist"
+      );
+    }
+
     next();
   } catch (error) {
     next(error);

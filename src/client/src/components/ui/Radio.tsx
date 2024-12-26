@@ -1,15 +1,20 @@
 import React from "react";
 import styles from "./style.module.scss";
-// import { useFormState } from 'react-dom'
 
 interface Props {
   label: string;
   desc?: string;
   name: string;
   options: { value: string; label: string; description?: string }[];
+  value?: string;
+  onChange: (_: string) => void;
 }
 
-const Radio = ({ name, label, desc, options }: Props) => {
+const Radio = ({ name, label, desc, options, value, onChange }: Props) => {
+  const handleChange = (value: string) => {
+    onChange(value);
+  };
+
   return (
     <div className={`${styles.Radio}`}>
       <label className={`${styles.Radio_label}`} htmlFor={name}>
@@ -19,7 +24,11 @@ const Radio = ({ name, label, desc, options }: Props) => {
       <div className={`${styles.Radio_body}`}>
         {options &&
           options?.map(
-            (option: { value: string; label: string; description?: string }) => (
+            (option: {
+              value: string;
+              label: string;
+              description?: string;
+            }) => (
               <label
                 htmlFor={option.value}
                 key={option.value}
@@ -29,7 +38,9 @@ const Radio = ({ name, label, desc, options }: Props) => {
                   type="radio"
                   id={option.value}
                   name={name}
+                  defaultChecked={value === option.value}
                   value={option.value}
+                  onChange={() => handleChange(option.value)}
                 />
                 <div className={`${styles.Radio_body_item_title}`}>
                   <span>{option.label}</span>

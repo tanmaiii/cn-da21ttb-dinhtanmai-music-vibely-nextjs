@@ -11,6 +11,7 @@ interface Props {
   onClick?: () => void;
   dataTooltip?: string;
   white?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const ButtonIconPrimary = (props: Props) => {
@@ -85,15 +86,16 @@ interface ButtonLabelProps extends Props {
 const ButtonLabel = (props: ButtonLabelProps) => {
   return (
     <button
-      data-tooltip={props.dataTooltip}
-      disabled={props.hide}
-      style={props.style}
-      className={`${props.className}  ${styles.Button} ${styles.Button_Label} ${
-        props.line && styles.Button_Label_line
-      } ${styles[props.size || "medium"]}`}
-      onClick={props.onClick}
+      data-tooltip={props?.dataTooltip}
+      disabled={props?.hide}
+      style={props?.style}
+      className={`${props?.className}  ${styles.Button} ${styles.Button_Label} ${
+        props?.line && styles.Button_Label_line
+      } ${styles[props?.size || "medium"]}`}
+      onClick={props?.onClick}
+      type={props?.type}
     >
-      {props.children}
+      {props?.children}
     </button>
   );
 };

@@ -38,7 +38,6 @@ class User extends Model {
 
   @Column({
     unique: true,
-    allowNull: false,
   })
   declare slug: string;
 

@@ -21,6 +21,7 @@ import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
 import PlaylistSongService from "../services/PlaylistSong.service";
 import { IIdentity } from "../middleware/auth.middleware";
+import PlaylistSong from "../models/PlaylistSong";
 
 // Lấy tất cả playlist
 export const getAllPlaylistHandler = async (
@@ -113,7 +114,8 @@ export const createPlaylistHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Genre not found");
     }
 
-    const moodIds = req.body.moodId;
+    const moodIds = req.body.moodIds;
+    const songIds = req.body.songIds;
 
     const playlist = await PlaylistService.create({
       userId: userId,
@@ -128,10 +130,14 @@ export const createPlaylistHandler = async (
       await MoodService.addPlaylistToMood(playlist.id, moodIds);
     }
 
-    const createdPlaylist = await PlaylistService.getById(playlist.id);
+    if (songIds && songIds.length > 0) {
+      await PlaylistSongService.addSong(playlist.id, songIds);
+    }
+
+    const newPlaylist = await PlaylistService.getById(playlist.id);
 
     res.status(StatusCodes.CREATED).json({
-      data: createdPlaylist,
+      data: newPlaylist,
       message: "Create playlist successfully",
     });
   } catch (error) {
@@ -139,7 +145,7 @@ export const createPlaylistHandler = async (
   }
 };
 
-// Xóa playlist
+// Chỉnh sửa playlist
 export const updatePlaylistHandler = async (
   req: Request<UpdatePlaylistInput["params"], {}, UpdatePlaylistInput["body"]>,
   res: Response,
@@ -153,7 +159,8 @@ export const updatePlaylistHandler = async (
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-    const moodIds = req.body.moodId;
+    const moodIds = req.body.moodIds;
+    const songIds = req.body.songIds;
 
     const data = {
       ...req.body,
@@ -165,6 +172,10 @@ export const updatePlaylistHandler = async (
     // Nếu có moodId
     if (moodIds && moodIds.length > 0) {
       await MoodService.updatePlaylistToMood(playlist.id, moodIds);
+    }
+
+    if (songIds && songIds.length > 0) {
+      await PlaylistSongService.updateSong(playlist.id, songIds);
     }
 
     await PlaylistService.update(playlist.id, data);
@@ -182,7 +193,7 @@ export const updatePlaylistHandler = async (
   }
 };
 
-// Xóa playlist
+// Thêm bài hát vào playlist
 export const addSongToPlaylistHandler = async (
   req: Request<
     AddSongToPlaylistInput["params"],
@@ -194,27 +205,25 @@ export const addSongToPlaylistHandler = async (
 ) => {
   try {
     const existPlaylist = await PlaylistService.getById(req.params.id);
-    const existSong = await SongService.getSongById(req.body.songId);
+    const songIds = req.body.songIds;
 
-    if (!existPlaylist || !existSong) {
+    if (!existPlaylist) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const existSongInPlaylist = await PlaylistSongService.checkSongInPlaylist(
-      req.params.id,
-      req.body.songId
-    );
-
-    if (existSongInPlaylist) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Song already in playlist");
+    if (songIds.length > 0) {
+      for (const songId of songIds) {
+        const existSong = await SongService.getSongById(songId);
+        if (!existSong) {
+          throw new ApiError(
+            StatusCodes.NOT_FOUND,
+            `Song id ${songIds} not found`
+          );
+        }
+      }
     }
 
-    const body = {
-      playlistId: req.params.id,
-      songId: req.body.songId,
-    };
-
-    const playlist = await PlaylistSongService.addSong(body);
+    const playlist = await PlaylistSongService.addSong(req.params.id, songIds);
 
     res
       .status(StatusCodes.CREATED)
@@ -238,27 +247,13 @@ export const removeSongToPlaylistHandler = async (
 ) => {
   try {
     const existPlaylist = await PlaylistService.getById(req.params.id);
-    const existSong = await SongService.getSongById(req.body.songId);
+    const songIds = req.body.songIds;
 
-    if (!existPlaylist || !existSong) {
+    if (!existPlaylist) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    const existSongInPlaylist = await PlaylistSongService.checkSongInPlaylist(
-      req.params.id,
-      req.body.songId
-    );
-
-    if (!existSongInPlaylist) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Song not in playlist");
-    }
-
-    const body = {
-      playlistId: req.params.id,
-      songId: req.body.songId,
-    };
-
-    await PlaylistSongService.removeSong(body);
+    await PlaylistSongService.removeSong(req.params.id, songIds);
 
     res
       .status(StatusCodes.OK)

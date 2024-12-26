@@ -26,6 +26,7 @@ import {
 } from "../schema/playlist.schema";
 import { PERMISSIONS } from "../utils/contants";
 import { getAllPlaylistLikedHandler } from "../controllers/playlist.controller";
+import { isPlaylistAuthor } from "../middleware/auth.middleware";
 
 const router: Router = Router();
 
@@ -73,6 +74,7 @@ router.post(
 router.put(
   "/:id",
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
+  isPlaylistAuthor,
   uploadFile,
   validateData(updatePlaylistSchema),
   updatePlaylistHandler
@@ -87,12 +89,14 @@ router.get(
 );
 router.post(
   "/:id/song",
+  isPlaylistAuthor,
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
   validateData(addSongToPlaylistSchema),
   addSongToPlaylistHandler
 );
 router.delete(
   "/:id/song",
+  isPlaylistAuthor,
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
   removeSongToPlaylistHandler
 );

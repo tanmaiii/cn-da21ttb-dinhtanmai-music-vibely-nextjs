@@ -1,23 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { RootState } from "@/lib/store";
+import playlistService from "@/services/playlist.service";
+import { ISong } from "@/types";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { Track } from "../Track";
 import styles from "./style.module.scss";
-import { ISong } from "@/types";
 
 interface Props {
   data: ISong[];
+  playlistId?: string;
+  allowEdit?: boolean;
 }
 
 const TablePlaylist = (props: Props) => {
-  const { data } = props;
+  const { data, playlistId, allowEdit } = props;
   const [items, setItems] = useState(data);
+  const queryClient = useQueryClient();
+  // const user = useSelector((state: RootState) => state.user);
+
+  // useEffect(() => {
+  //   setItems(data);
+  // }, [data]);
+
+  const mutationUpdatePlaylist = useMutation({
+    mutationFn: async (songIds: string[]) => {
+      if (playlistId) {
+        await playlistService.updateSongs(playlistId, songIds);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["playlist", playlistId, "song"],
+      });
+      toast.success("Reorder successfully");
+    },
+  });
 
   // Xử lý khi kéo thả
   const handleOnDragEnd = (result: DropResult) => {
@@ -31,7 +58,13 @@ const TablePlaylist = (props: Props) => {
     // Tạo bản sao mới của danh sách và hoán đổi vị trí
     const updatedItems = [...items];
     const [reorderedItem] = updatedItems.splice(source.index, 1);
+
     updatedItems.splice(destination.index, 0, reorderedItem);
+
+    // Cập nhật lại danh sách
+    if (playlistId) {
+      mutationUpdatePlaylist.mutate(updatedItems.map((item) => item.id));
+    }
 
     setItems(updatedItems);
   };
@@ -75,6 +108,7 @@ const TablePlaylist = (props: Props) => {
                         key={item?.id}
                         draggableId={item?.id}
                         index={index}
+                        isDragDisabled={!allowEdit}
                       >
                         {(provided) => (
                           <div

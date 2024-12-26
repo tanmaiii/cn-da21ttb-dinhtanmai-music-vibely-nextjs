@@ -2,6 +2,7 @@ import createHttpClient from "@/lib/createHttpClient";
 import { IPlaylist, ISong } from "@/types";
 import { ListResponse, ResponseAPI } from "@/types/common.type";
 import { QueryParams } from "../types/common.type";
+import { IBodyCreatePlaylist } from "@/types/playlist.type";
 
 class PlaylistService {
   private client;
@@ -25,9 +26,20 @@ class PlaylistService {
     return res.data;
   }
 
+  async create(
+    data: Partial<IBodyCreatePlaylist>
+  ): Promise<ResponseAPI<IPlaylist>> {
+    const res = await this.client.post<ResponseAPI<IPlaylist>>("", data);
+    return res.data;
+  }
+
   async getAllSongs(id: string): Promise<ResponseAPI<ISong[]>> {
     const res = await this.client.get<ResponseAPI<ISong[]>>(`/${id}/song`);
     return res.data;
+  }
+
+  async updateSongs(id: string, songId: string[]) {
+    await this.client.put(id, { songId });
   }
 }
 

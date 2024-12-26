@@ -9,32 +9,62 @@ import { IPlaylist, ISort } from "@/types";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import Modal from "@/components/Modal";
+import FormPlaylist from "@/components/FormPlaylist";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { IBodyCreatePlaylist } from "@/types/playlist.type";
+import { useCustomToast } from "@/hooks/useToast";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "Phổ biến", value: "mostLikes" },
-  { id: 2, name: "Mới nhất", value: "newest" },
-  { id: 3, name: "Cũ nhất", value: "oldest" },
+  { id: 1, name: "Popular", value: "mostLikes" },
+  { id: 2, name: "Newest", value: "newest" },
+  { id: 3, name: "Oldest", value: "oldest" },
 ];
 
 const PlaylistPage = () => {
   const [data, setData] = useState<IPlaylist[] | null>(null);
   const [isLoad, setIsLoad] = useState(true);
-  const [active, setActive] = useState<ISort>("mostLikes");
+  const [active, setActive] = useState<ISort>("newest");
   const [nextPage, setNextPage] = useState(2);
+  const [showAdd, setShowAdd] = useState(false);
+  const { toastError, toastSuccess } = useCustomToast();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
+  const featchData = async () => {
     setIsLoad(true);
-    const fetchDataAsync = async () => {
-      const res = await playlistService.getAll({ page: 1, sort: active });
-      setData(res.data.data);
-    };
-
-    fetchDataAsync();
+    const res = await playlistService.getAll({ page: 1, sort: active });
+    setData(res.data.data);
     setNextPage(2);
     setTimeout(() => {
       setIsLoad(false);
     }, 2000);
+  };
+
+  useEffect(() => {
+    featchData();
   }, [active]);
+
+  const {} = useQuery({
+    queryKey: ["playlist"],
+    queryFn: async () => {
+      featchData();
+    }
+  })
+
+  const mutationAdd = useMutation({
+    mutationFn: async (data: IBodyCreatePlaylist) => {
+      const res = await playlistService.create(data);
+      return res;
+    },
+    onSuccess: () => {
+      toastSuccess("Create playlist success");
+      setShowAdd(false);
+      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+    },
+    onError: (error: any) => {
+      toastError(error.message);
+    },
+  });
 
   return (
     <div className={`${styles.PlaylistPage}`}>
@@ -42,6 +72,7 @@ const PlaylistPage = () => {
         <div className={styles.header}>
           <h1>Playlist</h1>
           <ButtonIcon
+            onClick={() => setShowAdd(true)}
             dataTooltip="Create playlist"
             icon={<i className="fa-solid fa-plus"></i>}
           />
@@ -69,6 +100,9 @@ const PlaylistPage = () => {
           </Section>
         </div>
       )}
+      <Modal show={showAdd} onClose={() => setShowAdd(false)}>
+        <FormPlaylist onSubmit={(data) => mutationAdd.mutate(data)} />
+      </Modal>
     </div>
   );
 };

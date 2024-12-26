@@ -1,7 +1,7 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import PlaylistSong from "../models/PlaylistSong";
 import Song from "../models/Song";
-import { songQueryOptions } from "./Song.service";
+import SongService, { songQueryOptions } from "./Song.service";
 
 export default class PlaylistSongService {
   static getAll = async (playlistId: string, userId?: string) => {
@@ -41,19 +41,51 @@ export default class PlaylistSongService {
   };
 
   static checkSongInPlaylist = async (playlistId: string, songId: string) => {
-    return await PlaylistSong.findOne({ where: { playlistId, songId } });
+    const song = await PlaylistSong.findOne({ where: { playlistId, songId } });
+    return !!song;
   };
 
-  static addSong = async (playlistSong: Partial<PlaylistSong>) => {
-    const lastSong = await PlaylistSong.findOne({
-      where: { playlistId: playlistSong.playlistId },
-      order: [["index", "DESC"]],
+  static addSong = async (playlistId: string, songIds: string[]) => {
+    // Lấy index lớn nhất hiện tại
+    const playlistIndex = await PlaylistSong.findAll({
+      where: { playlistId },
+      attributes: [[Sequelize.fn("MAX", Sequelize.col("index")), "maxIndex"]],
     });
 
-    const newIndex = lastSong ? lastSong.index + 1 : 1;
-    return PlaylistSong.create({ ...playlistSong, index: newIndex });
+    // Nếu không có index thì gán index = 0
+    const length = playlistIndex[0]?.getDataValue("maxIndex") || 0;
+
+    let index = length || 0;
+    const songData = [];
+
+    for (const songId of songIds) {
+      index = index + 1;
+
+      if (
+        (await this.checkSongInPlaylist(playlistId, songId)) ||
+        !(await SongService.getSongById(songId))
+      ) {
+        continue; // Nếu bài hát đã tồn tại trong playlist thì bỏ qua
+      }
+
+      songData.push({ playlistId, songId, index });
+    }
+
+    return PlaylistSong.bulkCreate(songData);
   };
 
-  static removeSong = (playlistSong: Partial<PlaylistSong>) =>
-    PlaylistSong.destroy({ where: playlistSong });
+  static updateSong = async (playlistId: string, songIds: string[]) => {
+    await PlaylistSong.destroy({ where: { playlistId } });
+    return this.addSong(playlistId, songIds);
+  };
+
+  static removeSong = async (playlistId: string, songIds: string[]) => {
+    for (const songId of songIds) {
+      if (!(await this.checkSongInPlaylist(playlistId, songId))) {
+        continue;
+      }
+
+      await PlaylistSong.destroy({ where: { playlistId, songId } });
+    }
+  };
 }

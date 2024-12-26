@@ -1,8 +1,8 @@
+import { formatFileSize } from "@/lib/utils";
 import Image from "next/image";
 import React, { useState } from "react";
 import { ButtonIconRound } from "../ui/Button";
 import styles from "./style.module.scss";
-import formatFileSize from "@/lib/utils";
 
 interface Props {
   name: string;

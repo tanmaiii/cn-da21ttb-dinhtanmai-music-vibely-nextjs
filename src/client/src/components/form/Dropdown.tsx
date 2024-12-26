@@ -13,7 +13,7 @@ interface Props {
   error?: string;
   className?: string;
   options: IOption[];
-  value?: IOption;
+  value?: string;
   onChange: (_: IOption) => void;
 }
 
@@ -49,7 +49,7 @@ const Dropdown = (props: Props) => {
           <input
             type="text"
             name={name}
-            value={value?.label}
+            value={options.find((o) => o.value === value)?.label}
             readOnly
             placeholder=" "
             onClick={() => setActive(!active)}

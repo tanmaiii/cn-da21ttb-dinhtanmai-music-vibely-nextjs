@@ -1,6 +1,6 @@
 @use "@/scss/index.module.scss" as *;
 
-.EditPlaylist {
+.FormPlaylist {
   display: flex;
   flex-direction: column;
   gap: $space-24;
@@ -24,7 +24,6 @@
     // padding: 30px;
     @include mobile {
       flex-direction: column-reverse;
-      
     }
 
     & .left {

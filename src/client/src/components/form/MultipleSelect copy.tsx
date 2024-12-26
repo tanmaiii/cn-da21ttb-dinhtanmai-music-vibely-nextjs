@@ -13,8 +13,8 @@ interface Props {
   error?: string;
   className?: string;
   options: IOptionSelect[];
-  values?: string[];
-  onChange: (_: string[]) => void;
+  values?: IOptionSelect[];
+  onChange: (_: IOptionSelect[]) => void;
 }
 
 const MultipleSelect = (props: Props) => {
@@ -39,9 +39,9 @@ const MultipleSelect = (props: Props) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleChange = (value: string) => {
-    if (values && values.includes(value)) {
-      onChange(values.filter((item) => item !== value));
+  const handleChange = (value: IOptionSelect) => {
+    if (values && values.find((item) => item.value === value.value)) {
+      onChange(values.filter((item) => item.value !== value.value));
     } else {
       onChange(values ? [...values, value] : [value]);
     }
@@ -56,6 +56,8 @@ const MultipleSelect = (props: Props) => {
           <input
             type="text"
             name={name}
+            // value={value?.label}
+            // readOnly
             autoComplete="off"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
@@ -74,11 +76,13 @@ const MultipleSelect = (props: Props) => {
                 )
                 .map((option: IOptionSelect) => (
                   <li
-                    onClick={() => handleChange(option.value)}
+                    onClick={() => handleChange(option)}
                     key={option.value}
                     value={option.value}
                     className={
-                      values && values.includes(option.value) ? styles.active : undefined
+                      values &&
+                      values.find((item) => item.value === option.value) &&
+                      styles.active
                     }
                   >
                     <span>{option.label}</span>
@@ -92,20 +96,17 @@ const MultipleSelect = (props: Props) => {
 
       <div className={styles.MultipleSelect_selected}>
         {values &&
-          values.map((value) => {
-            const item = options.find((option) => option.value === value);
-            return (
-              item && (
-                <div key={item.value} className={`${styles.item}`}>
-                  <span>{item.label}</span>
-                  <i
-                    onClick={() => onChange(values.filter((i) => i !== value))}
-                    className="fa-solid fa-times"
-                  ></i>
-                </div>
-              )
-            );
-          })}
+          values.map((item) => (
+            <div key={item.value} className={`${styles.item}`}>
+              <span>{item.label}</span>
+              <i
+                onClick={() =>
+                  onChange(values.filter((i) => i.value !== item.value))
+                }
+                className="fa-solid fa-times"
+              ></i>
+            </div>
+          ))}
       </div>
 
       {error && (

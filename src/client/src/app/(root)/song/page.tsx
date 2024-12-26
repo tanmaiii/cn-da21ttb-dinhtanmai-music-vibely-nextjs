@@ -11,10 +11,10 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "All", value: "newest" },
-  { id: 2, name: "Cũ nhất", value: "oldest" },
-  { id: 3, name: "Yêu thích", value: "mostLikes" },
-  { id: 4, name: "Phổ biến", value: "mostListens" },
+  { id: 1, name: "Newest", value: "newest" },
+  { id: 2, name: "Oldest", value: "oldest" },
+  { id: 3, name: "Most Likes", value: "mostLikes" },
+  { id: 4, name: "Popular", value: "mostListens" },
 ];
 
 const SongPage = () => {

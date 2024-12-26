@@ -15,3 +15,13 @@ export interface IPlaylist {
   songsCount: number;
   moods?: IMood[];
 }
+
+export interface IBodyCreatePlaylist {
+  title: string;
+  description: string;
+  public: boolean;
+  genreId: string;
+  moodIds?: string[];
+  songIds?: string[];
+  image?: File;
+}

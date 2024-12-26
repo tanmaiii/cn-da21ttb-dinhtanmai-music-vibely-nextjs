@@ -15,15 +15,14 @@ const payload = {
     public: boolean().optional(),
     duration: number().optional(),
     genreId: string().max(SIZE.UUID).optional(),
-    moodId: array(string()).optional(),
+    moodIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
   }),
 };
 
 const bodySongId = {
   body: object({
-    songId: string({
-      required_error: "SongId is required",
-    }).max(SIZE.UUID, "SongId is too long"),
+    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
   }),
 };
 
@@ -34,6 +33,7 @@ const params = {
     }).max(SIZE.UUID, "Id is too long"),
   }),
 };
+
 const slug = {
   params: object({
     slug: string({
@@ -54,7 +54,7 @@ export const likePlaylistSchema = object({ ...params });
 export const unLikePlaylistSchema = object({ ...params });
 
 export const addSongToPlaylistSchema = object({ ...params, ...bodySongId }); // Thêm bài hát vào playlist
-export const removeSongToPlaylistSchema = object({ ...params, ...bodySongId });// Xóa bài hát vào playlist
+export const removeSongToPlaylistSchema = object({ ...params, ...bodySongId }); // Xóa bài hát vào playlist
 export const getAllSongSchema = object({ ...params });
 
 //------------------TYPE-----------------------
@@ -70,5 +70,7 @@ export type likePlaylistInput = TypeOf<typeof likePlaylistSchema>;
 export type unLikePlaylistInput = TypeOf<typeof unLikePlaylistSchema>;
 
 export type AddSongToPlaylistInput = TypeOf<typeof addSongToPlaylistSchema>;
-export type RemoveSongToPlaylistInput = TypeOf<typeof removeSongToPlaylistSchema>;
+export type RemoveSongToPlaylistInput = TypeOf<
+  typeof removeSongToPlaylistSchema
+>;
 export type GetAllSongInput = TypeOf<typeof getAllSongSchema>;

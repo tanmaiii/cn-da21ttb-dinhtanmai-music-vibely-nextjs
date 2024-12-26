@@ -1,6 +1,6 @@
 "use client";
 
-import EditPlaylist from "@/components/EditPlaylist";
+import EditPlaylist from "@/components/FormPlaylist";
 import { HeaderPage } from "@/components/HeaderPage";
 import Modal from "@/components/Modal";
 import Table from "@/components/TablePlaylist";
@@ -11,11 +11,14 @@ import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const currentUser = useSelector((state: RootState) => state.user);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["playlist", slug],
@@ -61,11 +64,17 @@ const PlaylistPage = () => {
         </div>
 
         <div className={`${styles.PlaylistPage_content_body}`}>
-          {dataSong && <Table data={dataSong} />}
+          {dataSong && data && (
+            <Table
+              allowEdit={data?.creator?.id === currentUser?.id}
+              playlistId={data.id}
+              data={dataSong}
+            />
+          )}
         </div>
       </div>
       <Modal show={showEdit} onClose={() => setShowEdit(false)}>
-        <EditPlaylist />
+        <EditPlaylist onSubmit={(data) => console.log(data)} />
       </Modal>
     </div>
   );

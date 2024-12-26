@@ -3,7 +3,7 @@ import Room from "../models/Room";
 import RoomSong from "../models/RoomSong";
 import Song from "../models/Song";
 import RoomService from "./Room.service";
-import { songQueryOptions } from "./Song.service";
+import SongService, { songQueryOptions } from "./Song.service";
 import { Op } from "sequelize";
 
 export default class RoomSongService {
@@ -57,7 +57,10 @@ export default class RoomSongService {
     for (const songId of songIds) {
       index = index + 1;
 
-      if (await this.checkSongInRoom(roomId, songId)) {
+      if (
+        (await this.checkSongInRoom(roomId, songId)) ||
+        !(await SongService.getSongById(songId))
+      ) {
         continue;
       }
 

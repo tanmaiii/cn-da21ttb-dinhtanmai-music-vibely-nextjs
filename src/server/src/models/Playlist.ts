@@ -53,7 +53,6 @@ class Playlist extends Model {
 
   @Column({
     unique: true,
-    allowNull: false,
   })
   declare slug: string; // Đường dẫn bài hát
 

@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 class TokenService {
   private _accessTokenKey = "accessToken";
@@ -23,8 +24,11 @@ class TokenService {
 
   set accessToken(value: string) {
     this._accessToken = value;
-    // localStorage.setItem(this._accessTokenKey, value);
-    Cookies.set(this._accessTokenKey, value, { expires: 1 / 24 });
+    const decodedToken = jwtDecode<{ exp: number }>(value); // decode token
+    const expirationTimeInSeconds =
+      decodedToken.exp - Math.floor(Date.now() / 1000); // tính thời gian hết hạn của token
+    const expirationInDays = expirationTimeInSeconds / (60 * 60 * 24); // tính thời gian hết hạn của token theo ngày
+    Cookies.set(this._accessTokenKey, value, { expires: expirationInDays });
   }
 
   get refreshToken() {
@@ -33,8 +37,11 @@ class TokenService {
 
   set refreshToken(value: string) {
     this._refreshToken = value;
-    // localStorage.setItem(this._refreshTokenKey, value);
-    Cookies.set(this._refreshTokenKey, value, { expires: 1 / 24 });
+    const decodedToken = jwtDecode<{ exp: number }>(value); // decode token
+    const expirationTimeInSeconds =
+      decodedToken.exp - Math.floor(Date.now() / 1000); // tính thời gian hết hạn của token
+    const expirationInDays = expirationTimeInSeconds / (60 * 60 * 24); // tính thời gian hết hạn của token theo ngày
+    Cookies.set(this._refreshTokenKey, value, { expires: expirationInDays });
   }
 
   clear() {

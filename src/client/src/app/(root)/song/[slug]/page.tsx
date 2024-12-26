@@ -6,7 +6,7 @@ import { navSongPage } from "@/lib/constants";
 import { artists, lyrics } from "@/lib/data";
 import songService from "@/services/song.service";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
@@ -18,12 +18,14 @@ const SongPage = () => {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["song", slug],
     queryFn: async () => await songService.getBySlug(slug),
   });
 
   if (isLoading) return <Loading />;
+
+  if (error || !slug) return notFound();
 
   return (
     <div className={`${styles.SongPage}`}>
