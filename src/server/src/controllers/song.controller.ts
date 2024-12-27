@@ -6,6 +6,7 @@ import {
   CreateSongInput,
   DeleteSongInput,
   DestroySongInput,
+  GetAllLikeSongInput,
   GetAllSongInput,
   GetLyricsSongInput,
   GetSongInput,
@@ -275,7 +276,6 @@ export const likeSongHandler = async (
   }
 };
 
-// Bỏ thích bài hát
 export const unLikeSongHandler = async (
   req: Request<UnLikeSongInput["params"]>,
   res: Response,
@@ -327,11 +327,26 @@ export const checkLikeSongHandler = async (
 
     res
       .status(StatusCodes.OK)
-      .json({ data: !!existSongLike, message:"Check like successfully" });
+      .json({ data: !!existSongLike, message: "Check like successfully" });
   } catch (error) {
     next(error);
   }
 };
+
+export const getAllLikeSongHandler = async (
+  req: Request<{}, GetAllLikeSongInput["query"], {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res
+      .status(StatusCodes.OK)
+      .json({ data: [], message: "Get successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Phát nhạc
 export async function playSongHandler(
   req: Request<PlaySongInput["params"]>,

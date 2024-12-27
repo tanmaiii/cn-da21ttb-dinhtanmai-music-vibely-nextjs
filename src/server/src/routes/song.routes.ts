@@ -5,6 +5,7 @@ import {
   deleteSongHandler,
   destroySongHandler,
   getAllHandler,
+  getAllLikeSongHandler,
   getSongDetailBySlugHandler,
   getSongDetailHandler,
   likeSongHandler,
@@ -22,6 +23,7 @@ import {
   createSongSchema,
   deleteSongSchema,
   destroySongSchema,
+  getAllLikeSongSchema,
   getAllSongSchema,
   getLyricsSongSchema,
   getSongSchema,
@@ -35,8 +37,30 @@ import { PERMISSIONS } from "../utils/contants";
 
 const router: Router = Router();
 
-// Lấy tất cả bài hát
+// Like song
+router.get(
+  "/like",
+  authorize(),
+  validateData(getAllLikeSongSchema),
+  getAllLikeSongHandler
+);
 
+router.delete(
+  "/:id/like",
+  authorize(),
+  validateData(unLikeSongSchema),
+  unLikeSongHandler
+);
+
+//Check like
+router.get(
+  "/:id/like",
+  authorize(),
+  validateData(likeSongSchema),
+  checkLikeSongHandler
+);
+
+// Lấy tất cả bài hát
 router.get(
   "/",
   authorize(PERMISSIONS.READ_SONGS),
@@ -109,22 +133,6 @@ router.post(
   authorize(),
   validateData(likeSongSchema),
   likeSongHandler
-);
-
-// Like song
-router.delete(
-  "/:id/like",
-  authorize(),
-  validateData(unLikeSongSchema),
-  unLikeSongHandler
-);
-
-//Check like
-router.get(
-  "/:id/like",
-  authorize(),
-  validateData(likeSongSchema),
-  checkLikeSongHandler
 );
 
 // Phát nhạc
