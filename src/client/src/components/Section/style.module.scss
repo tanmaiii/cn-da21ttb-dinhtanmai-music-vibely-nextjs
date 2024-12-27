@@ -1,6 +1,7 @@
 @use "@/scss/index.module.scss" as *;
 
 .Section {
+  width: 100%;
   &_header {
     @include flex(center, space-between, row);
     padding: $space-12 $space-14;

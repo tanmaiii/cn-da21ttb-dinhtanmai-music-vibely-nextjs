@@ -47,7 +47,11 @@ const nextConfig = {
 
     return config;
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
+  swcMinify: true,
+  experimental: {
+    appDir: true, // Nếu đang dùng thư mục "app".
+  },
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],
   },

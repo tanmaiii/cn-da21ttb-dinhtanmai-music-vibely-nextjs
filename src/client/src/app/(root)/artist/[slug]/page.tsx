@@ -73,7 +73,7 @@ const ArtistPage = () => {
         </div>
 
         <div>
-          <SectionOneRow title="Songs" path={paths.PAYLIST}>
+          <SectionOneRow title="Songs" path={paths.PLAYLIST}>
             {songs.map((song, index) => (
               <Card key={index} data={song} />
             ))}
@@ -81,7 +81,7 @@ const ArtistPage = () => {
         </div>
 
         <div>
-          <SectionOneRow title="Playlists" path={paths.PAYLIST}>
+          <SectionOneRow title="Playlists" path={paths.PLAYLIST}>
             {playlists.map((playlist, index) => (
               <Card key={index} data={playlist} />
             ))}

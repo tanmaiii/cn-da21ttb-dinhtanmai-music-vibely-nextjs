@@ -33,7 +33,7 @@ const SildeItem = ({ title, img }: { title: string; img: string }) => {
   // Khi thả chuột
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!isDragging) {
-      router.push(paths.PAYLIST + "/123");
+      router.push(paths.PLAYLIST + "/123");
     } else {
       e.preventDefault();
     }

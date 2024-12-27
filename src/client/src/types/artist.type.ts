@@ -7,4 +7,8 @@ export default interface IArtist {
   followers: number;
   songs: number;
   playlists: number;
+  role: {
+    id: string;
+    name: string;
+  };
 }

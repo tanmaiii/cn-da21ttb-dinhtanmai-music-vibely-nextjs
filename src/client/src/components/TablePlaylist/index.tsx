@@ -1,6 +1,5 @@
 "use client";
 
-import { RootState } from "@/lib/store";
 import playlistService from "@/services/playlist.service";
 import { ISong } from "@/types";
 import {
@@ -12,7 +11,6 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { Track } from "../Track";
 import styles from "./style.module.scss";
 
@@ -26,11 +24,6 @@ const TablePlaylist = (props: Props) => {
   const { data, playlistId, allowEdit } = props;
   const [items, setItems] = useState(data);
   const queryClient = useQueryClient();
-  // const user = useSelector((state: RootState) => state.user);
-
-  // useEffect(() => {
-  //   setItems(data);
-  // }, [data]);
 
   const mutationUpdatePlaylist = useMutation({
     mutationFn: async (songIds: string[]) => {
@@ -40,7 +33,7 @@ const TablePlaylist = (props: Props) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["playlist", playlistId, "song"],
+        queryKey:  ["playlist-song", playlistId],
       });
       toast.success("Reorder successfully");
     },

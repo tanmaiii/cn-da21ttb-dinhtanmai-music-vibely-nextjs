@@ -16,12 +16,19 @@ export interface IPlaylist {
   moods?: IMood[];
 }
 
-export interface IBodyCreatePlaylist {
+export interface PlaylistRequestDto {
   title: string;
   description: string;
   public: boolean;
   genreId: string;
   moodIds?: string[];
   songIds?: string[];
-  image?: File;
+  imagePath?: string;
+}
+
+export interface PlaylistLikeQueryParamsDto {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  my: string,
 }

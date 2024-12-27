@@ -1,19 +1,19 @@
 "use client";
 
+import { Card } from "@/components/Card";
 import loader from "@/public/images/spinner.svg";
 import playlistService from "@/services/playlist.service";
-import { IPlaylist } from "@/types";
+import { IPlaylist, QueryParams } from "@/types";
+import { PlaylistLikeQueryParamsDto } from "@/types/playlist.type";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { QueryParams } from "../../types/common.type";
-import { Card } from "../Card";
 
-function LoadMorePlaylist({
+function LoadMore({
   params,
   setNextPage,
 }: {
-  params: QueryParams;
+  params: PlaylistLikeQueryParamsDto;
   setNextPage: (page: number) => void;
 }) {
   const { ref, inView } = useInView();
@@ -24,7 +24,7 @@ function LoadMorePlaylist({
   useEffect(() => {
     setData([]);
     setTotalPages(3);
-  }, [params.sort, params.keyword, params.limit]);
+  }, [params.my, params.keyword, params.limit]);
 
   useEffect(() => {
     if (inView) {
@@ -32,7 +32,7 @@ function LoadMorePlaylist({
       const delay = 500;
 
       const timeoutId = setTimeout(async () => {
-        const res = await playlistService.getAll({ ...params });
+        const res = await playlistService.getMe({ ...params });
         setData([...data, ...res.data.data]);
         setTotalPages(res.data.totalPages);
         setNextPage(res.data.currentPage + 1);
@@ -71,4 +71,4 @@ function LoadMorePlaylist({
   );
 }
 
-export default LoadMorePlaylist;
+export default LoadMore;

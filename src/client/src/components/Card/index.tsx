@@ -67,11 +67,10 @@ interface ICardLive {
 
 const Card = (props: Props) => {
   const { index = 1, path, isLoading = false, data, className } = props;
-  // const router = useRouter();
   const classNameCol = useClassNameCol();
   const { togglePlayingBar, isPlayingBar } = useUI();
   const isSong = data && isSongData(data);
-  const link = path || `${isSong ? paths.SONG : paths.PAYLIST}/${data?.slug}`;
+  const link = path || `${isSong ? paths.SONG : paths.PLAYLIST}/${data?.slug}`;
 
   const handlePlay = () => {
     if (!isPlayingBar) {
@@ -129,13 +128,14 @@ const Card = (props: Props) => {
           </div>
           <div className={`${styles.Card_swapper_container_desc}`}>
             <Link href={link}>
-              <h4>
-                {isLoading ? (
-                  <Skeleton width={"90%"} height={20} />
-                ) : (
-                  data?.title
-                )}
-              </h4>
+              {isLoading ? (
+                <Skeleton width={"90%"} height={20} />
+              ) : (
+                <>
+                  {!data?.public && <i className="fa-light fa-lock"></i>}
+                  <h4>{data?.title}</h4>
+                </>
+              )}
             </Link>
             {isLoading ? (
               <Skeleton

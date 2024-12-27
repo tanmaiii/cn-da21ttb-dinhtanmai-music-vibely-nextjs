@@ -1,8 +1,8 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { IPlaylist, ISong } from "@/types";
+import { IPlaylist, ISong, PlaylistRequestDto } from "@/types";
 import { ListResponse, ResponseAPI } from "@/types/common.type";
 import { QueryParams } from "../types/common.type";
-import { IBodyCreatePlaylist } from "@/types/playlist.type";
+import { PlaylistLikeQueryParamsDto } from "@/types/playlist.type";
 
 class PlaylistService {
   private client;
@@ -21,15 +21,30 @@ class PlaylistService {
     return res.data;
   }
 
+  async getMe(
+    params: PlaylistLikeQueryParamsDto
+  ): Promise<ResponseAPI<ListResponse<IPlaylist>>> {
+    const res = await this.client.get<ResponseAPI<ListResponse<IPlaylist>>>(
+      "/like",
+      { params }
+    );
+    return res.data;
+  }
+
   async getBySlug(slug: string): Promise<ResponseAPI<IPlaylist>> {
     const res = await this.client.get<ResponseAPI<IPlaylist>>(`/${slug}/slug`);
     return res.data;
   }
 
   async create(
-    data: Partial<IBodyCreatePlaylist>
+    data: Partial<PlaylistRequestDto>
   ): Promise<ResponseAPI<IPlaylist>> {
     const res = await this.client.post<ResponseAPI<IPlaylist>>("", data);
+    return res.data;
+  }
+
+  async update(id: string, data: Partial<PlaylistRequestDto>) {
+    const res = await this.client.put(`/${id}`, data);
     return res.data;
   }
 

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  checkLikeSongHandler,
   createSongHandler,
   deleteSongHandler,
   destroySongHandler,
@@ -9,7 +10,7 @@ import {
   likeSongHandler,
   playSongHandler,
   unLikeSongHandler,
-  updateSongHandler
+  updateSongHandler,
 } from "../controllers/song.controller";
 import {
   authorize,
@@ -35,14 +36,35 @@ import { PERMISSIONS } from "../utils/contants";
 const router: Router = Router();
 
 // Lấy tất cả bài hát
-router.get("/", validateData(getAllSongSchema), getAllHandler);
+
+router.get(
+  "/",
+  authorize(PERMISSIONS.READ_SONGS),
+  validateData(getAllSongSchema),
+  getAllHandler
+);
 
 // Lấy chi tiết bài hát
-router.get("/:id", validateData(getSongSchema), getSongDetailHandler);
+router.get(
+  "/:id",
+  authorize(PERMISSIONS.READ_SONGS),
+  validateData(getSongSchema),
+  getSongDetailHandler
+);
 
-router.get("/:slug/slug", validateData(getSongSlugSchema), getSongDetailBySlugHandler);
+router.get(
+  "/:slug/slug",
+  authorize(PERMISSIONS.READ_SONGS),
+  validateData(getSongSlugSchema),
+  getSongDetailBySlugHandler
+);
 
-router.get("/:id/lyrics", validateData(getLyricsSongSchema), getSongDetailHandler);
+router.get(
+  "/:id/lyrics",
+  authorize(PERMISSIONS.READ_SONGS),
+  validateData(getLyricsSongSchema),
+  getSongDetailHandler
+);
 
 // Tạo bài hát
 router.post(
@@ -95,6 +117,14 @@ router.delete(
   authorize(),
   validateData(unLikeSongSchema),
   unLikeSongHandler
+);
+
+//Check like
+router.get(
+  "/:id/like",
+  authorize(),
+  validateData(likeSongSchema),
+  checkLikeSongHandler
 );
 
 // Phát nhạc

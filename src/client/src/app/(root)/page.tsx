@@ -8,32 +8,13 @@ import { artists, playlists, songs } from "@/lib/data";
 import { fadeIn } from "@/lib/utils";
 import styles from "./root.module.scss";
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const { req } = context;
-//   const token = req.cookies.token; // Giả sử token được lưu trong cookies
-
-//   if (!token) {
-//     // Nếu chưa đăng nhập, chuyển hướng đến trang login
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false, // Không phải chuyển hướng vĩnh viễn
-//       },
-//     };
-//   }
-
-//   // Tiếp tục render trang nếu đã đăng nhập
-//   return {
-//     props: {}, // Truyền dữ liệu cho trang nếu cần
-//   };
-// }
 
 const Home = () => {
   return (
     <div className={styles.Home}>
       <Slideshow />
 
-      <SectionOneRow title="Song popular" path={paths.PAYLIST}>
+      <SectionOneRow title="Song popular" path={paths.PLAYLIST}>
         {songs.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
@@ -81,19 +62,19 @@ const Home = () => {
         </div>
       </div>
 
-      <SectionOneRow title="Song popular" path={paths.PAYLIST}>
+      <SectionOneRow title="Song popular" path={paths.PLAYLIST}>
         {songs.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
       </SectionOneRow>
 
-      <SectionOneRow title="Playlists popular" path={paths.PAYLIST}>
+      <SectionOneRow title="Playlists popular" path={paths.PLAYLIST}>
         {playlists.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
       </SectionOneRow>
 
-      <SectionOneRow title="Artist" path={paths.PAYLIST}>
+      <SectionOneRow title="Artist" path={paths.PLAYLIST}>
         {artists.map((_, index) => (
           <CardArtist key={index} index={index} artist={_} />
         ))}

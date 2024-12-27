@@ -41,3 +41,4 @@ type SortOptions =
   | "mostFollows";
 
 export { formatStringToSlug, getFilePath, SortOptions };
+

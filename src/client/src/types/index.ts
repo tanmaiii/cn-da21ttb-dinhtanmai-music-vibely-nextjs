@@ -8,7 +8,7 @@ export type {
   QueryParams,
   ResponseAPI,
 } from "./common.type";
-export type { IPlaylist, IResSongInPlaylist } from "./playlist.type";
+export type { IPlaylist, PlaylistRequestDto } from "./playlist.type";
 export type { IRoom } from "./room.type";
 export type { default as ISong } from "./song.type";
 

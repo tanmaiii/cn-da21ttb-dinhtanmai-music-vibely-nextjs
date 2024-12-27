@@ -718,4 +718,11 @@
       }
     }
   }
+
+  &_error {
+    margin-top: $space-8;
+    color: $color-red;
+    font-size: $size-16;
+    font-weight: $font-medium;
+  }
 }

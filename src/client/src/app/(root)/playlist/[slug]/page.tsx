@@ -5,45 +5,78 @@ import { HeaderPage } from "@/components/HeaderPage";
 import Modal from "@/components/Modal";
 import Table from "@/components/TablePlaylist";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
+import { useCustomToast } from "@/hooks/useToast";
+import { RootState } from "@/lib/store";
 import playlistService from "@/services/playlist.service";
-import { useQuery } from "@tanstack/react-query";
+import { PlaylistRequestDto } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
-import Loading from "./loading";
-import styles from "./style.module.scss";
 import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
+import styles from "./style.module.scss";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
+  const { toastError, toastSuccess } = useCustomToast();
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const currentUser = useSelector((state: RootState) => state.user);
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
+  const { data: playlist, error } = useQuery({
     queryKey: ["playlist", slug],
     queryFn: async () => {
       const res = await playlistService.getBySlug(slug);
       return res.data;
     },
+    staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
   });
 
-  const { data: dataSong, isLoading: isLoadingSong } = useQuery({
-    queryKey: ["playlist", data?.id, "song"],
+  const { data: dataSong } = useQuery({
+    queryKey: ["playlist-song", playlist?.id],
     queryFn: async () => {
-      const res = data && (await playlistService.getAllSongs(data.id));
-      return res?.data;
+      const res =
+        playlist &&
+        playlist?.songsCount > 0 &&
+        (await playlistService.getAllSongs(playlist?.id));
+      return res ? res.data : null;
+    },
+    staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
+  });
+
+  const onSubmitEdit = useMutation({
+    mutationFn: async (data: PlaylistRequestDto) => {
+      const res =
+        playlist && (await playlistService.update(playlist?.id, data));
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playlist", slug] });
+      toastSuccess("Update playlist success");
+      setShowEdit(false);
+    },
+    onError: () => {
+      toastError("Update playlist error");
     },
   });
 
-  if (isLoading || isLoadingSong) return <Loading />;
+  // if (isLoading || isLoadingSong) return <Loading />;
 
   if (error || !slug) return notFound();
 
   return (
     <div className={`${styles.PlaylistPage}`}>
       <div className={`${styles.PlaylistPage_header}`}>
-        {data && <HeaderPage data={data} onEdit={() => setShowEdit(true)} />}
+        {playlist && (
+          <HeaderPage
+            data={playlist}
+            onEdit={
+              playlist?.creator?.id === currentUser?.id
+                ? () => setShowEdit(true)
+                : undefined
+            }
+          />
+        )}
       </div>
       <div className={`${styles.PlaylistPage_content}`}>
         <div className={`${styles.PlaylistPage_content_header}`}>
@@ -64,17 +97,22 @@ const PlaylistPage = () => {
         </div>
 
         <div className={`${styles.PlaylistPage_content_body}`}>
-          {dataSong && data && (
+          {dataSong && playlist && (
             <Table
-              allowEdit={data?.creator?.id === currentUser?.id}
-              playlistId={data.id}
+              allowEdit={playlist?.creator?.id === currentUser?.id}
+              playlistId={playlist.id}
               data={dataSong}
             />
           )}
         </div>
       </div>
       <Modal show={showEdit} onClose={() => setShowEdit(false)}>
-        <EditPlaylist onSubmit={(data) => console.log(data)} />
+        {playlist && (
+          <EditPlaylist
+            initalData={playlist}
+            onSubmit={(data) => onSubmitEdit.mutate(data)}
+          />
+        )}
       </Modal>
     </div>
   );

@@ -1,47 +1,59 @@
 import { useCustomToast } from "@/hooks/useToast";
 import { genres, moods, privacy } from "@/lib/data";
-import { formatFileSize } from "@/lib/utils";
-import playlistService from "@/services/playlist.service";
-import { IBodyCreatePlaylist } from "@/types/playlist.type";
-import { useMutation } from "@tanstack/react-query";
-import React from "react";
-import * as Yup from "yup";
+import { apiImage, formatFileSize } from "@/lib/utils";
+import { IPlaylist, PlaylistRequestDto } from "@/types";
+import React, { useEffect } from "react";
 import { DragDropFile, FormItem, MultipleSelect } from "../form";
 import Dropdown from "../form/Dropdown";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
 import styles from "./style.module.scss";
+import uploadService from "@/services/upload.service";
 
 interface Props {
-  onSubmit: (values: IBodyCreatePlaylist) => void;
-  initalData?: IBodyCreatePlaylist;
+  onSubmit: (values: PlaylistRequestDto) => void;
+  initalData?: IPlaylist;
 }
 
-const FormPlaylist = ({ onSubmit }: Props) => {
-  const { toastError, toastSuccess } = useCustomToast();
+const FormPlaylist = ({ onSubmit, initalData }: Props) => {
+  const { toastError } = useCustomToast();
   const [imageFile, setImageFile] = React.useState<File | null>(null);
-  const [errors, setErrors] = React.useState({
-    title: "",
-    description: "",
-    genreId: "",
-    moodIds: "",
-    public: "",
-  });
-  const [values, setValues] = React.useState<IBodyCreatePlaylist>({
+  const [errors, setErrors] = React.useState<Partial<PlaylistRequestDto>>({});
+  const [values, setValues] = React.useState<PlaylistRequestDto>({
     title: "",
     description: "",
     genreId: "",
     moodIds: [],
     public: true,
+    imagePath: undefined,
   });
 
-  const handleChange = (value: Partial<IBodyCreatePlaylist>) => {
+  useEffect(() => {
+    if (initalData) {
+      setValues({
+        title: initalData.title,
+        description: initalData.description,
+        genreId: initalData.genre?.id || "",
+        moodIds: initalData.moods
+          ? initalData.moods.map((mood) => mood.id)
+          : [],
+        public: initalData.public,
+        imagePath: initalData.imagePath ? apiImage(initalData.imagePath) : "",
+      });
+    }
+    console.log(initalData);
+  }, [initalData]);
+
+  useEffect(() => {
+    console.log({ values });
+  }, [values]);
+
+  const handleChange = (value: Partial<PlaylistRequestDto>) => {
     setValues((prev) => ({ ...prev, ...value }));
   };
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
-    // setForm((prev) => ({ ...prev, imagePath: "" }));
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
     const file = e.target.files && e.target.files[0];
     const size = 5 * 1024 * 1024;
@@ -52,12 +64,56 @@ const FormPlaylist = ({ onSubmit }: Props) => {
 
     if (file && !validImageTypes.includes(file.type)) {
       toastError("Only accept .png, .jpg, .jpeg files");
+      setErrors((prev) => ({
+        ...prev,
+        image: "Only accept .png, .jpg, .jpeg files",
+      }));
       return;
     }
     setImageFile(file);
   };
-  const handleSubmit = async (values: IBodyCreatePlaylist) => {
-    onSubmit(values);
+
+  const handleSubmit = async (formValues: PlaylistRequestDto) => {
+    setErrors({});
+    let hasError = false;
+    // Kiểm tra nếu không có hình ảnh
+    if (!imageFile) {
+      setErrors((prev) => ({ ...prev, image: "Please upload an image" }));
+      hasError = true;
+    }
+
+    if (values?.title?.length < 1) {
+      setErrors((prev) => ({ ...prev, title: "Title is required" }));
+      hasError = true;
+    }
+
+    if (values?.description?.length > 255) {
+      setErrors((prev) => ({
+        ...prev,
+        description: "Description is too long",
+      }));
+      hasError = true;
+    }
+
+    if (values?.genreId === "") {
+      setErrors((prev) => ({ ...prev, genreId: "Genre is required" }));
+      hasError = true;
+    }
+
+    if (hasError) return;
+    try {
+      const formData = new FormData();
+
+      if (imageFile) formData.append("image", imageFile);
+
+      const image = await uploadService.upload(formData);
+
+      const updatedValues = { ...formValues, imagePath: image.data.path };
+
+      await onSubmit(updatedValues); // Gửi form data đến server
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -76,6 +132,7 @@ const FormPlaylist = ({ onSubmit }: Props) => {
               // image_default={form.imagePath}
               image={true}
               accept="image/*"
+              error={errors.imagePath}
               onChange={(e) => handleChangeImage(e)}
             />
             <div>
@@ -84,7 +141,7 @@ const FormPlaylist = ({ onSubmit }: Props) => {
                   handleChange({ public: v == "public" ? true : false })
                 }
                 label="Privacy"
-                value="public"
+                value={values?.public ? "public" : "private"}
                 name="privacy"
                 options={privacy}
               />
@@ -113,6 +170,7 @@ const FormPlaylist = ({ onSubmit }: Props) => {
               <Dropdown
                 label="Genre"
                 name="genreId"
+                error={errors.genreId}
                 value={values.genreId}
                 options={genres.map((g) => {
                   return { label: g.title, value: g.id };
@@ -122,6 +180,7 @@ const FormPlaylist = ({ onSubmit }: Props) => {
               <MultipleSelect
                 label="Mood"
                 name="mood"
+                // error={errors.moodIds}
                 options={moods.map((g) => {
                   return { label: g.title, value: g.id };
                 })}

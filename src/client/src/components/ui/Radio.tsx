@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 interface Props {
@@ -11,9 +11,15 @@ interface Props {
 }
 
 const Radio = ({ name, label, desc, options, value, onChange }: Props) => {
+  const [valueDefault, setValueDefault] = useState(value);
+
   const handleChange = (value: string) => {
     onChange(value);
   };
+
+  useEffect(() => {
+    if (value) setValueDefault(value);
+  }, [value]);
 
   return (
     <div className={`${styles.Radio}`}>
@@ -38,7 +44,7 @@ const Radio = ({ name, label, desc, options, value, onChange }: Props) => {
                   type="radio"
                   id={option.value}
                   name={name}
-                  defaultChecked={value === option.value}
+                  defaultChecked={valueDefault === option.value}
                   value={option.value}
                   onChange={() => handleChange(option.value)}
                 />

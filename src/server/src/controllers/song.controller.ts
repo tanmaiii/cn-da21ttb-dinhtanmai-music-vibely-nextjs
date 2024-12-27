@@ -38,7 +38,7 @@ export const getAllHandler = async (
       page: parseInt(page as string, 10),
       limit: parseInt(limit as string, 10),
       sort: sort as SortOptions,
-      userId: userInfo.id || '',
+      userId: userInfo.id || "",
       keyword: keyword as string,
     });
 
@@ -55,8 +55,8 @@ export const getSongDetailHandler = async (
   next: NextFunction
 ) => {
   try {
-    const userId = get(req, "identity.id") as string;
-    const song = await SongService.getSongById(req.params.id, userId);
+    const userInfo = get(req, "identity") as IIdentity;
+    const song = await SongService.getSongById(req.params.id, userInfo.id);
 
     if (!song) throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
 
@@ -85,11 +85,6 @@ export const getSongDetailBySlugHandler = async (
     next(error);
   }
 };
-
-// Lấy danh sách bài hát theo playlist
-export const getAllSongByPlaylist = async () => {
-    
-}
 
 // Lấy lời bài hát
 export const getLyricsSongHandler = async (
@@ -312,6 +307,31 @@ export const unLikeSongHandler = async (
   }
 };
 
+export const checkLikeSongHandler = async (
+  req: Request<LikeSongInput["params"]>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+    const existSong = await SongService.getSongById(req.params.id, userInfo.id);
+
+    if (!existSong) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
+    }
+
+    const existSongLike = await LikeService.getLikeSong(
+      userInfo.id,
+      existSong.id
+    );
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: !!existSongLike, message:"Check like successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 // Phát nhạc
 export async function playSongHandler(
   req: Request<PlaySongInput["params"]>,

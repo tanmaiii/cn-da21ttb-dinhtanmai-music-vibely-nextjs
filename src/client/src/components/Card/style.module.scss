@@ -89,20 +89,26 @@
           left: 10px;
           @include flex(center, center);
           transition: all 0.2s;
-          // transform: translateY(70%);
-          // opacity: 0;
-          // display: none;
         }
       }
 
       &_desc {
         @include flex(unset, center, column);
         margin-top: $space-12;
-        h4 {
-          font-size: $size-18;
-          font-weight: $font-bold;
-          color: var(--text-color-1);
-          @include text(1);
+        gap: $space-8;
+        a {
+          @include flex(center, start, row);
+          gap: $space-8;
+          i {
+            font-size: $size-18;
+            color: var(--text-color-1);
+          }
+          h4 {
+            font-size: $size-18;
+            font-weight: $font-bold;
+            color: var(--text-color-1);
+            @include text(1);
+          }
         }
         & .artists {
           @include text(1);
@@ -124,7 +130,7 @@
         & .tags {
           @include flex(unset, unset, row);
           gap: $space-8;
-          margin-top: $space-8;
+          // margin-top: $space-8;
           max-width: 100%;
           & > div {
             @include text(1);

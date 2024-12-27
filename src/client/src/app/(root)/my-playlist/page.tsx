@@ -1,7 +1,6 @@
 "use client";
 import { Card } from "@/components/Card";
 import FormPlaylist from "@/components/FormPlaylist";
-import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
 import Modal from "@/components/Modal";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
@@ -12,29 +11,29 @@ import { IPlaylist, ISort, PlaylistRequestDto } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
+import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
 
-const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "Popular", value: "mostLikes" },
-  { id: 2, name: "Newest", value: "newest" },
-  { id: 3, name: "Oldest", value: "oldest" },
+const DataSort: { id: number; name: string; value: string }[] = [
+  { id: 1, name: "All", value: "false" },
+  { id: 2, name: "My", value: "true" },
 ];
 
-const PlaylistPage = () => {
-  const [active, setActive] = useState<ISort>("newest");
+const MyPlaylistPage = () => {
+  const [active, setActive] = useState<string>("false");
   const [nextPage, setNextPage] = useState(2);
   const [showAdd, setShowAdd] = useState(false);
   const { toastError, toastSuccess } = useCustomToast();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["playlist"] });
+    queryClient.invalidateQueries({ queryKey: ["my-playlist"] });
   }, [active, queryClient]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["playlist", active],
+    queryKey: ["my-playlist", active],
     queryFn: async () => {
-      const res = await playlistService.getAll({ page: 1, sort: active });
+      const res = await playlistService.getMe({ page: 1, my: active });
       setNextPage(2);
       return res.data.data;
     },
@@ -49,7 +48,7 @@ const PlaylistPage = () => {
     onSuccess: () => {
       toastSuccess("Create playlist success");
       setShowAdd(false);
-      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      queryClient.invalidateQueries({ queryKey: ["my-playlist"] });
     },
     onError: (error) => {
       toastError(error.message);
@@ -57,10 +56,10 @@ const PlaylistPage = () => {
   });
 
   return (
-    <div className={`${styles.PlaylistPage}`}>
-      <div className={`${styles.PlaylistPage_top}`}>
+    <div className={`${styles.MyPlaylistPage}`}>
+      <div className={`${styles.MyPlaylistPage_top}`}>
         <div className={styles.header}>
-          <h1>Playlist</h1>
+          <h1>My playlist</h1>
           <ButtonIcon
             onClick={() => setShowAdd(true)}
             dataTooltip="Create playlist"
@@ -78,15 +77,15 @@ const PlaylistPage = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className={`${styles.PlaylistPage_body} row no-gutters`}>
+        <div className={`${styles.MyPlaylistPage_body} row no-gutters`}>
           <Section>
             {data &&
               data.map((item: IPlaylist, index: number) => (
                 <Card index={index} key={index} data={item} />
               ))}
-            <LoadMorePlaylist
+            <LoadMore
               setNextPage={setNextPage}
-              params={{ sort: active, page: nextPage }}
+              params={{ page: nextPage, my: active }}
             />
           </Section>
         </div>
@@ -98,4 +97,4 @@ const PlaylistPage = () => {
   );
 };
 
-export default PlaylistPage;
+export default MyPlaylistPage;

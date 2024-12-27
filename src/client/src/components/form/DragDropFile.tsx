@@ -8,6 +8,7 @@ interface Props {
   name: string;
   accept: string;
   label?: string;
+  error?: string;
   file: File | null;
   onChange: (_: React.ChangeEvent<HTMLInputElement>) => void;
   image?: boolean;
@@ -24,6 +25,7 @@ const DragDropFile = (porps: Props) => {
     image = false,
     image_default,
     accept,
+    error,
     label = "Drop here to upload",
   } = porps;
   const [openDrop, setOpenDrop] = useState<boolean>(false);
@@ -105,6 +107,8 @@ const DragDropFile = (porps: Props) => {
             </div>
           </div>
         )}
+
+        {error && <span className={`${styles.DragDropFile_error}`}>{error}</span>}
       </div>
     </>
   );

@@ -67,7 +67,6 @@ router.get(
 router.post(
   "/",
   authorize(PERMISSIONS.CREATE_PLAYLIST),
-  uploadFile,
   validateData(createPlaylistSchema),
   createPlaylistHandler
 );
@@ -75,7 +74,6 @@ router.put(
   "/:id",
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
   isPlaylistAuthor,
-  uploadFile,
   validateData(updatePlaylistSchema),
   updatePlaylistHandler
 );
@@ -87,6 +85,7 @@ router.get(
   validateData(getPlaylistSchema),
   getSongInPlaylistHandler
 );
+
 router.post(
   "/:id/song",
   isPlaylistAuthor,
@@ -94,6 +93,7 @@ router.post(
   validateData(addSongToPlaylistSchema),
   addSongToPlaylistHandler
 );
+
 router.delete(
   "/:id/song",
   isPlaylistAuthor,

@@ -6,11 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import styles from "./style.module.scss";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
 
 interface Props {
   data: ISong | IPlaylist;
   isLoading?: boolean;
   onEdit?: () => void;
+  isFavorites?: boolean;
 }
 
 const HeaderPage = (props: Props) => {
@@ -40,16 +43,19 @@ const HeaderPage = (props: Props) => {
             <>
               <Image
                 src={
-                  (data?.imagePath && apiImage(data?.imagePath)) || IMAGES.SONG
+                  (data?.imagePath && formatImg(apiImage(data?.imagePath))) ||
+                  (props.isFavorites ? IMAGES.FAVORITES : IMAGES.SONG)
                 }
                 width={200}
                 height={200}
                 alt=""
               />
-              <div className={styles.edit} onClick={onEdit}>
-                <i className="fa-light fa-edit"></i>
-                <span>Edit</span>
-              </div>
+              {onEdit && (
+                <div className={styles.edit} onClick={onEdit}>
+                  <i className="fa-light fa-edit"></i>
+                  <span>Edit</span>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -59,6 +65,7 @@ const HeaderPage = (props: Props) => {
           ) : (
             <p>
               <span>{isSong ? "Song" : "Playlist"}</span>
+              {!props.isFavorites && <span> - {data?.genre?.title}</span>}
             </p>
           )}
 
@@ -83,21 +90,23 @@ const HeaderPage = (props: Props) => {
             <Skeleton width={600} height={20} />
           ) : (
             <div className={`${styles.info_desc}`}>
-              <div className={`${styles.info_desc_author}`}>
-                <Image
-                  src={
-                    (data?.creator?.imagePath &&
-                      apiImage(data?.creator?.imagePath)) ||
-                    IMAGES.AVATAR
-                  }
-                  width={20}
-                  height={20}
-                  alt="image.png"
-                />
-                <Link href={`${paths.ARTIST}/${data?.creator?.slug}`}>
-                  {data?.creator.name}
-                </Link>
-              </div>
+              {!props.isFavorites && (
+                <div className={`${styles.info_desc_author}`}>
+                  <Image
+                    src={
+                      (data?.creator?.imagePath &&
+                        apiImage(data?.creator?.imagePath)) ||
+                      IMAGES.AVATAR
+                    }
+                    width={20}
+                    height={20}
+                    alt="image.png"
+                  />
+                  <Link href={`${paths.ARTIST}/${data?.creator?.slug}`}>
+                    {data?.creator.name}
+                  </Link>
+                </div>
+              )}
               {data?.createdAt && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-light fa-clock"></i>
@@ -116,7 +125,7 @@ const HeaderPage = (props: Props) => {
                   <span>{formatNumber(data?.likes)} likes</span>
                 </div>
               )}
-              {!isSong && data?.songsCount && (
+              {!isSong && data?.songsCount > 0 && (
                 <div className={`${styles.info_desc_item}`}>
                   <i className="fa-thin fa-album"></i>
                   <span>{formatNumber(data?.songsCount)} songs</span>

@@ -106,7 +106,6 @@ export const createPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     const userId = get(req, "identity.id") as string;
     const genreId = await GenreService.getById(req.body.genreId);
 
@@ -120,9 +119,6 @@ export const createPlaylistHandler = async (
     const playlist = await PlaylistService.create({
       userId: userId,
       ...req.body,
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
     });
 
     // Nếu có moodId, sử dụng addMoods để lưu vào bảng trung gian
@@ -135,6 +131,7 @@ export const createPlaylistHandler = async (
     }
 
     const newPlaylist = await PlaylistService.getById(playlist.id);
+    await LikeService.likePlaylist(userId, newPlaylist.id);
 
     res.status(StatusCodes.CREATED).json({
       data: newPlaylist,
@@ -152,21 +149,17 @@ export const updatePlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const playlist = await PlaylistService.getById(req.params.id);
+    const userInfo = get(req, "identity") as IIdentity;
+    const playlist = await PlaylistService.getById(req.params.id, userInfo.id);
 
     if (!playlist)
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
-
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const moodIds = req.body.moodIds;
     const songIds = req.body.songIds;
 
     const data = {
       ...req.body,
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
     };
 
     // Nếu có moodId
@@ -389,16 +382,16 @@ export const getAllPlaylistLikedHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { limit = 4, page = 1, keyword, sort } = req.query;
+    const { limit = 4, page = 1, keyword, my } = req.query;
 
     const userId = get(req, "identity") as IIdentity;
 
     const playlists = await PlaylistService.getAllLikePagination({
       limit: parseInt(limit as string, 10),
       page: parseInt(page as string, 10),
-      sort: sort as SortOptions,
       userId: userId.id,
       keyword: keyword as string,
+      my: my === "true" ? true : false,
     });
 
     res.status(StatusCodes.OK).json({

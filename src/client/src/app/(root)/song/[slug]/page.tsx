@@ -12,7 +12,6 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const SongPage = () => {
-  // const [showEdit, setShowEdit] = useState(false);
   const [nav, setNav] = useState("About");
   const [seeMore, setSeeMore] = useState(false);
   const params = useParams();

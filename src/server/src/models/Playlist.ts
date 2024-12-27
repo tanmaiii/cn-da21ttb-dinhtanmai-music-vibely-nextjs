@@ -89,16 +89,17 @@ class Playlist extends Model {
   users: User[];
 
   @BeforeCreate // trước khi tạo
-  static async addSlug(instance: Song) {
-    const count = await Playlist.count({ where: { title: instance.title } });
-    let suffix = "";
+  static async addSlug(instance: Playlist) {
+    let baseSlug = formatStringToSlug(instance.title).replace(/ /g, "-");
+    let slug = baseSlug;
+    let count = 0;
 
-    if (count > 0) {
-      suffix = "-" + `${count + 1}`;
+    while (await Playlist.count({ where: { slug } }) > 0) {
+      count++;
+      slug = `${baseSlug}-${count}`;
     }
 
-    instance.slug =
-      formatStringToSlug(instance.title).replace(/ /g, "-") + suffix;
+    instance.slug = slug;
   }
 }
 

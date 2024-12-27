@@ -255,6 +255,11 @@ export const artists: IArtist[] = [
     followers: 12000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "2",
@@ -264,6 +269,11 @@ export const artists: IArtist[] = [
     followers: 15000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "3",
@@ -273,6 +283,11 @@ export const artists: IArtist[] = [
     followers: 8000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "4",
@@ -282,6 +297,11 @@ export const artists: IArtist[] = [
     followers: 10000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "5",
@@ -291,6 +311,11 @@ export const artists: IArtist[] = [
     followers: 7000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "6",
@@ -300,6 +325,11 @@ export const artists: IArtist[] = [
     followers: 20000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "7",
@@ -309,6 +339,11 @@ export const artists: IArtist[] = [
     followers: 5000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "8",
@@ -318,6 +353,11 @@ export const artists: IArtist[] = [
     followers: 18000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "9",
@@ -327,6 +367,11 @@ export const artists: IArtist[] = [
     followers: 9000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "10",
@@ -336,6 +381,11 @@ export const artists: IArtist[] = [
     followers: 11000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
   {
     id: "11",
@@ -345,6 +395,11 @@ export const artists: IArtist[] = [
     followers: 6000000,
     songs: 0,
     playlists: 0,
+    roleId: "1",
+    role: {
+      id: "1",
+      name: "Not user",
+    },
   },
 ];
 
@@ -372,6 +427,11 @@ export const exArtist: IArtist = {
   followers: 0,
   songs: 0,
   playlists: 0,
+  roleId: "1",
+  role: {
+    id: "1",
+    name: "Not user",
+  },
 };
 
 export const exRoom: IRoom = {
@@ -941,3 +1001,17 @@ export const comments = [
     text: "Maecenas malesuada elit lectus felis, malesuada ultricies.",
   },
 ];
+
+export const exFavorites: IPlaylist = {
+  id: "1",
+  title: "Favorites",
+  description: "",
+  imagePath: "",
+  genre: genres[0],
+  creator: artists[0],
+  public: true,
+  total: 0,
+  likes: 0,
+  songsCount: 0,
+  createdAt: new Date().toISOString(),
+};

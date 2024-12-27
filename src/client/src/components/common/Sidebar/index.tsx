@@ -1,17 +1,14 @@
 "use client";
 
 import { useUI } from "@/context/UIContext";
-import { clearUser } from "@/features/userSlice";
 import { IMAGES, paths } from "@/lib/constants";
 import { RootState } from "@/lib/store";
-import tokenService from "@/lib/tokenService";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
-import authService from "@/services/auth.service";
 
 interface SidebarProps {
   links: {
@@ -31,7 +28,6 @@ const Sidebar = (props: SidebarProps) => {
   const pathname = usePathname();
   const { isSidebarOpen, toggleSidebar, theme, toggleDarkMode } = useUI();
   const user = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {

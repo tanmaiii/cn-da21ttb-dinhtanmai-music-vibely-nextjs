@@ -8,6 +8,7 @@ import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
 import { attributesUser } from "./User.service";
 import { at, includes } from "lodash";
+import fs from "fs";
 
 export const attributesPlaylist = [
   "id",
@@ -26,6 +27,10 @@ interface GetAllOptions {
   sort?: SortOptions;
   keyword?: string;
   where?: WhereOptions;
+}
+
+interface GetAllLikeOption extends GetAllOptions {
+  my: boolean;
 }
 
 const playlistQueryOptions = {
@@ -143,7 +148,8 @@ export default class PlaylistService {
     sort,
     keyword,
     where,
-  }: GetAllOptions) => {
+    my,
+  }: GetAllLikeOption) => {
     const offset = (page - 1) * limit;
 
     const whereCondition: any = userId
@@ -151,6 +157,10 @@ export default class PlaylistService {
           [Op.or]: [{ public: true }, { userId }],
         }
       : { public: true };
+
+    if (my && userId) {
+      whereCondition.userId = userId;
+    }
 
     const playlistLikes = await PlaylistLikes.findAll({
       where: { userId },
@@ -217,8 +227,21 @@ export default class PlaylistService {
 
   static create = (playlist: Partial<Playlist>) => Playlist.create(playlist);
 
-  static update = (id: string, playlist: Partial<Playlist>) =>
-    Playlist.update(playlist, { where: { id } });
+  static update = async (id: string, playlist: Partial<Playlist>) => {
+    if (playlist.imagePath) {
+      const oldPlaylist = await Playlist.findByPk(id);
+      const imageOld = oldPlaylist?.imagePath;
+      if (imageOld) {
+        try {
+          fs.unlinkSync(`./uploads/images/${imageOld}`);
+        } catch (error) {
+          console.error("Error when delete old image:", error);
+        }
+      }
+    }
+
+    return Playlist.update(playlist, { where: { id } });
+  };
 
   static delete = (id: string) => Playlist.destroy({ where: { id } });
 }

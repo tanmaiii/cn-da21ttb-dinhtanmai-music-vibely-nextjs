@@ -15,7 +15,8 @@ export const paths = {
   LOGIN: "/login",
   LOGOUT: "/logout",
   PROFILE: "/profile",
-  PAYLIST: "/playlist",
+  PLAYLIST: "/playlist",
+  MY_PLAYLIST: "/my-playlist",
   SONG: "/song",
   ARTIST: "/artist",
   UPLOAD: "/upload",
@@ -58,7 +59,7 @@ export const sidebarLinks = [
     items: [
       {
         title: "Playlist",
-        paths: [paths.PAYLIST],
+        paths: [paths.MY_PLAYLIST],
         icon: "fa-light fa-album",
       },
       {
@@ -150,7 +151,7 @@ export const sidebarAdminLinks = [
       },
       {
         title: "Playlists",
-        paths: [paths.ADMIN + paths.PAYLIST],
+        paths: [paths.ADMIN + paths.PLAYLIST],
         icon: "fa-light fa-album",
       },
       {

@@ -11,12 +11,17 @@ const payload = {
       .optional(),
     description: string({})
       .max(SIZE.DESCRIPTION, "Description is too long")
-      .optional(),
+      .nullable(),
     public: boolean().optional(),
-    duration: number().optional(),
+    imagePath: string().optional().nullable(),
+    duration: number().optional().nullable(),
     genreId: string().max(SIZE.UUID).optional(),
-    moodIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
-    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    moodIds: array(string().max(SIZE.UUID, "Id is too long"))
+      .optional()
+      .nullable(),
+    songIds: array(string().max(SIZE.UUID, "Id is too long"))
+      .optional()
+      .nullable(),
   }),
 };
 
@@ -42,6 +47,15 @@ const slug = {
   }),
 };
 
+const querySchemaAllLike = {
+  query: object({
+    limit: string().default("10").optional(),
+    page: string().default("1").optional(),
+    keyword: string().optional(),
+    my: string().optional(),
+  }),
+};
+
 // ------------------SCHEMA-----------------------
 export const getAllPlaylistSchema = object({ ...querySchema });
 export const getPlaylistSchema = object({ ...params });
@@ -49,7 +63,7 @@ export const getPlaylistSlugSchema = object({ ...slug });
 export const createPlaylistSchema = object({ ...payload });
 export const updatePlaylistSchema = object({ ...payload, ...params });
 
-export const getAllPlaylistLikeSchema = object({ ...querySchema });
+export const getAllPlaylistLikeSchema = object({ ...querySchemaAllLike });
 export const likePlaylistSchema = object({ ...params });
 export const unLikePlaylistSchema = object({ ...params });
 

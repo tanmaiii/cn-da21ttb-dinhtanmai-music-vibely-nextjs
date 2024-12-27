@@ -180,26 +180,6 @@ export default class SongService {
     return song;
   };
 
-  // static getSongByPlaylist = async (playlistId: string, userId?: string) => {
-  //   const whereCondition: any = userId
-  //     ? {
-  //         [Op.or]: [{ public: true }, { userId }],
-  //       }
-  //     : { public: true };
-
-  //   return PlaylistSong.findAll({
-  //     where: { playlistId },
-  //     // include: [
-  //     //   {
-  //     //     model: Song,
-  //     //     attributes: songQueryOptions.attributes as string[],
-  //     //     include: songQueryOptions.include,
-  //     //     where: whereCondition,
-  //     //   },
-  //     // ],
-  //   });
-  // };
-
   static getPathAudio = async (id: string) => {
     return Song.findByPk(id, {
       attributes: ["songPath"],
