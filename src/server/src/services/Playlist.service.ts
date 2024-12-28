@@ -145,9 +145,7 @@ export default class PlaylistService {
     page = 1,
     limit = 10,
     userId,
-    sort,
     keyword,
-    where,
     my,
   }: GetAllLikeOption) => {
     const offset = (page - 1) * limit;

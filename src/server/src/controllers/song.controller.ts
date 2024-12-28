@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import { StatusCodes } from "http-status-codes";
 import { get } from "lodash";
+import { IIdentity } from "../middleware/auth.middleware";
 import {
   CreateSongInput,
   DeleteSongInput,
   DestroySongInput,
-  GetAllLikeSongInput,
   GetAllSongInput,
   GetLyricsSongInput,
   GetSongInput,
@@ -14,7 +14,7 @@ import {
   LikeSongInput,
   PlaySongInput,
   UnLikeSongInput,
-  UpdateSongInput,
+  UpdateSongInput
 } from "../schema/song.schema";
 import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
@@ -22,7 +22,6 @@ import MoodService from "../services/Mood.service";
 import SongService from "../services/Song.service";
 import ApiError from "../utils/ApiError";
 import { getFilePath, SortOptions } from "../utils/commonUtils";
-import { IIdentity } from "../middleware/auth.middleware";
 
 // Lấy danh sách bài hát
 export const getAllHandler = async (
@@ -334,14 +333,18 @@ export const checkLikeSongHandler = async (
 };
 
 export const getAllLikeSongHandler = async (
-  req: Request<{}, GetAllLikeSongInput["query"], {}>,
+  req: Request<{}, {}, {}>,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const userInfo = get(req, "identity") as IIdentity;
+
+    const songs = await SongService.getAllLikeSong(userInfo.id);
+
     res
       .status(StatusCodes.OK)
-      .json({ data: [], message: "Get successfully" });
+      .json({ data: songs, message: "Get successfully" });
   } catch (error) {
     next(error);
   }

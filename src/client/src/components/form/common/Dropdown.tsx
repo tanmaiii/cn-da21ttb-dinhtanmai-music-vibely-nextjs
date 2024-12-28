@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./style.module.scss";
 
 export interface IOption {
@@ -20,8 +20,17 @@ interface Props {
 const Dropdown = (props: Props) => {
   const { label, desc, error, value, className, name, options, onChange } =
     props;
+  const [valueDefault, setValueDefault] = React.useState(value);
   const [active, setActive] = React.useState(false);
   const DropdownRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(value){
+      setValueDefault(value)
+    }else{
+      setValueDefault("")
+    }
+  }, [value])
 
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -49,7 +58,7 @@ const Dropdown = (props: Props) => {
           <input
             type="text"
             name={name}
-            value={options.find((o) => o.value === value)?.label}
+            value={valueDefault ? options.find((o) => o.value === valueDefault)?.label : ""}
             readOnly
             placeholder=" "
             onClick={() => setActive(!active)}

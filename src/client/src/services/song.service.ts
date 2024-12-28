@@ -19,7 +19,12 @@ class SongService {
 
   async getBySlug(slug: string): Promise<ResponseAPI<ISong>> {
     const res = await this.client.get<ResponseAPI<ISong>>(`/${slug}/slug`);
-    return res.data
+    return res.data;
+  }
+
+  async getAllSongLiked(): Promise<ResponseAPI<ISong[]>> {
+    const res = await this.client.get<ResponseAPI<ISong[]>>("/like");
+    return res.data;
   }
 }
 

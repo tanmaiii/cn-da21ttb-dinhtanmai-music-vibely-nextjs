@@ -18,7 +18,7 @@
     "@types/moment": "^2.11.29",
     "@types/numeral": "^2.0.5",
     "@types/react-beautiful-dnd": "^13.1.8",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "formik": "^2.4.6",
     "framer-motion": "^11.11.8",
     "js-cookie": "^3.0.5",
@@ -39,7 +39,6 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@types/axios": "^0.9.36",
     "@types/emoji-mart": "^3.0.14",
     "@types/js-cookie": "^3.0.6",
     "@types/jwt-decode": "^2.2.1",

@@ -23,7 +23,6 @@ import {
   createSongSchema,
   deleteSongSchema,
   destroySongSchema,
-  getAllLikeSongSchema,
   getAllSongSchema,
   getLyricsSongSchema,
   getSongSchema,
@@ -38,12 +37,7 @@ import { PERMISSIONS } from "../utils/contants";
 const router: Router = Router();
 
 // Like song
-router.get(
-  "/like",
-  authorize(),
-  validateData(getAllLikeSongSchema),
-  getAllLikeSongHandler
-);
+router.get("/like", authorize(), getAllLikeSongHandler);
 
 router.delete(
   "/:id/like",

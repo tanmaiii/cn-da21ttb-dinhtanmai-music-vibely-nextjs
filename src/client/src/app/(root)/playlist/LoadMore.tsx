@@ -1,13 +1,12 @@
 "use client";
 
+import { Card } from "@/components/Card";
 import loader from "@/public/images/spinner.svg";
 import playlistService from "@/services/playlist.service";
-import { IPlaylist } from "@/types";
+import { IPlaylist, QueryParams } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { QueryParams } from "../../types/common.type";
-import { Card } from "../Card";
 
 function LoadMorePlaylist({
   params,

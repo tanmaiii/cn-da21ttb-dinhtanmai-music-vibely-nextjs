@@ -85,7 +85,6 @@ export const updateSongSchema = object({ ...params, ...payloadUpdate });
 export const deleteSongSchema = object({ ...params });
 export const destroySongSchema = object({ ...params });
 
-export const getAllLikeSongSchema = object({...querySchema})
 export const likeSongSchema = object({ ...params });
 export const unLikeSongSchema = object({ ...params });
 export const playSongSchema = object({ ...params });
@@ -101,7 +100,6 @@ export type UpdateSongInput = TypeOf<typeof updateSongSchema>;
 export type DeleteSongInput = TypeOf<typeof deleteSongSchema>;
 export type DestroySongInput = TypeOf<typeof destroySongSchema>;
 
-export type GetAllLikeSongInput = TypeOf<typeof getAllLikeSongSchema>;
 export type LikeSongInput = TypeOf<typeof likeSongSchema>;
 export type UnLikeSongInput = TypeOf<typeof unLikeSongSchema>;
 export type PlaySongInput = TypeOf<typeof playSongSchema>;

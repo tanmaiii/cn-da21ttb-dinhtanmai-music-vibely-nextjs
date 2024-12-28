@@ -1,30 +1,29 @@
 "use client";
 
-import { Card } from "@/components/Card";
+import { CardRoom } from "@/components/Card";
 import loader from "@/public/images/spinner.svg";
-import playlistService from "@/services/playlist.service";
-import { IPlaylist } from "@/types";
-import { PlaylistLikeQueryParamsDto } from "@/types/playlist.type";
+import roomSerive from "@/services/room.service";
+import { IRoom, QueryParams } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
-function LoadMore({
+function LoadMorePlaylist({
   params,
   setNextPage,
 }: {
-  params: PlaylistLikeQueryParamsDto;
+  params: QueryParams;
   setNextPage: (page: number) => void;
 }) {
   const { ref, inView } = useInView();
   const [totalPages, setTotalPages] = useState(3);
-  const [data, setData] = useState<IPlaylist[]>([]);
+  const [data, setData] = useState<IRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setData([]);
     setTotalPages(3);
-  }, [params.my, params.keyword, params.limit]);
+  }, [params.sort, params.keyword, params.limit]);
 
   useEffect(() => {
     if (inView) {
@@ -32,7 +31,7 @@ function LoadMore({
       const delay = 500;
 
       const timeoutId = setTimeout(async () => {
-        const res = await playlistService.getMe({ ...params });
+        const res = await roomSerive.getAll({ ...params });
         setData([...data, ...res.data.data]);
         setTotalPages(res.data.totalPages);
         setNextPage(res.data.currentPage + 1);
@@ -46,8 +45,8 @@ function LoadMore({
 
   return (
     <>
-      {data.map((item: IPlaylist, index: number) => (
-        <Card key={index} data={item} />
+      {data.map((item: IRoom, index: number) => (
+        <CardRoom key={index} room={item} />
       ))}
       {(params.page ?? 2) <= totalPages && (
         <div
@@ -71,4 +70,4 @@ function LoadMore({
   );
 }
 
-export default LoadMore;
+export default LoadMorePlaylist;

@@ -1,14 +1,14 @@
 "use client";
+import { DragDropFile } from "@/components/Form";
 import { useCustomToast } from "@/hooks/useToast";
 import { genres, moods, privacy } from "@/lib/data";
-import formatFileSize from "@/lib/utils";
+import { formatFileSize } from "@/lib/utils";
 import React, { useState } from "react";
 import { ButtonLabel } from "../ui/Button";
-import DragDropFile from "./DragDropFile";
-import Dropdown from "./Dropdown";
-import FormItem from "./FormItem";
-import MultipleSelect, { IOptionSelect } from "./MultipleSelect";
 import Radio from "../ui/Radio";
+import Dropdown from "./common/Dropdown";
+import FormItem from "./common/FormItem";
+import MultipleSelect, { IOptionSelect } from "./common/MultipleSelect";
 import styles from "./style.module.scss";
 
 const FormCreateSong = () => {
@@ -130,7 +130,7 @@ const FormCreateSong = () => {
             </div>
 
             <div className={styles.privacy}>
-              <Radio label="Privacy" name="privacy" options={privacy} />
+              <Radio onChange={(value) => console.log(value)} label="Privacy" name="privacy" options={privacy} />
             </div>
           </div>
           <div className="col pc-4 t-4 m-12">
@@ -180,7 +180,6 @@ const FormCreateSong = () => {
                 options={genres.map((g) => {
                   return { value: g.id, label: g.title };
                 })}
-                value={genreSelect}
                 onChange={(valueSelect) => setGenreSelect(valueSelect)}
               />
 
@@ -191,8 +190,7 @@ const FormCreateSong = () => {
                 options={moods.map((g) => {
                   return { value: g.id, label: g.title };
                 })}
-                values={moodSelect}
-                onChange={(value) => setMoodSelect(value)}
+                onChange={(value) => console.log(value)}
               />
             </div>
           </div>

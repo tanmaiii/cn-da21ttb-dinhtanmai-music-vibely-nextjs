@@ -1,13 +1,14 @@
 "use client";
-import { Section } from "@/components/Section";
-import styles from "./style.module.scss";
 import { CardRoom } from "@/components/Card";
-import { useEffect, useState } from "react";
-import roomSerive from "@/services/room.service";
-import { IRoom, ISort } from "@/types";
-import { ButtonIcon } from "@/components/ui";
+import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
+import { ButtonIcon } from "@/components/ui";
+import roomSerive from "@/services/room.service";
+import { ISort } from "@/types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import Loading from "./loading";
+import styles from "./style.module.scss";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "Phổ biến", value: "mostListens" },
@@ -16,26 +17,21 @@ const DataSort: { id: number; name: string; value: ISort }[] = [
 ];
 
 const Room = () => {
-  const [data, setData] = useState<IRoom[] | null>(null);
   const [active, setActive] = useState<ISort>("mostListens");
-  const [isLoad, setIsLoad] = useState(true);
+  const queryClient = useQueryClient();
 
-  const featchData = async () => {
-    setIsLoad(true);
-    try {
+  const { data, isLoading } = useQuery({
+    queryKey: ["room", active],
+    queryFn: async () => {
       const res = await roomSerive.getAll({ page: 1, sort: active });
-      if (res.data) setData(res?.data?.data);
-    } catch (error) {
-      console.log(error);
-    }
-    setTimeout(() => {
-      setIsLoad(false);
-    }, 1000);
-  };
+      return res.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
-    featchData();
-  }, [active]);
+    queryClient.invalidateQueries({ queryKey: ["playlist"] });
+  }, [active, queryClient]);
 
   return (
     <div className={`${styles.RoomPage}`}>
@@ -51,11 +47,11 @@ const Room = () => {
           <SliderNav
             active={active}
             listNav={DataSort}
-            setActive={(value: ISort) => setActive(value)}
+            setActive={(value: string) => setActive(value as ISort)}
           />
         </div>
       </div>
-      {isLoad ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <div className={`${styles.RoomPage_body}`}>

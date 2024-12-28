@@ -3,8 +3,8 @@ import { genres, moods, privacy } from "@/lib/data";
 import { apiImage, formatFileSize } from "@/lib/utils";
 import { IPlaylist, PlaylistRequestDto } from "@/types";
 import React, { useEffect } from "react";
-import { DragDropFile, FormItem, MultipleSelect } from "../form";
-import Dropdown from "../form/Dropdown";
+import { DragDropFile, FormItem, MultipleSelect } from "../Form";
+import Dropdown from "../Form/common/Dropdown";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
 import styles from "./style.module.scss";
@@ -13,9 +13,11 @@ import uploadService from "@/services/upload.service";
 interface Props {
   onSubmit: (values: PlaylistRequestDto) => void;
   initalData?: IPlaylist;
+  open?: boolean;
+  onClose: () => void;
 }
 
-const FormPlaylist = ({ onSubmit, initalData }: Props) => {
+const FormPlaylist = ({ onSubmit, initalData, open, onClose }: Props) => {
   const { toastError } = useCustomToast();
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [errors, setErrors] = React.useState<Partial<PlaylistRequestDto>>({});
@@ -38,25 +40,25 @@ const FormPlaylist = ({ onSubmit, initalData }: Props) => {
           ? initalData.moods.map((mood) => mood.id)
           : [],
         public: initalData.public,
-        imagePath: initalData.imagePath ? apiImage(initalData.imagePath) : "",
+        imagePath: initalData.imagePath ? initalData.imagePath : undefined,
       });
     }
-    console.log(initalData);
-  }, [initalData]);
+    if (!open) {
+      handleClose();
+    }
+  }, [initalData, open]);
 
-  useEffect(() => {
-    console.log({ values });
-  }, [values]);
-
-  const handleChange = (value: Partial<PlaylistRequestDto>) => {
+  function handleChange(value: Partial<PlaylistRequestDto>) {
     setValues((prev) => ({ ...prev, ...value }));
-  };
+  }
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
     const file = e.target.files && e.target.files[0];
     const size = 5 * 1024 * 1024;
+    if (!file) handleChange({ imagePath: undefined });
+
     if (file && file?.size > size) {
       toastError(`Image size must be less than ${formatFileSize(size)}`);
       return;
@@ -77,8 +79,8 @@ const FormPlaylist = ({ onSubmit, initalData }: Props) => {
     setErrors({});
     let hasError = false;
     // Kiểm tra nếu không có hình ảnh
-    if (!imageFile) {
-      setErrors((prev) => ({ ...prev, image: "Please upload an image" }));
+    if (!values?.imagePath && !imageFile) {
+      setErrors((prev) => ({ ...prev, imagePath: "Please upload an image" }));
       hasError = true;
     }
 
@@ -102,18 +104,31 @@ const FormPlaylist = ({ onSubmit, initalData }: Props) => {
 
     if (hasError) return;
     try {
-      const formData = new FormData();
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const image = await uploadService.upload(formData);
+        formValues.imagePath = image.data.path;
+      }
 
-      if (imageFile) formData.append("image", imageFile);
-
-      const image = await uploadService.upload(formData);
-
-      const updatedValues = { ...formValues, imagePath: image.data.path };
-
-      await onSubmit(updatedValues); // Gửi form data đến server
+      await onSubmit(formValues); // Gửi form data đến server
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+  };
+
+  const handleClose = () => {
+    setValues({
+      title: "",
+      description: "",
+      genreId: "",
+      moodIds: [],
+      public: true,
+      imagePath: undefined,
+    });
+    setImageFile(null);
+    setErrors({});
+    onClose();
   };
 
   return (
@@ -129,7 +144,9 @@ const FormPlaylist = ({ onSubmit, initalData }: Props) => {
               name="image"
               className={styles.left_image}
               file={imageFile}
-              // image_default={form.imagePath}
+              image_default={
+                (values?.imagePath && apiImage(values?.imagePath)) || ""
+              }
               image={true}
               accept="image/*"
               error={errors.imagePath}
@@ -192,7 +209,11 @@ const FormPlaylist = ({ onSubmit, initalData }: Props) => {
         </div>
       </div>
       <div className={styles.footer}>
-        <ButtonLabel line={true} className={styles.footer_button}>
+        <ButtonLabel
+          onClick={handleClose}
+          line={true}
+          className={styles.footer_button}
+        >
           <label htmlFor="">Cancel</label>
         </ButtonLabel>
         <ButtonLabel

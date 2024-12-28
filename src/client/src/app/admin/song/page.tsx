@@ -1,5 +1,5 @@
 "use client";
-import { Dropdown } from "@/components/form";
+import { Dropdown } from "@/components/Form";
 import Table from "@/components/Table";
 import { Input, Pagination } from "@/components/ui";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";

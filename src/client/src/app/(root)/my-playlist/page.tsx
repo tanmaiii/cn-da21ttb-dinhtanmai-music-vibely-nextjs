@@ -1,6 +1,6 @@
 "use client";
 import { Card } from "@/components/Card";
-import FormPlaylist from "@/components/FormPlaylist";
+import {FormPlaylist} from "@/components/Form";
 import Modal from "@/components/Modal";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
@@ -91,7 +91,11 @@ const MyPlaylistPage = () => {
         </div>
       )}
       <Modal show={showAdd} onClose={() => setShowAdd(false)}>
-        <FormPlaylist onSubmit={(data) => mutationAdd.mutate(data)} />
+        <FormPlaylist
+          onClose={() => setShowAdd(false)}
+          open={showAdd}
+          onSubmit={(data) => mutationAdd.mutate(data)}
+        />
       </Modal>
     </div>
   );

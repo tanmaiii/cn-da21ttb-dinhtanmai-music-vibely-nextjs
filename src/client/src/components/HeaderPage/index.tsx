@@ -6,8 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import styles from "./style.module.scss";
-import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
 
 interface Props {
   data: ISong | IPlaylist;

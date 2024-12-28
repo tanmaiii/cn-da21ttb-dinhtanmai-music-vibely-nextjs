@@ -1,7 +1,5 @@
 "use client";
 import { Card } from "@/components/Card";
-import FormPlaylist from "@/components/FormPlaylist";
-import LoadMorePlaylist from "@/components/LoadMore/LoadMorePlaylist";
 import Modal from "@/components/Modal";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
@@ -13,6 +11,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import LoadMore from "./LoadMore";
+import { FormPlaylist } from "@/components/Form";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "Popular", value: "mostLikes" },
@@ -84,7 +84,7 @@ const PlaylistPage = () => {
               data.map((item: IPlaylist, index: number) => (
                 <Card index={index} key={index} data={item} />
               ))}
-            <LoadMorePlaylist
+            <LoadMore
               setNextPage={setNextPage}
               params={{ sort: active, page: nextPage }}
             />
@@ -92,7 +92,11 @@ const PlaylistPage = () => {
         </div>
       )}
       <Modal show={showAdd} onClose={() => setShowAdd(false)}>
-        <FormPlaylist onSubmit={(data) => mutationAdd.mutate(data)} />
+        <FormPlaylist
+          onClose={() => setShowAdd(false)}
+          open={showAdd}
+          onSubmit={(data) => mutationAdd.mutate(data)}
+        />
       </Modal>
     </div>
   );

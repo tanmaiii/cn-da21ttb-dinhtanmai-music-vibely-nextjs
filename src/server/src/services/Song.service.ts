@@ -7,6 +7,7 @@ import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
 import { attributesUser } from "./User.service";
+import SongLikes from "../models/SongLikes";
 
 interface GetAllOptions {
   page: number;
@@ -141,6 +142,42 @@ export default class SongService {
       currentPage: page,
       totalPages: Math.ceil(totalItems / limit),
     };
+  };
+
+  static getAllLikeSong = async (userId: string) => {
+    const whereCondition: any = userId
+      ? {
+          [Op.or]: [{ public: true }, { userId }],
+        }
+      : { public: true };
+
+    const songsInPlaylist = await SongLikes.findAll({
+      where: { userId },
+      attributes: ["songId", "createdAt"],
+      order: [["createdAt", "DESC"]],
+    });
+
+    // Lấy danh sách songId theo thứ tự đã sắp xếp
+    const orderedSongIds = songsInPlaylist.map((song) => song.songId);
+
+    // Truy vấn bảng Songs với điều kiện lọc theo id và thứ tự từ orderedSongIds
+    const songs = await Song.findAll({
+      where: {
+        id: {
+          [Op.in]: orderedSongIds,
+        },
+        ...whereCondition,
+      },
+      attributes: songQueryOptions.attributes as string[],
+      include: songQueryOptions.include,
+    });
+
+    // Sắp xếp kết quả trả về theo thứ tự trong orderedSongIds
+    const orderedSongs = orderedSongIds.map((id) =>
+      songs.find((song) => song.id === id)
+    );
+
+    return orderedSongs;
   };
 
   static getSongByArtistId = async (userId: string) => {

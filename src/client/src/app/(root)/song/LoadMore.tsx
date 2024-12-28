@@ -6,10 +6,10 @@ import { ISong } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { QueryParams } from "../../types/common.type";
-import { Card } from "../Card";
+import { QueryParams } from "@/types/common.type";
+import { Card } from "@/components/Card";
 
-function LoadMoreSong({
+function LoadMore({
   params,
   setNextPage,
 }: {
@@ -71,4 +71,4 @@ function LoadMoreSong({
   );
 }
 
-export default LoadMoreSong;
+export default LoadMore;

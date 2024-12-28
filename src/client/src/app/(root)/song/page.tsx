@@ -1,6 +1,5 @@
 "use client";
 import { Card } from "@/components/Card";
-import LoadMoreSong from "@/components/LoadMore/LoadMoreSong";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
 import { ButtonIcon } from "@/components/ui/Button";
@@ -9,6 +8,7 @@ import { ISort } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
+import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
 
 const DataSort: { id: number; name: string; value: string }[] = [
@@ -67,7 +67,7 @@ const SongPage = () => {
               data.map((item, index) => {
                 return <Card index={index} key={index} data={item} />;
               })}
-            <LoadMoreSong
+            <LoadMore
               setNextPage={setNextPage}
               params={{ sort: active as ISort, page: nextPage }}
             />

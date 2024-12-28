@@ -1,12 +1,29 @@
+"use client";
+
 import { HeaderPage } from "@/components/HeaderPage";
 import TablePlaylist from "@/components/TablePlaylist";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
-import { exFavorites, songs } from "../../../lib/data";
+import { exFavorites } from "../../../lib/data";
 import styles from "./style.module.scss";
+import { useQuery } from "@tanstack/react-query";
+import songService from "@/services/song.service";
+import { notFound } from "next/navigation";
+import Loading from "./loading";
 
 const Favorites = () => {
-  // const currentUser = useSelector((state: RootState) => state.user);
+  // const [isLoading, setisLoading] = useState(true);
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["song-favorites"],
+    queryFn: async () => {
+      const res = await songService.getAllSongLiked();
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Loading />;
+
+  if (error) return notFound();
 
   return (
     <div className={styles.LikesPage}>
@@ -21,18 +38,12 @@ const Favorites = () => {
           />
           <ButtonIcon
             size="large"
-            icon={
-              <i style={{ color: "#ff6337" }} className="fa-solid fa-heart"></i>
-            }
-          />
-          <ButtonIcon
-            size="large"
             icon={<i className="fa-solid fa-ellipsis"></i>}
           />
         </div>
 
         <div className={`${styles.LikesPage_content_body}`}>
-          <TablePlaylist data={songs} />
+          {data && <TablePlaylist data={data} />}
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import EditPlaylist from "@/components/FormPlaylist";
 import { HeaderPage } from "@/components/HeaderPage";
 import Modal from "@/components/Modal";
 import Table from "@/components/TablePlaylist";
@@ -14,6 +13,7 @@ import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
+import { FormPlaylist } from "@/components/Form";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -108,7 +108,9 @@ const PlaylistPage = () => {
       </div>
       <Modal show={showEdit} onClose={() => setShowEdit(false)}>
         {playlist && (
-          <EditPlaylist
+          <FormPlaylist
+            open={showEdit}
+            onClose={() => setShowEdit(false)}
             initalData={playlist}
             onSubmit={(data) => onSubmitEdit.mutate(data)}
           />

@@ -1,6 +1,6 @@
 "use client";
 import { ButtonLabel } from "@/components/ui/Button";
-import { FormCreateSong } from "@/components/form";
+import { FormCreateSong } from "@/components/Form";
 import React, { useState } from "react";
 import styles from "./style.module.scss";
 
