@@ -14,6 +14,9 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
 import { FormPlaylist } from "@/components/Form";
+import { Track } from "@/components/Track";
+import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
+import Loading from "./loading";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -23,7 +26,11 @@ const PlaylistPage = () => {
   const currentUser = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
 
-  const { data: playlist, error } = useQuery({
+  const {
+    data: playlist,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ["playlist", slug],
     queryFn: async () => {
       const res = await playlistService.getBySlug(slug);
@@ -60,7 +67,18 @@ const PlaylistPage = () => {
     },
   });
 
-  // if (isLoading || isLoadingSong) return <Loading />;
+  const mutationUpdatePlaylist = useMutation({
+    mutationFn: async (data: PlaylistRequestUpdateDto) => {
+      if (playlist?.id) {
+        await playlistService.update(playlist?.id, data);
+      }
+    },
+    onSuccess: () => {
+      toastSuccess("Reorder successfully");
+    },
+  });
+
+  if (isLoading) return <Loading />;
 
   if (error || !slug) return notFound();
 
@@ -99,9 +117,15 @@ const PlaylistPage = () => {
         <div className={`${styles.PlaylistPage_content_body}`}>
           {dataSong && playlist && (
             <Table
-              allowEdit={playlist?.creator?.id === currentUser?.id}
-              playlistId={playlist.id}
+              onChange={(data) =>
+                playlist &&
+                playlist && (playlist as any).creator?.id === currentUser?.id &&
+                mutationUpdatePlaylist.mutate({
+                  songIds: data.map((item) => item.id),
+                })
+              }
               data={dataSong}
+              renderItem={(item, index) => <Track key={index} song={item} />}
             />
           )}
         </div>

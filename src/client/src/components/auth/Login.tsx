@@ -29,7 +29,7 @@ const Login = () => {
   });
 
   const submit = async (values: LoginRequestDto) => {
-    if(loading) return;
+    if (loading) return;
     setLoading(true);
     try {
       const { data } = await authService.login(values);
@@ -41,7 +41,7 @@ const Login = () => {
     } catch (err: unknown) {
       console.error(err);
       setError((err as Error)?.message || "Login failed");
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -55,11 +55,13 @@ const Login = () => {
         clientId: credentialResponse?.clientId || "",
       };
       const { data } = await authService.loginGoogle(res);
-      tokenService.accessToken = data.accessToken;
-      tokenService.refreshToken = data.refreshToken;
-      dispatch(setUser(data));
-      router.push("/");
-      toast.success("Login successfully");
+      if (data) {
+        tokenService.accessToken = data.accessToken;
+        tokenService.refreshToken = data.refreshToken;
+        dispatch(setUser(data));
+        router.push("/");
+        toast.success("Login successfully");
+      }
     } catch (err: unknown) {
       console.error(err);
       setError((err as Error)?.message || "Login failed");
@@ -114,7 +116,7 @@ const Login = () => {
             </form>
           )}
         </Formik>
- 
+
         <hr />
 
         <GoogleLogin

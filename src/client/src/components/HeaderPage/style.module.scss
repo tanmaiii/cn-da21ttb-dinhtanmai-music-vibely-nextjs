@@ -108,8 +108,14 @@
       }
 
       & > p {
-        @include flex(center, start, row);
+        @include flex(center, center, row);
         gap: $space-4;
+
+        & > i{
+          font-size: $size-16;
+          color: var(--text-color-1);
+          margin-bottom: 2px;
+        }
 
         & > span {
           font-size: $size-16;

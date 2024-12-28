@@ -26,6 +26,17 @@ export interface PlaylistRequestDto {
   imagePath?: string;
 }
 
+export interface PlaylistRequestUpdateDto {
+  title?: string;
+  description?: string;
+  public?: boolean;
+  genreId?: string;
+  moodIds?: string[];
+  songIds?: string[];
+  imagePath?: string;
+}
+
+
 export interface PlaylistLikeQueryParamsDto {
   page?: number;
   limit?: number;

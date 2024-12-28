@@ -7,10 +7,11 @@ const payload = {
     title: string({
       required_error: "Title is required",
     }).max(SIZE.TITLE, "Name is too long"),
-    destination: string({
-      required_error: "Destination is required",
-    }).max(SIZE.DESCRIPTION, "Destination is too long"),
-    songId: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    description: string({
+      required_error: "Description is required",
+    }).max(SIZE.DESCRIPTION, "Description is too long"),
+    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    imagePath: string().optional(),
   }),
 };
 
@@ -21,12 +22,13 @@ const payloadUpdate = {
     })
       .max(SIZE.TITLE, "Name is too long")
       .optional(),
-    destination: string({
-      required_error: "Destination is required",
+    description: string({
+      required_error: "description is required",
     })
-      .max(SIZE.DESCRIPTION, "Destination is too long")
+      .max(SIZE.DESCRIPTION, "description is too long")
       .optional(),
-    songId: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    imagePath: string().optional(),
   }),
 };
 

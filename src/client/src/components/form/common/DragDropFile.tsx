@@ -1,3 +1,5 @@
+'use client'
+
 import { formatFileSize, formatImg } from "@/lib/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -75,7 +77,7 @@ const DragDropFile = (porps: Props) => {
                 className={styles.btn_remove}
                 icon={<i className="fa-solid fa-trash"></i>}
               />
-              <Image
+              <img
                 src={
                   fileDefault
                     ? URL.createObjectURL(fileDefault)

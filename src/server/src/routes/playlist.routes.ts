@@ -4,6 +4,7 @@ import {
   checkLikePlaylistHandler,
   createPlaylistHandler,
   getAllPlaylistHandler,
+  getAllPlaylistLikedHandler,
   getPlaylistBySlugHandler,
   getPlaylistHandler,
   getSongInPlaylistHandler,
@@ -12,7 +13,8 @@ import {
   unLikePlaylistHandler,
   updatePlaylistHandler,
 } from "../controllers/playlist.controller";
-import { authorize, uploadFile, validateData } from "../middleware";
+import { authorize, validateData } from "../middleware";
+import { isPlaylistAuthor } from "../middleware/auth.middleware";
 import {
   addSongToPlaylistSchema,
   createPlaylistSchema,
@@ -25,8 +27,6 @@ import {
   updatePlaylistSchema,
 } from "../schema/playlist.schema";
 import { PERMISSIONS } from "../utils/contants";
-import { getAllPlaylistLikedHandler } from "../controllers/playlist.controller";
-import { isPlaylistAuthor } from "../middleware/auth.middleware";
 
 const router: Router = Router();
 

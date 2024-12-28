@@ -42,14 +42,12 @@ router.get(
 router.post(
   "/",
   authorize(PERMISSIONS.CREATE_ROOM),
-  uploadFile,
   validateData(createRoomSchema),
   createRoomHandler
 );
 router.put(
   "/:id",
   authorize(PERMISSIONS.UPDATE_ROOM),
-  uploadFile,
   validateData(updateRoomSchema),
   updateRoomHandler
 );

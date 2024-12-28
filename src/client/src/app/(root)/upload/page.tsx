@@ -1,6 +1,5 @@
 "use client";
 import { ButtonLabel } from "@/components/ui/Button";
-import { FormCreateSong } from "@/components/Form";
 import React, { useState } from "react";
 import styles from "./style.module.scss";
 
@@ -117,7 +116,8 @@ const UploadPage = () => {
           //     {/* <div className={`${styles.UploadPage_body_header_item_line}`}></div> */}
           //   </button>
           // </div>
-          <FormCreateSong />
+          // <FormCreateSong />
+          <div>Xin chao</div>
 
           // step == 1 ? (
           //   <FormCreateSong />

@@ -1,14 +1,17 @@
-import { useCustomToast } from "@/hooks/useToast";
-import { genres, moods, privacy } from "@/lib/data";
-import { apiImage, formatFileSize } from "@/lib/utils";
-import { IPlaylist, PlaylistRequestDto } from "@/types";
+"use client";
+
 import React, { useEffect } from "react";
+import { genres, moods, privacy } from "@/lib/data";
+import { apiImage, validateImage } from "@/lib/utils";
+import uploadService from "@/services/upload.service";
+import { IPlaylist, PlaylistRequestDto } from "@/types";
 import { DragDropFile, FormItem, MultipleSelect } from "../Form";
 import Dropdown from "../Form/common/Dropdown";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
 import styles from "./style.module.scss";
-import uploadService from "@/services/upload.service";
+import SelectGenre from "../SelectGenre";
+import SelectMood from "../SelectMood";
 
 interface Props {
   onSubmit: (values: PlaylistRequestDto) => void;
@@ -18,7 +21,6 @@ interface Props {
 }
 
 const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
-  const { toastError } = useCustomToast();
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [errors, setErrors] = React.useState<Partial<PlaylistRequestDto>>({});
   const [values, setValues] = React.useState<PlaylistRequestDto>({
@@ -94,26 +96,20 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
-    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-    const file = e.target.files && e.target.files[0];
-    const size = 5 * 1024 * 1024;
+    setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
 
-    if (!file) handleChange({ imagePath: undefined });
+    const { file, error } = validateImage(e);
 
-    if (file && file?.size > size) {
-      toastError(`Image size must be less than ${formatFileSize(size)}`);
+    if (!file) {
+      handleChange({ imagePath: undefined });
+    }
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, imagePath: error }));
       return;
     }
 
-    if (file && !validImageTypes.includes(file.type)) {
-      toastError("Only accept .png, .jpg, .jpeg files");
-      setErrors((prev) => ({
-        ...prev,
-        image: "Only accept .png, .jpg, .jpeg files",
-      }));
-      return;
-    }
-    setImageFile(file);
+    setImageFile(file); // Cập nhật file khi hợp lệ
   };
 
   const handleSubmit = async (formValues: PlaylistRequestDto) => {
@@ -197,25 +193,15 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
                 value={values.description}
                 error={errors.description}
               />
-              <Dropdown
-                label="Genre"
-                name="genreId"
+              <SelectGenre
                 error={errors.genreId}
                 value={values.genreId}
-                options={genres.map((g) => {
-                  return { label: g.title, value: g.id };
-                })}
-                onChange={(e) => handleChange({ genreId: e.value })}
+                handleChange={(value) => handleChange({ genreId: value })}
               />
-              <MultipleSelect
-                label="Mood"
-                name="mood"
-                // error={errors.moodIds}
-                options={moods.map((g) => {
-                  return { label: g.title, value: g.id };
-                })}
-                values={values?.moodIds}
-                onChange={(e) => handleChange({ moodIds: e })}
+              <SelectMood
+                value={values.moodIds}
+                error={errors.moodIds}
+                handleChange={(value) => handleChange({ moodIds: value })}
               />
             </div>
           </div>
@@ -232,7 +218,7 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
         <ButtonLabel
           onClick={() => handleSubmit(values)}
           type="submit"
-          className={styles.footer_button}
+          className={`${styles.footer_btnCreate}`}
         >
           <label htmlFor="">Save</label>
         </ButtonLabel>

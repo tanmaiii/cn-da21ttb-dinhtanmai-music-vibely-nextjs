@@ -4,7 +4,7 @@ import ChatRoom from "@/components/ChatRoom";
 import { SectionOneRow } from "@/components/Section";
 import Slider from "@/components/Slider";
 import TablePlaylist from "@/components/TablePlaylist";
-import { TrackShort } from "@/components/Track";
+import { Track, TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconRound } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
@@ -62,7 +62,8 @@ const RoomPage = () => {
   return (
     <div className={`${styles.RoomPage}`}>
       <div className={`${styles.top}`}>
-        <div className={`${styles.content}`}>
+        {/* col pc-8 t-7 m-12 */}
+        <div className={`${styles.content} `}>
           <div className={`${styles.swapper}`}>
             {/* Banner */}
             <div
@@ -80,7 +81,9 @@ const RoomPage = () => {
               <div className={`${styles.content}`}>
                 <h4>SONG IS PLAYING:</h4>
                 <div className={`${styles.item}`}>
-                  {songs?.length && <TrackShort song={songs[0]} dontShowPlay />}
+                  {songs && songs?.length > 0 && (
+                    <TrackShort song={songs[0]} dontShowPlay />
+                  )}
                 </div>
                 <div className={styles.overlay}></div>
               </div>
@@ -208,19 +211,29 @@ const RoomPage = () => {
             </div>
 
             {/* Songs */}
-            <div>{songs && <TablePlaylist data={songs} />}</div>
+            <div>
+              {songs && (
+                <TablePlaylist
+                  data={songs}
+                  renderItem={(item, index) => (
+                    <Track key={index} song={item} />
+                  )}
+                />
+              )}
+            </div>
           </div>
         </div>
 
         {/* Chat */}
         {openChat && (
+          //  col pc-4 t-5 m-12
           <div className={`${styles.chat}`}>
             <ChatRoom onClose={() => setOpenChat(false)} />
           </div>
         )}
       </div>
 
-      <div className={`${styles.bottom}`}>
+      <div className={`${styles.bottom} `}>
         <SectionOneRow title="Rooms" path={paths.ROOM}>
           {Array.from({ length: 10 }).map(
             (_, index) =>

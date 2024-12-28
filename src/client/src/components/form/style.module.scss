@@ -97,9 +97,6 @@
       }
     }
     &_btnCancel {
-      // background-color: var(--background-color-1);
-      label {
-      }
     }
   }
 }
@@ -302,16 +299,148 @@
     @include flex(center, flex-end, row);
     gap: $space-12;
 
-    &_button {
-      &:first-child {
-        label {
-          background-color: unset;
-        }
+    &_btnCreate {
+      background-color: $color-primary;
+      label {
+        color: $color-white-1;
       }
     }
   }
 }
 
 .FormRoom {
-  
+  width: 100%;
+  min-height: 100vh;
+  flex: 1;
+  @include flex(flex-start, flex-start, column);
+
+  & > .top {
+    min-height: 80px;
+    margin-top: $space-24;
+    width: 100%;
+    background-color: var(--background-color-1);
+    border-radius: $radius-12;
+    @include flex(center, flex-start, row);
+    padding: $space-12 $space-24;
+    h2 {
+      font-size: $size-18;
+      font-weight: $font-bold;
+      color: var(--text-color-1);
+    }
+  }
+
+  & > .body {
+    flex: 1;
+    width: 100%;
+    margin-top: $space-24;
+
+    & .title {
+      font-size: $size-18;
+      font-weight: $font-medium;
+      color: var(--text-color-1);
+      // margin-bottom: $space-8;
+    }
+
+    & .desc {
+      font-size: $size-14;
+      font-weight: $font-light;
+      color: var(--text-color-2);
+      display: block;
+      margin-top: $space-12;
+    }
+
+    & .general,
+    & .media,
+    & .details,
+    & .thumbnail,
+    & .lyrics,
+    & .list_songs,
+    & .privacy {
+      @include flex(start, start, column);
+      background-color: var(--background-color-1);
+      border-radius: $radius-12;
+      padding: $space-30;
+      margin-bottom: $space-24;
+      gap: $space-12;
+
+      @include tablet {
+        padding: $space-24;
+      }
+
+      @include mobile {
+        padding: $space-12;
+      }
+    }
+
+    & .general {
+      & .buttons {
+        width: 100%;
+        @include flex(center, flex-end, row);
+        gap: $space-12;
+        padding: $space-12 0;
+        &_btnCreate {
+          background-color: $color-primary;
+          label {
+            color: $color-white-1;
+          }
+        }
+        &_btnCancel {
+          // background-color: var(--background-color-1);
+          label {
+          }
+        }
+      }
+    }
+
+    & .media {
+      &_swapper {
+        position: relative;
+        width: 100%;
+        height: 300px;
+      }
+    }
+
+    & .list_songs {
+      &_swapper {
+        width: 100%;
+        h4 {
+          font-size: $size-18;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+        }
+      }
+    }
+
+    & .list_songs_recoment {
+      &_header {
+        @include flex(center, flex-start, row);
+        gap: $space-8;
+        h4 {
+          font-size: $size-18;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+        }
+        button {
+          background-color: $color-primary;
+          color: $color-white-1;
+          padding: $space-6 $space-8;
+          border-radius: 24px;
+          cursor: pointer;
+          @include flex(center, center, row);
+          transform-origin: .3s;
+          span {
+            font-size: $size-14;
+            font-weight: $font-light;
+            margin-left: $space-8;
+          }
+          i {
+            font-size: $size-16;
+          }
+          &:hover{
+            scale: 0.98;
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import playlistService from "@/services/playlist.service";
 import { ISong } from "@/types";
 import {
   DragDropContext,
@@ -8,59 +7,39 @@ import {
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { Track } from "../Track";
+import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 interface Props {
   data: ISong[];
-  playlistId?: string;
-  allowEdit?: boolean;
+  renderItem: (item: ISong, index: number) => React.ReactNode; // Thêm prop renderItem
+  onChange?: (items: ISong[]) => void;
 }
 
 const TablePlaylist = (props: Props) => {
-  const { data, playlistId, allowEdit } = props;
+  const { data, onChange, renderItem } = props;
   const [items, setItems] = useState(data);
-  const queryClient = useQueryClient();
 
-  const mutationUpdatePlaylist = useMutation({
-    mutationFn: async (songIds: string[]) => {
-      if (playlistId) {
-        await playlistService.updateSongs(playlistId, songIds);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey:  ["playlist-song", playlistId],
-      });
-      toast.success("Reorder successfully");
-    },
-  });
-
-  // Xử lý khi kéo thả
   const handleOnDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-    // Nếu không có điểm đến (người dùng thả ngoài vùng droppable)
-    if (!destination) return;
+    if (!destination || source.index === destination.index) return;
 
-    // Nếu vị trí thả không thay đổi
-    if (source.index === destination.index) return;
-
-    // Tạo bản sao mới của danh sách và hoán đổi vị trí
     const updatedItems = [...items];
     const [reorderedItem] = updatedItems.splice(source.index, 1);
-
     updatedItems.splice(destination.index, 0, reorderedItem);
 
-    // Cập nhật lại danh sách
-    if (playlistId) {
-      mutationUpdatePlaylist.mutate(updatedItems.map((item) => item.id));
+    if (onChange) {
+      onChange(updatedItems);
     }
 
     setItems(updatedItems);
   };
+
+  useEffect(() => {
+    if(data) {
+      setItems(data);
+    }
+  }, [data])
 
   return (
     <div className={`${styles.TablePlaylist}`}>
@@ -101,7 +80,7 @@ const TablePlaylist = (props: Props) => {
                         key={item?.id}
                         draggableId={item?.id}
                         index={index}
-                        isDragDisabled={!allowEdit}
+                        isDragDisabled={onChange ? false : true}
                       >
                         {(provided) => (
                           <div
@@ -109,7 +88,7 @@ const TablePlaylist = (props: Props) => {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <Track num={index + 1} song={item} />
+                            {renderItem(item, index)} {/* Gọi renderItem */}
                           </div>
                         )}
                       </Draggable>

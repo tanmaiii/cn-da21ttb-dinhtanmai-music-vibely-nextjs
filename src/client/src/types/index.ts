@@ -11,12 +11,8 @@ export type {
 export type { IPlaylist, PlaylistRequestDto } from "./playlist.type";
 export type { IRoom, RoomRequestDto } from "./room.type";
 export type { default as ISong } from "./song.type";
-
-export interface IMood {
-  id: string;
-  title: string;
-  description: string;
-}
+export type { IGenre } from "./genre.type";
+export type { IMood } from "./mood.type";
 
 export interface IPrivacy {
   value: string;
@@ -33,12 +29,4 @@ export interface IDiscography {
 export interface Ilyric {
   timeStart: string;
   words: string;
-}
-
-export interface IGenre {
-  id: string;
-  title: string;
-  description: string;
-  imagePath?: string;
-  color: string;
 }

@@ -106,7 +106,7 @@ export const createPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const userId = get(req, "identity.id") as string;
+    const userInfo = get(req, "identity") as IIdentity;
     const genreId = await GenreService.getById(req.body.genreId);
 
     if (!genreId) {
@@ -117,7 +117,7 @@ export const createPlaylistHandler = async (
     const songIds = req.body.songIds;
 
     const playlist = await PlaylistService.create({
-      userId: userId,
+      userId: userInfo.id,
       ...req.body,
     });
 
@@ -131,7 +131,7 @@ export const createPlaylistHandler = async (
     }
 
     const newPlaylist = await PlaylistService.getById(playlist.id);
-    await LikeService.likePlaylist(userId, newPlaylist.id);
+    await LikeService.likePlaylist(userInfo.id, newPlaylist.id);
 
     res.status(StatusCodes.CREATED).json({
       data: newPlaylist,

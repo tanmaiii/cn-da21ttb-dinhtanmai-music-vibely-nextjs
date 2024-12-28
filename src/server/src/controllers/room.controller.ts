@@ -68,17 +68,12 @@ export const createRoomHandler = async (
   next: NextFunction
 ) => {
   try {
-    const userInfo = get(req, "identity") as { id: string };
-
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    const songIds = req.body.songId;
+    const userInfo = get(req, "identity") as IIdentity;
+    const songIds = req.body.songIds;
 
     const data = {
       ...req.body,
       userId: userInfo.id,
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
     };
 
     const room = await RoomService.create(data);
@@ -103,20 +98,23 @@ export const updateRoomHandler = async (
   next: NextFunction
 ) => {
   try {
+    const userInfo = get(req, "identity") as IIdentity;
     const room = await RoomService.getById(req.params.id);
-    const songIds = req.body.songId;
+    const songIds = req.body.songIds;
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
     }
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    if (userInfo.id !== room.userId) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        "You are not authorized to update this room"
+      );
+    }
 
     const data = {
       ...req.body,
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
     };
 
     await RoomService.update(req.params.id, data);

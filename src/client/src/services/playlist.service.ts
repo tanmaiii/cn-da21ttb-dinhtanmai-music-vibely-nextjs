@@ -2,7 +2,7 @@ import createHttpClient from "@/lib/createHttpClient";
 import { IPlaylist, ISong, PlaylistRequestDto } from "@/types";
 import { ListResponse, ResponseAPI } from "@/types/common.type";
 import { QueryParams } from "../types/common.type";
-import { PlaylistLikeQueryParamsDto } from "@/types/playlist.type";
+import { PlaylistLikeQueryParamsDto, PlaylistRequestUpdateDto } from "@/types/playlist.type";
 
 class PlaylistService {
   private client;
@@ -43,7 +43,7 @@ class PlaylistService {
     return res.data;
   }
 
-  async update(id: string, data: Partial<PlaylistRequestDto>) {
+  async update(id: string, data: Partial<PlaylistRequestUpdateDto>) {
     const res = await this.client.put(`/${id}`, data);
     return res.data;
   }
@@ -53,8 +53,8 @@ class PlaylistService {
     return res.data;
   }
 
-  async updateSongs(id: string, songId: string[]) {
-    await this.client.put(id, { songId });
+  async updateSongs(id: string, songIds: string[]) {
+    await this.client.put(id, { songIds });
   }
 }
 

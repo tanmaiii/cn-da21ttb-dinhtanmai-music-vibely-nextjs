@@ -6,12 +6,33 @@ const payload = {
   body: object({
     title: string({
       required_error: "Title is required",
+    }).max(SIZE.TITLE, "Title is too long"),
+    description: string({})
+      .max(SIZE.DESCRIPTION, "Description is too long")
+      .nullable(),
+    public: boolean().optional(),
+    imagePath: string().optional().nullable(),
+    duration: number().optional().nullable(),
+    genreId: string().max(SIZE.UUID),
+    moodIds: array(string().max(SIZE.UUID, "Id is too long"))
+      .optional()
+      .nullable(),
+    songIds: array(string().max(SIZE.UUID, "Id is too long"))
+      .optional()
+      .nullable(),
+  }),
+};
+
+const payloadUpdate = {
+  body: object({
+    title: string({
+      required_error: "Title is required",
     })
       .max(SIZE.TITLE, "Title is too long")
       .optional(),
     description: string({})
       .max(SIZE.DESCRIPTION, "Description is too long")
-      .nullable(),
+      .nullable().optional(),
     public: boolean().optional(),
     imagePath: string().optional().nullable(),
     duration: number().optional().nullable(),
@@ -27,7 +48,7 @@ const payload = {
 
 const bodySongId = {
   body: object({
-    songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
+    songIds: array(string({}).max(SIZE.UUID, "Id is too long")).optional(),
   }),
 };
 
@@ -61,7 +82,7 @@ export const getAllPlaylistSchema = object({ ...querySchema });
 export const getPlaylistSchema = object({ ...params });
 export const getPlaylistSlugSchema = object({ ...slug });
 export const createPlaylistSchema = object({ ...payload });
-export const updatePlaylistSchema = object({ ...payload, ...params });
+export const updatePlaylistSchema = object({ ...payloadUpdate, ...params });
 
 export const getAllPlaylistLikeSchema = object({ ...querySchemaAllLike });
 export const likePlaylistSchema = object({ ...params });

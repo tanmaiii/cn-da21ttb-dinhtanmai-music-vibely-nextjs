@@ -62,6 +62,7 @@ const HeaderPage = (props: Props) => {
             <Skeleton width={50} height={20} />
           ) : (
             <p>
+              {!data?.public && <i className="fa-light fa-lock"></i>}
               <span>{isSong ? "Song" : "Playlist"}</span>
               {!props.isFavorites && <span> - {data?.genre?.title}</span>}
             </p>

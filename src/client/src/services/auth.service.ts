@@ -1,7 +1,6 @@
-import { userState } from "@/features/userSlice";
 import createHttpClient from "@/lib/createHttpClient";
 import tokenService from "@/lib/tokenService";
-import { ResponseAPI } from "@/types";
+import { IArtist, ResponseAPI } from "@/types";
 
 // Đăng nhập
 export interface LoginRequestDto {
@@ -15,7 +14,7 @@ export interface LoginGoogleRequestDto {
 }
 
 export interface LoginResponseDto {
-  data: userState & {
+  data: IArtist & {
     accessToken: string;
     refreshToken: string;
   };
@@ -23,7 +22,7 @@ export interface LoginResponseDto {
 }
 
 export interface ValidationeResponseDto {
-  data: userState;
+  data: IArtist;
   message: string;
 }
 
@@ -36,7 +35,7 @@ export interface RegisterRequestDto {
 }
 
 export interface RegisterResponseDto {
-  data: userState & {
+  data: IArtist & {
     accessToken: string;
     refreshToken: string;
   };
@@ -54,13 +53,14 @@ export interface RefreshTokenResponseDto {
 }
 
 export interface CheckUserRequestDto {
-  data: userState;
+  data: IArtist;
 }
 
-class AuthSevices {
+class AuthServices {
   private client;
 
   constructor() {
+    // this.client = createHttpClient("api/auth");
     this.client = createHttpClient("api/auth");
   }
 
@@ -88,15 +88,14 @@ class AuthSevices {
   }
 
   async refreshToken(body: RefreshTokenRequestDto) {
-    const response = await this.client.post<ResponseAPI<RefreshTokenResponseDto>>(
-      "/refresh-token",
-      body
-    );
+    const response = await this.client.post<
+      ResponseAPI<RefreshTokenResponseDto>
+    >("/refresh-token", body);
     return response.data;
   }
 
   async logout(body: RefreshTokenRequestDto) {
-    const res =  await this.client.post("/logout", body);
+    const res = await this.client.post("/logout", body);
     window.location.href = "/";
     tokenService.clear();
     console.log(res);
@@ -112,5 +111,5 @@ class AuthSevices {
   }
 }
 
-const authService = new AuthSevices();
+const authService = new AuthServices();
 export default authService;

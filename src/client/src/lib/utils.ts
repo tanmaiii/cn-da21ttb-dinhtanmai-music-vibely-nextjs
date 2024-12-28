@@ -45,16 +45,6 @@ export const timeAgo = (date: Date): string => {
     second: 1,
   };
 
-  // const intervals: { [key: string]: number } = {
-  //   năm: 31536000,
-  //   tháng: 2592000,
-  //   tuần: 604800,
-  //   ngày: 86400,
-  //   giờ: 3600,
-  //   phút: 60,
-  //   giây: 1,
-  // };
-
   for (const key in intervals) {
     const interval = intervals[key];
     const count = Math.floor(seconds / interval);
@@ -151,7 +141,6 @@ export function formatFileSize(size: number): string {
   return `${parseFloat(size.toFixed(2))} ${units[index]}`;
 }
 
-
 export function apiImage(path: string) {
   if (path.includes("https://lh3.googleusercontent.com")) {
     return path;
@@ -159,3 +148,31 @@ export function apiImage(path: string) {
 
   return `${process.env.NEXT_PUBLIC_API_URL}/image/${path}`;
 }
+
+export const validateImage = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  maxSize: number = 5 * 1024 * 1024, // 5MB
+  validTypes: string[] = ["image/jpeg", "image/png", "image/gif"]
+): { file: File | null; error: string | null } => {
+  const file = e.target.files ? e.target.files[0] : null;
+
+  if (!file) {
+    return { file: null, error: "Please select an image." };
+  }
+
+  if (file.size > maxSize) {
+    return {
+      file: null,
+      error: `Image size must be less than ${formatFileSize(maxSize)}`,
+    };
+  }
+
+  if (!validTypes.includes(file.type)) {
+    return {
+      file: null,
+      error: "Only accept .png, .jpg, .jpeg files",
+    };
+  }
+
+  return { file, error: null };
+};

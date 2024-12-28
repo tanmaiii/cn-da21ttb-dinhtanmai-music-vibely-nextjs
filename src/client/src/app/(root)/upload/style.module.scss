@@ -19,9 +19,6 @@
     // height: calc(100vh - $height-header - $height-playingBar - 20px);
     margin-top: 10px;
     width: 100%;
-    // // background-color: var(--background-color-2);
-    // // border: 1px solid var(--border-color);
-    // // border-radius: $radius-8;
     // box-shadow: var(--box-shadow);
     @include flex(center, center, column);
     position: relative;

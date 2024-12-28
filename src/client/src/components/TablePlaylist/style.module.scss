@@ -2,8 +2,10 @@
 
 .TablePlaylist {
   z-index: 10;
+  width: 100%;
   min-height: 200px;
   &_swapper {
+    width: 100%;
     &_header {
       @include flex(center, unset);
       padding: $space-18 $space-14;

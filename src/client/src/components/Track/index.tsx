@@ -23,6 +23,8 @@ interface ITrack extends Props {
   primary?: boolean;
   dontShowPlay?: boolean;
   song: ISong;
+  addSoong?: (song: ISong) => void;
+  removeSong?: (song: ISong) => void;
 }
 
 interface ITrackArtist extends Props {
@@ -30,7 +32,7 @@ interface ITrackArtist extends Props {
 }
 
 const Track = (props: ITrack) => {
-  const { num, primary, isLoading = false, song } = props;
+  const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
   return (
     <MotionDiv
       variants={fadeIn({ direction: "up", delay: 0.2 })}
@@ -122,7 +124,32 @@ const Track = (props: ITrack) => {
           </div>
 
           <div className={`${styles.item_hover}`}>
-            <ButtonIconRound icon={<i className="fa-solid fa-ellipsis"></i>} />
+            {addSoong ? (
+              <ButtonIconRound
+                onClick={() => props.addSoong && props.addSoong(props.song)}
+                icon={<i className="fa-solid fa-plus"></i>}
+              />
+            ) : removeSong ? (
+              <ButtonIconRound
+                onClick={() => removeSong && removeSong(props.song)}
+                icon={<i className="fa-solid fa-minus"></i>}
+              />
+            ) : (
+              <ButtonIconRound
+                icon={<i className="fa-solid fa-ellipsis"></i>}
+              />
+            )}
+
+            {/* {props.addSoong ? (
+              <ButtonIconRound
+                onClick={() => props.addSoong && props.addSoong(props.song)}
+                icon={<i className="fa-solid fa-plus"></i>}
+              />
+            ) : (
+              <ButtonIconRound
+                icon={<i className="fa-solid fa-ellipsis"></i>}
+              />
+            )} */}
           </div>
         </div>
       </div>

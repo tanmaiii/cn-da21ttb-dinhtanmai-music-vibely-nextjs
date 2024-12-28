@@ -11,4 +11,9 @@ export interface IRoom {
   createAt: string;
 }
 
-export interface RoomRequestDto {}
+export interface RoomRequestDto {
+  title: string;
+  description: string;
+  imagePath?: string;
+  songIds?: string[];
+}
