@@ -40,6 +40,10 @@ const MyPlaylistPage = () => {
     staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
   });
 
+  useEffect(() => {
+    console.log(data)
+  },[data])
+
   const mutationAdd = useMutation({
     mutationFn: async (data: PlaylistRequestDto) => {
       const res = await playlistService.create(data);

@@ -102,7 +102,7 @@ const Card = (props: Props) => {
             ) : (
               <Image
                 src={
-                  (data.imagePath && apiImage(data.imagePath)) || IMAGES.SONG
+                  (data?.imagePath && apiImage(data?.imagePath)) || IMAGES.SONG
                 }
                 alt="image.png"
                 width={200}
@@ -151,7 +151,7 @@ const Card = (props: Props) => {
                   </Link>
                 ))} */}
                 <Link
-                  href={`${paths.ARTIST}/${data.creator?.slug || "artist"}`}
+                  href={`${paths.ARTIST}/${data?.creator?.slug || "artist"}`}
                 >
                   {data?.creator?.name || "Artist"}
                 </Link>

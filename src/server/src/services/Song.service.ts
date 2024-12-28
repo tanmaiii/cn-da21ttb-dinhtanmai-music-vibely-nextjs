@@ -175,7 +175,7 @@ export default class SongService {
     // Sắp xếp kết quả trả về theo thứ tự trong orderedSongIds
     const orderedSongs = orderedSongIds.map((id) =>
       songs.find((song) => song.id === id)
-    );
+    ).filter(song => song !== null);
 
     return orderedSongs;
   };

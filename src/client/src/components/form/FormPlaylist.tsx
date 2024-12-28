@@ -12,12 +12,12 @@ import uploadService from "@/services/upload.service";
 
 interface Props {
   onSubmit: (values: PlaylistRequestDto) => void;
-  initalData?: IPlaylist;
+  initialData?: IPlaylist;
   open?: boolean;
   onClose: () => void;
 }
 
-const FormPlaylist = ({ onSubmit, initalData, open, onClose }: Props) => {
+const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
   const { toastError } = useCustomToast();
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [errors, setErrors] = React.useState<Partial<PlaylistRequestDto>>({});
@@ -30,33 +30,74 @@ const FormPlaylist = ({ onSubmit, initalData, open, onClose }: Props) => {
     imagePath: undefined,
   });
 
-  useEffect(() => {
-    if (initalData) {
-      setValues({
-        title: initalData.title,
-        description: initalData.description,
-        genreId: initalData.genre?.id || "",
-        moodIds: initalData.moods
-          ? initalData.moods.map((mood) => mood.id)
-          : [],
-        public: initalData.public,
-        imagePath: initalData.imagePath ? initalData.imagePath : undefined,
-      });
-    }
-    if (!open) {
-      handleClose();
-    }
-  }, [initalData, open]);
+  const validateForm = (values: PlaylistRequestDto, imageFile: File | null) => {
+    const errors: Partial<PlaylistRequestDto> = {};
+    let hasError = false;
 
-  function handleChange(value: Partial<PlaylistRequestDto>) {
+    if (!values?.imagePath && !imageFile) {
+      errors.imagePath = "Please upload an image";
+      hasError = true;
+    }
+
+    if (!values?.title) {
+      errors.title = "Title is required";
+      hasError = true;
+    }
+
+    if (values?.description?.length > 255) {
+      errors.description = "Description is too long";
+      hasError = true;
+    }
+
+    if (!values?.genreId) {
+      errors.genreId = "Genre is required";
+      hasError = true;
+    }
+
+    return { errors, hasError };
+  };
+
+  const initializeForm = React.useCallback((initialData?: IPlaylist) => {
+    if (initialData) {
+      setValues({
+        title: initialData.title,
+        description: initialData.description,
+        genreId: initialData.genre?.id || "",
+        moodIds: initialData.moods
+          ? initialData.moods.map((mood) => mood.id)
+          : [],
+        public: initialData.public,
+        imagePath: initialData.imagePath || undefined,
+      });
+    } else {
+      resetForm();
+    }
+  }, []);
+
+  // Reset form values
+  const resetForm = () => {
+    setValues({
+      title: "",
+      description: "",
+      genreId: "",
+      moodIds: [],
+      public: true,
+      imagePath: undefined,
+    });
+    setImageFile(null);
+    setErrors({});
+  };
+
+  const handleChange = (value: Partial<PlaylistRequestDto>) => {
     setValues((prev) => ({ ...prev, ...value }));
-  }
+  };
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
     const file = e.target.files && e.target.files[0];
     const size = 5 * 1024 * 1024;
+
     if (!file) handleChange({ imagePath: undefined });
 
     if (file && file?.size > size) {
@@ -76,33 +117,10 @@ const FormPlaylist = ({ onSubmit, initalData, open, onClose }: Props) => {
   };
 
   const handleSubmit = async (formValues: PlaylistRequestDto) => {
-    setErrors({});
-    let hasError = false;
-    // Kiểm tra nếu không có hình ảnh
-    if (!values?.imagePath && !imageFile) {
-      setErrors((prev) => ({ ...prev, imagePath: "Please upload an image" }));
-      hasError = true;
-    }
-
-    if (values?.title?.length < 1) {
-      setErrors((prev) => ({ ...prev, title: "Title is required" }));
-      hasError = true;
-    }
-
-    if (values?.description?.length > 255) {
-      setErrors((prev) => ({
-        ...prev,
-        description: "Description is too long",
-      }));
-      hasError = true;
-    }
-
-    if (values?.genreId === "") {
-      setErrors((prev) => ({ ...prev, genreId: "Genre is required" }));
-      hasError = true;
-    }
-
+    const { errors, hasError } = validateForm(values, imageFile);
+    setErrors(errors);
     if (hasError) return;
+
     try {
       if (imageFile) {
         const formData = new FormData();
@@ -110,26 +128,21 @@ const FormPlaylist = ({ onSubmit, initalData, open, onClose }: Props) => {
         const image = await uploadService.upload(formData);
         formValues.imagePath = image.data.path;
       }
-
-      await onSubmit(formValues); // Gửi form data đến server
+      await onSubmit(formValues);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
   const handleClose = () => {
-    setValues({
-      title: "",
-      description: "",
-      genreId: "",
-      moodIds: [],
-      public: true,
-      imagePath: undefined,
-    });
-    setImageFile(null);
-    setErrors({});
+    resetForm();
     onClose();
   };
+
+  useEffect(() => {
+    initializeForm(initialData);
+    if (!open) resetForm();
+  }, [initialData, open, initializeForm]);
 
   return (
     <div className={styles.FormPlaylist}>

@@ -111,7 +111,7 @@ const PlaylistPage = () => {
           <FormPlaylist
             open={showEdit}
             onClose={() => setShowEdit(false)}
-            initalData={playlist}
+            initialData={playlist}
             onSubmit={(data) => onSubmitEdit.mutate(data)}
           />
         )}

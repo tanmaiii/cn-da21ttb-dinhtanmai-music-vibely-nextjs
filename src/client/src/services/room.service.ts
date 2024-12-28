@@ -1,5 +1,5 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { IRoom, ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
+import { IRoom, ISong, ListResponse, QueryParams, ResponseAPI, RoomRequestDto } from "@/types";
 
 class RoomService {
   static client = createHttpClient("api/room");
@@ -21,6 +21,11 @@ class RoomService {
     const res = await RoomService.client.get<ResponseAPI<ISong[]>>(
       `/${id}/song`
     );
+    return res.data;
+  }
+
+  async create(data: RoomRequestDto): Promise<ResponseAPI<IRoom>> {
+    const res = await RoomService.client.post<ResponseAPI<IRoom>>("", data);
     return res.data;
   }
 }

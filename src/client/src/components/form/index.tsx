@@ -6,3 +6,4 @@ export { default as MultipleSelect } from "./common/MultipleSelect";
 
 export { default as FormCreateLyrics } from "./FormCreateLyrics";
 export { default as FormPlaylist } from "./FormPlaylist";
+export { default as FormRoom } from "./FormRoom";

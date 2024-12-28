@@ -10,3 +10,5 @@ export interface IRoom {
   songCount: number;
   createAt: string;
 }
+
+export interface RoomRequestDto {}

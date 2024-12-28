@@ -23,10 +23,7 @@ export default class PlaylistSongService {
     // Truy vấn bảng Songs với điều kiện lọc theo id và thứ tự từ orderedSongIds
     const songs = await Song.findAll({
       where: {
-        id: {
-          [Op.in]: orderedSongIds,
-        },
-        ...whereCondition,
+        [Op.and]: [whereCondition, { id: { [Op.in]: orderedSongIds } }],
       },
       attributes: songQueryOptions.attributes as string[],
       include: songQueryOptions.include,

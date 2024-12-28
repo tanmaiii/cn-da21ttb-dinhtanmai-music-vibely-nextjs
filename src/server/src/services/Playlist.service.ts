@@ -162,28 +162,37 @@ export default class PlaylistService {
 
     const playlistLikes = await PlaylistLikes.findAll({
       where: { userId },
-      attributes: ["playlistId"], // Lấy danh sách playlistId
+      attributes: ["playlistId", "createdAt"], // Lấy danh sách playlistId
       order: [["createdAt", "DESC"]],
     });
 
     const playlistIds = playlistLikes.map((like) => like.playlistId); // Lấy danh sách playlistId
-
+    
     const totalItems = await Playlist.count({
       where: {
-        [Op.and]: [whereCondition, { id: playlistIds }],
+        [Op.and]: [whereCondition, { id: { [Op.in]: playlistIds } }],
       },
     });
 
     // Truy vấn các playlist dựa trên danh sách playlistId
-    const playlists = await Playlist.findAndCountAll({
-      where: { [Op.and]: [whereCondition, { id: playlistIds }] },
+    const playlists = await Playlist.findAll({
+      where: { [Op.and]: [whereCondition, { id: { [Op.in]: playlistIds } }] },
       ...playlistQueryOptions,
-      limit,
       offset,
+      limit,
     } as any);
 
+    const orderedSongs = playlistIds
+      .map((id) =>
+        playlists.find((playlist) => {
+          return playlist.id === id;
+        })
+      )
+      .filter((playlist) => playlist !== null && playlist !== undefined);
+
+
     return {
-      data: playlists.rows,
+      data: orderedSongs,
       sort: "newest",
       keyword: keyword || "",
       user: userId || "",

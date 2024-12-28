@@ -382,7 +382,7 @@ export const getAllPlaylistLikedHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { limit = 4, page = 1, keyword, my } = req.query;
+    const { limit = 10, page = 1, keyword, my } = req.query;
 
     const userId = get(req, "identity") as IIdentity;
 
