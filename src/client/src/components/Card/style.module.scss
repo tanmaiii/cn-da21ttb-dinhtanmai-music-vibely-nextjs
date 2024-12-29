@@ -2,9 +2,7 @@
 
 .Card {
   width: 100%;
-
-  //test
-  overflow: hidden;
+  // overflow: hidden;
 
   &_swapper {
     width: 100%;
@@ -202,10 +200,6 @@
           aspect-ratio: 1/1;
           transition: all 0.2s;
           background-color: var(--background-color-2);
-
-          @include mobile {
-            border-radius: $radius-8;
-          }
         }
       }
 
@@ -285,9 +279,9 @@
           transition: all 0.2s;
           background-color: var(--background-color-2);
 
-          @include mobile {
-            border-radius: $radius-8;
-          }
+          // @include mobile {
+          //   border-radius: $radius-8;
+          // }
         }
 
         & > span {

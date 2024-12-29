@@ -51,6 +51,7 @@
     "pino": "^9.5.0",
     "sequelize": "^6.37.4",
     "sequelize-typescript": "^2.1.6",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",

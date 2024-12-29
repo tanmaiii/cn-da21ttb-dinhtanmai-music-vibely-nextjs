@@ -1,6 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-import RoomService from "../services/Room.service";
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { get } from "lodash";
+import { IIdentity } from "../middleware/auth.middleware";
 import {
   AddMemberToRoomInput,
   AddSongToRoomInput,
@@ -11,12 +12,11 @@ import {
   RemoveSongToRoomInput,
   UpdateRoomInput,
 } from "../schema/room.schema";
-import ApiError from "../utils/ApiError";
-import { get } from "lodash";
-import { getFilePath } from "../utils/commonUtils";
-import { IIdentity } from "../middleware/auth.middleware";
+import RoomService from "../services/Room.service";
 import RoomSongService from "../services/RoomSong.service";
+import ApiError from "../utils/ApiError";
 
+// Lấy tất cả có phòng
 export const getAllRoomsHandler = async (
   req: Request<{}, GetAllRoomInput["query"], {}>,
   res: Response,
@@ -42,6 +42,7 @@ export const getAllRoomsHandler = async (
   }
 };
 
+// Lấy chi tiết phòng
 export const getDetailRoomHandler = async (
   req: Request<GetRoomSchema["params"], {}, {}>,
   res: Response,
@@ -62,6 +63,7 @@ export const getDetailRoomHandler = async (
   }
 };
 
+// Tạo phòng
 export const createRoomHandler = async (
   req: Request<{}, {}, CreateRoomInput["body"]>,
   res: Response,
@@ -92,6 +94,7 @@ export const createRoomHandler = async (
   }
 };
 
+// Cập nhật phòng
 export const updateRoomHandler = async (
   req: Request<UpdateRoomInput["params"], {}, UpdateRoomInput["body"]>,
   res: Response,
@@ -133,6 +136,7 @@ export const updateRoomHandler = async (
   }
 };
 
+// Xóa phòng
 export const deleteRoomHandler = async (
   req: Request<GetRoomSchema["params"], {}, {}>,
   res: Response,
@@ -233,6 +237,7 @@ export const removeSongToRoomHandler = async (
   }
 };
 
+// Lấy danh sách bài hát trong phòng
 export const getSongsInRoomHandler = async (
   req: Request<GetRoomSchema["params"], {}, {}>,
   res: Response,

@@ -77,7 +77,6 @@ router.get(
   validateData(getRoomSchema),
   getSongsInRoomHandler
 );
-
 router.post(
   // Thêm thành viên vào phòng
   "/:id/member",

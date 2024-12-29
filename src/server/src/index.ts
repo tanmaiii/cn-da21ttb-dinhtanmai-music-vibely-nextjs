@@ -4,17 +4,21 @@ import cors from "cors"; // dùng để giải quyết vấn đề CORS
 import express from "express";
 import http from "http"; // dùng để tạo server
 import path from "path";
+import { Server } from "socket.io";
+import { globalAuthorize } from "./middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import router from "./routes";
-import { setupSwagger } from "./utils/swagger";
-import "./utils/sequelize";
-import multer from "multer";
-import { globalAuthorize } from "./middleware";
+import { socketHandler } from "./socket/socket";
+import "./config/sequelizeConfig";
+import "./config/socketConfig";
+import { setupSwagger } from "./config/swaggerConfig";
+
+const PORT = process.env.PORT || 8000;
+const url = process.env.URL_FRONTEND || "http://localhost:3000";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
-
-const upload = multer();
+const server = http.createServer(app);
+const io = new Server(server);
 
 //http://localhost:8000/audio/...
 app.use("/audio", express.static(path.join(__dirname, "../uploads/audio")));
@@ -23,9 +27,11 @@ app.use("/lyric", express.static(path.join(__dirname, "../uploads/lyrics")));
 
 app.use(
   cors({
+    origin: url,
     credentials: true,
   })
 );
+
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,7 +53,7 @@ app.use(express.urlencoded({ extended: true }));
 // Tạo open api cho swagger
 setupSwagger(app);
 
-const server = http.createServer(app);
+socketHandler(io);
 
 server.listen(PORT, () => {
   console.log(`✅ Server is running on port: ${PORT}`);

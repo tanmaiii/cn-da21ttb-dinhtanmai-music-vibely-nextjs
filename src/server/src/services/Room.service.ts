@@ -171,7 +171,7 @@ export default class RoomService {
     });
   };
 
-  static create = async (data: any) => {
+  static create = async (data: Partial<Room>) => {
     return await Room.create(data);
   };
 

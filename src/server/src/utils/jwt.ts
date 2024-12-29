@@ -1,9 +1,9 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import ApiError from "./ApiError";
 import { StatusCodes } from "http-status-codes";
+import jwt from "jsonwebtoken";
+import ApiError from "./ApiError";
 
 class TokenUtil {
-  secretKey = process.env.JWT_SECRET || "secret";
+  secretKey = process.env.JWT_SECRET_KEY || "secret";
 
   publicKey = process.env.JWT_PUBLIC_KEY || "public";
 
