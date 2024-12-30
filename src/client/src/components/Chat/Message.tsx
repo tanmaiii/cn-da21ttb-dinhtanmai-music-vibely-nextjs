@@ -1,28 +1,34 @@
-import avatarDefault from "@/public/images/avatar.png";
 import Image from "next/image";
 import { ButtonIconRound } from "../ui/Button";
 import styles from "./style.module.scss";
+import { IMessageChat } from "@/types/room.type";
+import { apiImage } from "@/lib/utils";
+import { IMAGES } from "@/lib/constants";
 
 interface MessageProps {
-  name: string;
-  text: string;
-  img?: string;
+  data: IMessageChat;
+  className?: string;
 }
 
 const Message = (props: MessageProps) => {
-  const { name, text, img } = props;
+  const { data, className } = props;
   return (
-    <div className={`${styles.Message}`}>
+    <div className={`${styles.Message} ${className}`}>
       <div className={`${styles.Message_avatar}`}>
-        {img ? (
-          <Image src={img} alt="avatar" width={100} height={100} />
-        ) : (
-          <Image src={avatarDefault} alt="avatar" width={100} height={100} />
-        )}
+        <Image
+          src={
+            data.user?.imagePath
+              ? apiImage(data.user?.imagePath)
+              : IMAGES.AVATAR
+          }
+          alt="avatar"
+          width={100}
+          height={100}
+        />
       </div>
       <div className={`${styles.Message_content}`}>
-        <h4 className={`${styles.Message_content_name}`}>{name}</h4>
-        <span className={`${styles.Message_content_text}`}>{text}</span>
+        <h4 className={`${styles.Message_content_name}`}>{data?.user?.name}</h4>
+        <span className={`${styles.Message_content_text}`}>{data.content}</span>
       </div>
       <div className={`${styles.Message_more}`}>
         <ButtonIconRound

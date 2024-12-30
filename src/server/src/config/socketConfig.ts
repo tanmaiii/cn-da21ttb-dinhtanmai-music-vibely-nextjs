@@ -8,7 +8,7 @@ const socketConfig: ServerOptions = {
     methods: ["GET", "POST"],
   },
   path: "/socket.io",
-  serveClient: true, 
+  serveClient: true,
   adapter: undefined,
   parser: undefined,
   connectTimeout: 45000,

@@ -8,9 +8,9 @@ import { Server } from "socket.io";
 import { globalAuthorize } from "./middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 import router from "./routes";
-import { socketHandler } from "./socket/socket";
+import { socketHandler } from "./socket";
 import "./config/sequelizeConfig";
-import "./config/socketConfig";
+import socketConfig from "./config/socketConfig";
 import { setupSwagger } from "./config/swaggerConfig";
 
 const PORT = process.env.PORT || 8000;
@@ -18,7 +18,7 @@ const url = process.env.URL_FRONTEND || "http://localhost:3000";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {...socketConfig});
 
 //http://localhost:8000/audio/...
 app.use("/audio", express.static(path.join(__dirname, "../uploads/audio")));

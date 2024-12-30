@@ -7,25 +7,17 @@ const __dirname = path.dirname(__filename);
 
 const nextConfig = {
   images: {
-    // remotePatterns: [
-    //   {
-    //     // protocol: "http",
-    //     // hostname: "**", // Chấp nhận tất cả hostname
-    //     // domains: ["example.com", "localhost", "picsum.photos", "lh3.googleusercontent"], // Thêm các domain bạn muốn cho phép
-
-    //   },
-    // ],
     remotePatterns: [
       {
         protocol: "http",
         hostname: "localhost",
-        port: "8000", // Nếu dùng localhost kèm port
-        pathname: "/image/**", // Pattern cho path
+        port: "8000",
+        pathname: "/image/**", 
       },
       {
         protocol: "https",
         hostname: "picsum.photos",
-        pathname: "/**", // Cho phép tất cả các đường dẫn từ domain này
+        pathname: "/**", 
       },
       {
         protocol: "https",
@@ -50,7 +42,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    appDir: true, // Nếu đang dùng thư mục "app".
+    // appDir: true, // Nếu đang dùng thư mục "app".
   },
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],

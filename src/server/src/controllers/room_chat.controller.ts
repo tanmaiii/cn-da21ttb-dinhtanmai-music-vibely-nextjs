@@ -14,7 +14,7 @@ export const getChatHandler = async (
 ) => {
   try {
     const room = await RoomService.getById(req.params.id);
-    const { limit = 10, page = 1, keyword, sort } = req.query;
+    const { limit = 20, page = 1, keyword, sort } = req.query;
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room chat not found");

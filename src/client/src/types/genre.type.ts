@@ -4,6 +4,6 @@ export interface IGenre {
   description?: string;
   imagePath?: string;
   color?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

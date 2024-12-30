@@ -1,5 +1,4 @@
 "use client";
-
 import Sidebar from "@/components/common/Sidebar";
 import React, { useEffect } from "react";
 import styles from "./root.module.scss";
@@ -32,15 +31,26 @@ export default function RootLayout({
           isPlayingBar ? styles.RootLayout_top_playingBarOpen : null
         }`}
       >
+        {/* ------------------------------------------- */}
+        {/* Sidebar */}
+        {/* ------------------------------------------- */}
         <div className={`${styles.RootLayout_top_sidebar}`}>
           <Sidebar links={sidebarLinks} />
         </div>
-
+        {/* ------------------------------------------- */}
+        {/* Main Wrapper */}
+        {/* ------------------------------------------- */}
         <div className={` ${styles.RootLayout_top_main}`}>
           <div
             className={`RootLayout_main ${styles.RootLayout_top_main_content}`}
           >
+            {/* ------------------------------------------- */}
+            {/* Header */}
+            {/* ------------------------------------------- */}
             <Header />
+            {/* ------------------------------------------- */}
+            {/* PageContent */}
+            {/* ------------------------------------------- */}
             <div className={` ${styles.RootLayout_top_main_content_body}`}>
               <div
                 className={` ${styles.RootLayout_top_main_content_body_list}`}
@@ -49,13 +59,22 @@ export default function RootLayout({
               </div>
               <Footer />
             </div>
+            {/* ------------------------------------------- */}
+            {/* EndPage */}
+            {/* ------------------------------------------- */}
           </div>
+          {/* ------------------------------------------- */}
+          {/* Waiting */}
+          {/* ------------------------------------------- */}
           <div className={`${styles.RootLayout_top_main_waiting}`}>
             <Waiting />
           </div>
         </div>
       </div>
 
+      {/* ------------------------------------------- */}
+      {/* PlayingBar */}
+      {/* ------------------------------------------- */}
       {isPlayingBar && (
         <div className={`row no-gutters ${styles.RootLayout_bottom}`}>
           <PlayingBar />

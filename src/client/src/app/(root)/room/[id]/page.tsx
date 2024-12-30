@@ -20,18 +20,30 @@ import roomSerive from "@/services/room.service";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
-import styles from "./style.module.scss";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import styles from "./style.module.scss";
+import { useRouter } from "next/navigation";
+import { leaveRoom } from "@/services/socket.service";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+
+// interface Message {
+//   text: string;
+//   senderId: string;
+//   timestamp: string;
+// }
 
 const RoomPage = () => {
-  const [openChat, setOpenChat] = React.useState(true);
+  const [openChat, setOpenChat] = useState(true);
   const { isWaitingOpen, toggleWaiting, togglePlayingBar } = useUI();
-  const swapperRef = React.useRef<HTMLDivElement>(null);
+  const swapperRef = useRef<HTMLDivElement>(null);
   const isInactive = useInactivity(5000); // Bắt sự kiện khi không hoạt động trong 5s
   const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const router = useRouter();
+  const roomId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const currentUser = useSelector((state: RootState) => state.user);
 
   // luôn tắc waiting khi mở room
   useEffect(() => {
@@ -41,20 +53,24 @@ const RoomPage = () => {
 
   const handleBlack = () => {
     window.history.back();
+    router.push(paths.ROOM);
+    if (currentUser) {
+      leaveRoom(roomId, currentUser.id);
+    }
   };
 
   const { data: room } = useQuery({
-    queryKey: ["Room", id],
+    queryKey: ["Room", roomId],
     queryFn: async () => {
-      const res = await roomSerive.getById(id);
+      const res = await roomSerive.getById(roomId);
       return res.data;
     },
   });
 
   const { data: songs } = useQuery({
-    queryKey: ["Room", id, "songs"],
+    queryKey: ["Room", roomId, "songs"],
     queryFn: async () => {
-      const res = await roomSerive.getAllSong(id);
+      const res = await roomSerive.getAllSong(roomId);
       return res.data;
     },
   });
@@ -228,7 +244,7 @@ const RoomPage = () => {
         {openChat && (
           //  col pc-4 t-5 m-12
           <div className={`${styles.chat}`}>
-            <ChatRoom onClose={() => setOpenChat(false)} />
+            <ChatRoom roomId={roomId} onClose={() => setOpenChat(false)} />
           </div>
         )}
       </div>

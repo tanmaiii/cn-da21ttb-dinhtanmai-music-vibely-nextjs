@@ -204,7 +204,6 @@ export default class RoomService {
         }
       }
     }
-
     return await Room.destroy({ where: { id } });
   };
 

@@ -1,35 +1,39 @@
 import ChatInput from "@/components/Chat/Input";
 import { IMAGES, navRoomPage, paths } from "@/lib/constants";
-import { artists, comments as commenstDefault, songs } from "@/lib/data";
+import { artists, songs } from "@/lib/data";
+import { RootState } from "@/lib/store";
+import chatSerive from "@/services/chat.service";
+import {
+  listenForMessages,
+  sendMessage
+} from "@/services/socket.service";
+import { IMessageChat } from "@/types/room.type";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useEffect } from "react";
-import { ButtonIcon } from "../ui/Button";
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import Message from "../Chat/Message";
+import { ButtonIcon } from "../ui/Button";
 import Input from "../ui/Input";
 import styles from "./style.module.scss";
-import Link from "next/link";
 
 interface IChatRoom {
   onClose: () => void;
+  roomId: string;
 }
 
 const ChatRoom = (props: IChatRoom) => {
-  const { onClose } = props;
-  const [nav, setNav] = React.useState("Chat");
-  const listMessagesRef = React.useRef<HTMLDivElement | null>(null);
-  const endOfMessagesRef = React.useRef<HTMLDivElement | null>(null);
-  const [comments, setComments] = React.useState(commenstDefault);
+  const { onClose, roomId } = props;
+  const [nav, setNav] = useState("Chat");
+  const listMessagesRef = useRef<HTMLDivElement | null>(null);
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+  const currentUser = useSelector((state: RootState) => state.user);
+
+  const [message, setMessage] = useState<IMessageChat[] | []>([]);
 
   const handleSubmit = (message: string) => {
-    setComments((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        name: "Author",
-        img: "",
-        text: message,
-      },
-    ]);
+    sendMessage(roomId, currentUser?.id || "", message);
   };
 
   // useEffect để cuộn xuống cuối khi có tin nhắn mới
@@ -37,7 +41,34 @@ const ChatRoom = (props: IChatRoom) => {
     if (listMessagesRef.current) {
       listMessagesRef.current.scrollTop = listMessagesRef.current.scrollHeight;
     }
-  }, [comments]);
+  }, [message]);
+
+  // Lắng nghe tin nhắn mới
+  useEffect(() => {
+    if (currentUser?.id) {
+      const unsubscribe = () =>
+        listenForMessages(roomId, currentUser.id, (message: IMessageChat) => {
+          setMessage((prevMessages) => [message, ...prevMessages]);
+        });
+
+      // Cleanup function để hủy listener cũ
+      return () => {
+        unsubscribe(); // Hủy lắng nghe
+      };
+    }
+  }, [roomId, currentUser]);
+
+  const {} = useQuery({
+    queryKey: ["Room-chat", roomId],
+    queryFn: async () => {
+      const res = await chatSerive.getAll(roomId, { page: 1, limit: 50 });
+      if (res.data.data) {
+        setMessage(res.data.data);
+        console.log("res", res);
+        return res.data.data;
+      }
+    },
+  });
 
   return (
     <div className={`${styles.RoomChat}`}>
@@ -74,13 +105,8 @@ const ChatRoom = (props: IChatRoom) => {
             ref={listMessagesRef}
             className={`${styles.RoomChat_body_chat} `}
           >
-            {comments.map((comment) => (
-              <Message
-                key={comment.id}
-                name="Author"
-                text={comment.text}
-                img={comment.img}
-              />
+            {[...message].reverse().map((message) => (
+              <Message key={message.id} data={message} />
             ))}
             <div ref={endOfMessagesRef}></div>
             <div className={`${styles.RoomChat_body_chat_input} `}>

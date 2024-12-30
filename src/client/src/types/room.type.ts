@@ -17,3 +17,19 @@ export interface RoomRequestDto {
   imagePath?: string;
   songIds?: string[];
 }
+
+export interface IMessageChat {
+  id: string;
+  roomId: string;
+  userId: string;
+  content: string;
+  room: IRoom;
+  user: IArtist;
+  createAt: Date;
+}
+
+export interface ChatRequestDto {
+  roomId: string;
+  content: string;
+  userId: string;
+}
