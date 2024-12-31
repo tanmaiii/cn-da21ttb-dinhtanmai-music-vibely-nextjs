@@ -1,3 +1,5 @@
+'use client'
+
 import { IMAGES, paths } from "@/lib/constants";
 import {
   apiImage,
@@ -63,6 +65,7 @@ const Track = (props: ITrack) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["song", song.id] });
+      queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
     },
   });
 

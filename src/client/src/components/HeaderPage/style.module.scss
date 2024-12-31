@@ -154,7 +154,7 @@
 
       &_desc {
         @include flex(center, start, row);
-        margin-top: $space-8;
+        // margin-top: $space-8;
         &_author {
           @include flex(center, start, row);
           gap: $space-4;

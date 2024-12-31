@@ -19,7 +19,10 @@ const SongPage = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["song", slug],
-    queryFn: async () => await songService.getBySlug(slug),
+    queryFn: async () => {
+      const res = await songService.getBySlug(slug)
+      return res.data
+    }
   });
 
   if (isLoading) return <Loading />;
@@ -29,7 +32,7 @@ const SongPage = () => {
   return (
     <div className={`${styles.SongPage}`}>
       <div className={`${styles.SongPage_header}`}>
-        {data && <HeaderPage data={data.data} />}
+        {data && <HeaderPage data={data} />}
       </div>
       <div className={`${styles.SongPage_content}`}>
         <div className={`${styles.SongPage_content_header}`}>
@@ -79,21 +82,22 @@ const SongPage = () => {
                 <div
                   className={`${styles.SongPage_content_body_about_genre_list}`}
                 >
-                  <button>{data?.data?.genre?.title}</button>
+                  <button>{data?.genre?.title}</button>
                 </div>
               </div>
 
-              <div className={`${styles.SongPage_content_body_about_moods}`}>
-                <h4>Moods</h4>
-                <div
-                  className={`${styles.SongPage_content_body_about_moods_list}`}
-                >
-                  {data &&
-                    data?.data?.moods?.map((item, index) => (
+              {data?.moods && data?.moods?.length > 1 && (
+                <div className={`${styles.SongPage_content_body_about_moods}`}>
+                  <h4>Moods</h4>
+                  <div
+                    className={`${styles.SongPage_content_body_about_moods_list}`}
+                  >
+                    {data?.moods?.map((item, index) => (
                       <button key={index}>{item.title}</button>
                     ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 

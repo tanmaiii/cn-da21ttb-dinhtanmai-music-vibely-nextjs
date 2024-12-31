@@ -14,11 +14,13 @@ class UploadService {
   }
 
   async upload(data: FormData): Promise<ResponseAPI<UploadResponseDto>> {
-    const res = await (
-      await this.client
-    ).post<ResponseAPI<UploadResponseDto>>("/", data, {
-      headers: { Accept: "application/form-data" },
-    });
+    const res = await this.client.post<ResponseAPI<UploadResponseDto>>(
+      "/",
+      data,
+      {
+        headers: { Accept: "application/form-data" },
+      }
+    );
     return res.data;
   }
 }

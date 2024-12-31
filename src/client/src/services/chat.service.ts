@@ -6,7 +6,7 @@ class ChatService {
   private client;
 
   constructor() {
-    this.client = createHttpClient("api/auth");
+    this.client = createHttpClient("api/room-chat");
   }
 
   async getAll(

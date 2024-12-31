@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import songService from "@/services/song.service";
 import { notFound } from "next/navigation";
 import Loading from "./loading";
+import { Track } from "@/components/Track";
 
 const Favorites = () => {
   // const [isLoading, setisLoading] = useState(true);
@@ -43,7 +44,12 @@ const Favorites = () => {
         </div>
 
         <div className={`${styles.LikesPage_content_body}`}>
-          {data && <TablePlaylist data={data} />}
+          {data && (
+            <TablePlaylist
+              data={data}
+              renderItem={(item, index) => <Track key={index} song={item} />}
+            />
+          )}
         </div>
       </div>
     </div>

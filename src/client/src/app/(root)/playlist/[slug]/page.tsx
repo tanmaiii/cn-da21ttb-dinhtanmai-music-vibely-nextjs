@@ -118,8 +118,7 @@ const PlaylistPage = () => {
           {dataSong && playlist && (
             <Table
               onChange={(data) =>
-                playlist &&
-                playlist && (playlist as any).creator?.id === currentUser?.id &&
+                playlist && (playlist).creator?.id === currentUser?.id &&
                 mutationUpdatePlaylist.mutate({
                   songIds: data.map((item) => item.id),
                 })

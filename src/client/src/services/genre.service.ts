@@ -9,7 +9,7 @@ class GenreService {
   }
 
   async getAll(): Promise<ResponseAPI<IGenre[]>> {
-    const res = await (await this.client).get<ResponseAPI<IGenre[]>>("");
+    const res = await this.client.get<ResponseAPI<IGenre[]>>("");
     return res.data;
   }
 }

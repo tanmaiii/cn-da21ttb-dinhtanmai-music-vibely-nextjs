@@ -60,7 +60,7 @@ const ChatRoom = (props: IChatRoom) => {
   }, [roomId, currentUser]);
 
   const {} = useQuery({
-    queryKey: ["Room-chat", roomId],
+    queryKey: ["room-chat", roomId],
     queryFn: async () => {
       const res = await chatSerive.getAll(roomId, { page: 1, limit: 50 });
       if (res.data.data) {
