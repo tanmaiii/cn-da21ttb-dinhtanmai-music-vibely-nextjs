@@ -13,15 +13,16 @@ class ArtistService {
   async getAll(
     params: QueryParams
   ): Promise<ResponseAPI<ListResponse<IArtist>>> {
-    const res = await this.client.get<ResponseAPI<ListResponse<IArtist>>>(
-      "",
-      { params }
-    );
+    const res = await (
+      await this.client
+    ).get<ResponseAPI<ListResponse<IArtist>>>("", { params });
     return res.data;
   }
 
   async getBySlug(slug: string): Promise<ResponseAPI<IArtist>> {
-    const res = await this.client.get<ResponseAPI<IArtist>>(`/${slug}/slug`);
+    const res = await (
+      await this.client
+    ).get<ResponseAPI<IArtist>>(`/${slug}/slug`);
     return res.data;
   }
 }

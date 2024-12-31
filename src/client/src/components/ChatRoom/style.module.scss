@@ -98,7 +98,7 @@
         @include mobile {
           display: none;
         }
-        button {
+        & .icon {
           i {
             font-size: $size-18;
             color: var(--text-color-1);
@@ -113,10 +113,20 @@
           outline: none;
           min-width: 300px;
         }
+
+        & .clear {
+          cursor: pointer;
+          font-size: $size-18;
+          color: var(--text-color-1);
+          &:hover {
+            opacity: 0.8;
+          }
+        }
       }
     }
 
     .list {
+      padding-bottom: 80px;
       .item {
         @include flex(center, start, row);
         gap: $space-8;
@@ -167,37 +177,27 @@
 
         &_action {
           padding-right: $space-12;
-          // button {
-          //   padding: $space-8 $space-12;
-          //   border-radius: 9999px;
-          //   border: 1px solid var(--border-color);
-          //   font-size: $size-14;
-          //   font-weight: $font-medium;
-          //   cursor: pointer;
-          //   color: var(--text-color-1);
-          //   transition: opacity 0.3s;
-          //   &:hover{
-          //     opacity: 0.8;
-          //   }
-          // }
-
-          // &_add{
-          //   i{
-          //     color: $color-green;
-          //   }
-          // }
-
           &_cancel {
             i {
-              color: $color-red;
+              font-size: $size-18;
             }
           }
-
-          &_request {
-            i {
-              color: $color-green;
-            }
-          }
+        }
+      }
+      .load_more {
+        @include flex(center, center, row);
+        gap: $space-8;
+        padding: $space-12;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        &:hover {
+          opacity: 0.8;
+        }
+        span {
+          font-size: $size-16;
+          color: var(--text-color-1);
+          font-weight: $font-medium;
         }
       }
     }
@@ -340,6 +340,22 @@
               color: $color-green;
             }
           }
+        }
+      }
+      .load_more {
+        @include flex(center, center, row);
+        gap: $space-8;
+        padding: $space-12;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        &:hover {
+          opacity: 0.8;
+        }
+        span {
+          font-size: $size-16;
+          color: var(--text-color-1);
+          font-weight: $font-medium;
         }
       }
     }

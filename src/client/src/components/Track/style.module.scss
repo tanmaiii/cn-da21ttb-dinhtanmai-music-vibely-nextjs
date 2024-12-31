@@ -176,6 +176,12 @@
           transition: $transition;
           @include text(1);
         }
+        & > .icon_liked {
+          i {
+            font-size: 20px;
+            color: $color-primary;
+          }
+        }
       }
       & > .item_hover {
         @include flex(center, center);

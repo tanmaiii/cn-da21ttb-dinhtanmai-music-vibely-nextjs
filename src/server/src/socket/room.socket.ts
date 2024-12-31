@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import RoomService from "../services/Room.service";
+import RoomMemberService from "../services/RoomMember.service";
 
 // Tham gia nhóm
 export const joinRoomHandler = async (
@@ -8,7 +8,7 @@ export const joinRoomHandler = async (
   userId: string
 ) => {
   try {
-    const existsUser = await RoomService.checkUserToRoom(roomId, userId);
+    const existsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
     socket.join(roomId); // Người dùng vào phòng chat
 
     if (existsUser) {
@@ -16,7 +16,7 @@ export const joinRoomHandler = async (
       return;
     }
 
-    await RoomService.addUserToRoom(roomId, userId); // Lưu người dùng vào phòng chat
+    await RoomMemberService.addUserToRoom(roomId, userId); // Lưu người dùng vào phòng chat
 
     console.log(`User ${userId} joined room ${roomId}`);
   } catch (error) {
@@ -31,16 +31,16 @@ export const leaveRoomHandler = async (
   userId: string
 ) => {
   try {
-    const exitsUser = await RoomService.checkUserToRoom(roomId, userId);
+    const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
     socket.leave(roomId); // Xóa người dùng khỏi phòng chat
-  
+
     if (!exitsUser) {
       console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
 
     console.log("User left room", roomId, userId);
-    await RoomService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
+    await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
   } catch (error) {
     console.error("Error leave room:", error);
   }

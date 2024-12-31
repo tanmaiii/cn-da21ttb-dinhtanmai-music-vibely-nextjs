@@ -9,11 +9,9 @@ class GenreService {
   }
 
   async getAll(): Promise<ResponseAPI<IGenre[]>> {
-    const res = await this.client.get<ResponseAPI<IGenre[]>>("");
+    const res = await (await this.client).get<ResponseAPI<IGenre[]>>("");
     return res.data;
   }
 }
 
-const genreService = new GenreService();
-
-export default genreService;
+export default new GenreService() as GenreService;

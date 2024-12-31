@@ -6,13 +6,15 @@ import {
   AddMemberToRoomInput,
   AddSongToRoomInput,
   CreateRoomInput,
+  GetAllMemberInRoomInput,
   GetAllRoomInput,
-  GetRoomSchema,
+  GetRoomInput,
   RemoveMemberToRoomInput,
   RemoveSongToRoomInput,
   UpdateRoomInput,
 } from "../schema/room.schema";
 import RoomService from "../services/Room.service";
+import RoomMemberService from "../services/RoomMember.service";
 import RoomSongService from "../services/RoomSong.service";
 import ApiError from "../utils/ApiError";
 
@@ -44,7 +46,7 @@ export const getAllRoomsHandler = async (
 
 // Lấy chi tiết phòng
 export const getDetailRoomHandler = async (
-  req: Request<GetRoomSchema["params"], {}, {}>,
+  req: Request<GetRoomInput["params"], {}, {}>,
   res: Response,
   next: NextFunction
 ) => {
@@ -138,7 +140,7 @@ export const updateRoomHandler = async (
 
 // Xóa phòng
 export const deleteRoomHandler = async (
-  req: Request<GetRoomSchema["params"], {}, {}>,
+  req: Request<GetRoomInput["params"], {}, {}>,
   res: Response,
   next: NextFunction
 ) => {
@@ -239,7 +241,7 @@ export const removeSongToRoomHandler = async (
 
 // Lấy danh sách bài hát trong phòng
 export const getSongsInRoomHandler = async (
-  req: Request<GetRoomSchema["params"], {}, {}>,
+  req: Request<GetRoomInput["params"], {}, {}>,
   res: Response,
   next: NextFunction
 ) => {
@@ -255,6 +257,39 @@ export const getSongsInRoomHandler = async (
     res
       .status(StatusCodes.OK)
       .json({ data: songs, message: "Get songs in room successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMembersInRoomHandler = async (
+  req: Request<
+    GetAllMemberInRoomInput["params"],
+    GetAllMemberInRoomInput["query"],
+    {}
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const room = await RoomService.getById(req.params.id);
+    const { limit = 10, page = 1, keyword } = req.query;
+
+
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
+    }
+
+    const members = await RoomMemberService.getAllWithPagination({
+      page: parseInt(page as string, 10),
+      limit: parseInt(limit as string, 10),
+      roomId: req.params.id,
+      keyword: keyword as string,
+    });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: members, message: "Get members in room successfully" });
   } catch (error) {
     next(error);
   }
@@ -277,7 +312,7 @@ export const addMemberToRoomHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
     }
 
-    const MemberExist = await RoomService.checkUserToRoom(
+    const MemberExist = await RoomMemberService.checkUserToRoom(
       req.params.id,
       req.body.userId
     );
@@ -286,7 +321,7 @@ export const addMemberToRoomHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Member already exist in room");
     }
 
-    await RoomService.addUserToRoom(req.params.id, req.body.userId);
+    await RoomMemberService.addUserToRoom(req.params.id, req.body.userId);
 
     res
       .status(StatusCodes.OK)
@@ -313,7 +348,7 @@ export const removeMemberToRoomHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
     }
 
-    const MemberExist = await RoomService.checkUserToRoom(
+    const MemberExist = await RoomMemberService.checkUserToRoom(
       req.params.id,
       req.body.userId
     );
@@ -322,7 +357,7 @@ export const removeMemberToRoomHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Member not found in room");
     }
 
-    await RoomService.removeUserToRoom(req.params.id, req.body.userId);
+    await RoomMemberService.removeUserToRoom(req.params.id, req.body.userId);
 
     res
       .status(StatusCodes.OK)

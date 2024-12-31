@@ -206,17 +206,4 @@ export default class RoomService {
     }
     return await Room.destroy({ where: { id } });
   };
-
-  static checkUserToRoom = async (roomId: string, userId: string) => {
-    const userInRoom = await RoomMember.findOne({ where: { roomId, userId } });
-    return !!userInRoom;
-  };
-
-  static addUserToRoom = async (roomId: string, userId: string) => {
-    return await RoomMember.create({ roomId, userId });
-  };
-
-  static removeUserToRoom = async (roomId: string, userId: string) => {
-    return RoomMember.destroy({ where: { roomId, userId } });
-  };
 }

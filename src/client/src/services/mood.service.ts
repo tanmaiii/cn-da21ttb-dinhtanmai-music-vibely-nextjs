@@ -9,11 +9,9 @@ class MoodService {
   }
 
   async getAll(): Promise<ResponseAPI<IGenre[]>> {
-    const res = await this.client.get<ResponseAPI<IGenre[]>>("");
+    const res = await (await this.client).get<ResponseAPI<IGenre[]>>("");
     return res.data;
   }
 }
 
-const moodService = new MoodService();
-
-export default moodService;
+export default new MoodService() as MoodService;

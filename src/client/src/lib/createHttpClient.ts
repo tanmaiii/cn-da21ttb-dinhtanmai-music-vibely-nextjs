@@ -1,4 +1,7 @@
-import authService from "@/services/auth.service";
+import { ResponseAPI } from "@/types";
+import {
+  RefreshTokenResponseDto
+} from "@/types/auth.type";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import queryString from "query-string";
@@ -7,7 +10,7 @@ import tokenService from "./tokenService";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-const createHttpClient = (baseurl: string) => {
+const createHttpClient = (baseurl: string = "") => {
   const httpClient = axios.create({
     baseURL: `${API}/${baseurl}`,
     timeout: 10000,
@@ -17,7 +20,6 @@ const createHttpClient = (baseurl: string) => {
   httpClient.interceptors.request.use(async (config) => {
     const now = new Date().getTime() / 1000; // lấy thời gian hiện tại
 
-    // const tokenExpiratedAt = tokenService.expiratedAt; // lấy thời gian hết hạn của token
     const isRefreshToken = config.url?.endsWith("refresh-token"); // kiểm tra có phải là request refresh token không
 
     if (
@@ -27,9 +29,10 @@ const createHttpClient = (baseurl: string) => {
       !isRefreshToken
     ) {
       try {
-        const res = await authService.refreshToken({
+        const res = (await axios.post(`${API}/auth/refresh-token`, {
           refreshToken: tokenService.refreshToken,
-        });
+        })) as ResponseAPI<RefreshTokenResponseDto>;
+
         tokenService.accessToken = res.data.accessToken;
         tokenService.refreshToken = res.data.refreshToken;
       } catch (error) {

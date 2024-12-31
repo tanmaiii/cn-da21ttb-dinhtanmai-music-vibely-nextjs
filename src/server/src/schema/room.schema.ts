@@ -60,6 +60,7 @@ export const deleteRoomSchema = object({ ...params });
 //
 export const addSongToRoomSchema = object({ ...params, ...payloadAddSong });
 export const removeSongToRoomSchema = object({ ...params, ...payloadAddSong });
+export const getAllMemberInRoomSchema = object({ ...params, ...querySchema });
 export const addMemberToRoomSchema = object({ ...params, ...payloadAddMember });
 export const removeMemberToRoomSchema = object({
   ...params,
@@ -67,11 +68,12 @@ export const removeMemberToRoomSchema = object({
 });
 
 export type GetAllRoomInput = TypeOf<typeof getAllRoomSchema>;
-export type GetRoomSchema = TypeOf<typeof getRoomSchema>;
+export type GetRoomInput = TypeOf<typeof getRoomSchema>;
 export type CreateRoomInput = TypeOf<typeof createRoomSchema>;
 export type UpdateRoomInput = TypeOf<typeof updateRoomSchema>;
 export type DeleteRoomInput = TypeOf<typeof deleteRoomSchema>;
 export type AddSongToRoomInput = TypeOf<typeof addSongToRoomSchema>;
 export type RemoveSongToRoomInput = TypeOf<typeof removeSongToRoomSchema>;
+export type GetAllMemberInRoomInput = TypeOf<typeof getAllMemberInRoomSchema>;
 export type AddMemberToRoomInput = TypeOf<typeof addMemberToRoomSchema>;
 export type RemoveMemberToRoomInput = TypeOf<typeof removeMemberToRoomSchema>;

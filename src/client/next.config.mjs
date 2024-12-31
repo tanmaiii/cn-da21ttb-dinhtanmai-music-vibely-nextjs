@@ -43,6 +43,7 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     // appDir: true, // Nếu đang dùng thư mục "app".
+    esmExternals: false
   },
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],

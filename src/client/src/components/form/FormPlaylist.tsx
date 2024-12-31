@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { genres, moods, privacy } from "@/lib/data";
+import { privacy } from "@/lib/data";
 import { apiImage, validateImage } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import { IPlaylist, PlaylistRequestDto } from "@/types";
-import { DragDropFile, FormItem, MultipleSelect } from "../Form";
-import Dropdown from "../Form/common/Dropdown";
+import React, { useEffect } from "react";
+import { DragDropFile, FormItem } from "../Form";
+import SelectGenre from "../SelectGenre";
+import SelectMood from "../SelectMood";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
 import styles from "./style.module.scss";
-import SelectGenre from "../SelectGenre";
-import SelectMood from "../SelectMood";
 
 interface Props {
   onSubmit: (values: PlaylistRequestDto) => void;

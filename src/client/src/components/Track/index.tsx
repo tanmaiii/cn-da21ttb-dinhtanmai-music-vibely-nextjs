@@ -6,12 +6,14 @@ import {
   formatNumber,
   padNumber,
 } from "@/lib/utils";
+import songService from "@/services/song.service";
 import { IArtist, ISong } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
-import { ButtonIconRound } from "../ui/Button";
 import { MotionDiv } from "../Motion";
+import { ButtonIcon, ButtonIconRound } from "../ui/Button";
 import styles from "./style.module.scss";
 
 interface Props {
@@ -33,6 +35,37 @@ interface ITrackArtist extends Props {
 
 const Track = (props: ITrack) => {
   const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
+  const queryClient = useQueryClient();
+
+  const { data: liked } = useQuery({
+    queryKey: ["song", song.id],
+    queryFn: async () => {
+      try {
+        const res = await songService.checkLiked(song.id);
+        return res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  const mutationLiked = useMutation({
+    mutationFn: async (like: boolean) => {
+      try {
+        if (like) {
+          await songService.unLikeSong(song.id);
+        } else {
+          await songService.likeSong(song.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["song", song.id] });
+    },
+  });
+
   return (
     <MotionDiv
       variants={fadeIn({ direction: "up", delay: 0.2 })}
@@ -113,8 +146,19 @@ const Track = (props: ITrack) => {
           </span>
         </div>
         <div className={`${styles.Track_swapper_col4} pc-2 t-2 m-4`}>
-          <div className={`${styles.item_hover}`}>
-            <ButtonIconRound icon={<i className="fa-solid fa-heart"></i>} />
+          <div className={`${liked ? styles.item_default : styles.item_hover}`}>
+            {liked ? (
+              <ButtonIcon
+                onClick={() => mutationLiked.mutate(liked)}
+                className={`${styles.icon_liked}`}
+                icon={<i className="fa-solid fa-heart"></i>}
+              />
+            ) : (
+              <ButtonIcon
+                onClick={() => mutationLiked.mutate(false)}
+                icon={<i className="fa-light fa-heart"></i>}
+              />
+            )}
           </div>
 
           <div className={`${styles.item_default}`}>
@@ -175,7 +219,7 @@ const TrackShort = (props: ITrack) => {
               <Skeleton height={50} width={50} />
             ) : (
               <Image
-                src={IMAGES.SONG}
+                src={song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
                 alt="song"
                 quality={90}
                 width={50}
