@@ -1,11 +1,10 @@
-import React from "react";
-import { Dropdown } from "../Form";
-import { useQuery } from "@tanstack/react-query";
 import genreService from "@/services/genre.service";
+import { useQuery } from "@tanstack/react-query";
+import { Dropdown } from "../Form";
 
 interface Props {
-  error: any;
-  value: any;
+  error?: string;
+  value: string;
   handleChange: (value: string) => void;
 }
 

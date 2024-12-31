@@ -24,7 +24,7 @@ const FormItem = ({
   label,
   desc,
   placeholder = "Enter text...",
-  type = "text",
+  type: defaultType = "text",
   value,
   onChange,
   required = true,
@@ -36,6 +36,8 @@ const FormItem = ({
   disabled,
   max,
 }: Props) => {
+  const [type, setType] = React.useState(defaultType);
+
   return (
     <div className={`${styles.FormItem}`}>
       {label && (
@@ -79,7 +81,23 @@ const FormItem = ({
             {value.length}/{max}
           </span>
         )}
+        {defaultType === "password" && (
+          <button
+            type="button"
+            className={`${styles.FormItem_input_eye}`}
+            onClick={() =>
+              setType(() => (type === "password" ? "text" : "password"))
+            }
+          >
+            {type === "password" ? (
+              <i className="fa-light fa-eye"></i>
+            ) : (
+              <i className="fa-light fa-eye-slash"></i>
+            )}
+          </button>
+        )}
       </div>
+
       {error && <span className={`${styles.FormItem_error}`}>{error}</span>}
     </div>
   );

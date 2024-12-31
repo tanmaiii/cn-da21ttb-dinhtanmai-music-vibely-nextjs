@@ -3,18 +3,18 @@
 import { setUser } from "@/features/userSlice";
 import { paths } from "@/lib/constants";
 import tokenService from "@/lib/tokenService";
-import authService, { LoginRequestDto } from "@/services/auth.service";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { LoginGoogleRequestDto } from "../../services/auth.service";
 import FormItem from "./FormItem";
 import styles from "./style.module.scss";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { LoginGoogleRequestDto, LoginRequestDto } from "@/types/auth.type";
+import authService from "@/services/auth.service";
 
 const Login = () => {
   const [error, setError] = useState<string>("");

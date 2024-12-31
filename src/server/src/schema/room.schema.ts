@@ -1,4 +1,4 @@
-import { array, object, string, TypeOf } from "zod";
+import { array, boolean, object, string, TypeOf } from "zod";
 import { SIZE } from "../utils/contants";
 import { querySchema } from "./common.schema";
 
@@ -12,6 +12,8 @@ const payload = {
     }).max(SIZE.DESCRIPTION, "Description is too long"),
     songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
     imagePath: string().optional(),
+    public: boolean().default(true).optional(),
+    password: string().min(1).max(20, "Password is too long").optional(),
   }),
 };
 

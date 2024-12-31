@@ -26,6 +26,7 @@ export const attributesRoom = [
   "description",
   "imagePath",
   "userId",
+  "public",
   "createdAt",
   "updatedAt",
 ];

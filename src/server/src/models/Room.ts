@@ -54,6 +54,14 @@ class Room extends Model {
   })
   userId: string;
 
+  @Column({
+    defaultValue: true,
+  })
+  declare public: boolean;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  password: string;
+
   @BelongsTo(() => User)
   creator: User; // Người tạo
 

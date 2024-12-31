@@ -3,10 +3,6 @@
 import { setUser } from "@/features/userSlice";
 import { paths } from "@/lib/constants";
 import tokenService from "@/lib/tokenService";
-import authService, {
-  LoginGoogleRequestDto,
-  RegisterRequestDto,
-} from "@/services/auth.service";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { Formik } from "formik";
 import Link from "next/link";
@@ -17,6 +13,8 @@ import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import FormItem from "./FormItem";
 import styles from "./style.module.scss";
+import { LoginGoogleRequestDto, RegisterRequestDto } from "@/types/auth.type";
+import authService from "@/services/auth.service";
 
 const Register = () => {
   const [error, setError] = useState<string>("");

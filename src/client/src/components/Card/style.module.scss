@@ -224,7 +224,7 @@
   }
 }
 
-.CardLive {
+.CardRoom {
   width: 100%;
   &_swapper {
     width: 100%;
@@ -249,10 +249,10 @@
 
     &_container {
       &:hover {
-        .CardLive_swapper_container_image_overlay {
+        .CardRoom_swapper_container_image_overlay {
           display: block;
         }
-        .CardLive_swapper_container_image_buttons {
+        .CardRoom_swapper_container_image_buttons {
           transform: translateY(0);
           opacity: 1;
         }
@@ -358,6 +358,33 @@
           margin-top: $space-4;
           @include text(1);
         }
+      }
+    }
+  }
+}
+
+.CardRoom_modal {
+  padding: $space-16 0;
+  height: max-content;
+  width: 400px;
+  & > h3 {
+    @include text(1);
+    font-size: $size-24;
+    font-weight: $font-bold;
+    color: var(--text-color-1);
+    margin-bottom: $space-8;
+  }
+  &_form{
+    width: 100%;
+  }
+  & .buttons {
+    @include flex(center, flex-end, row);
+    gap: $space-8;
+    margin-top: $space-16;
+    &_btnCreate {
+      background-color: $color-primary;
+      label {
+        color: $color-white-1;
       }
     }
   }

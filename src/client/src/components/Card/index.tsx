@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { ButtonIconRound } from "@/components/ui/Button";
+import { ButtonIconRound, ButtonLabel } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
 import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatNumber, isSongData } from "@/lib/utils";
@@ -13,6 +13,8 @@ import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
 import { MotionDiv } from "../Motion";
 import styles from "./style.module.scss";
+import Modal from "../Modal";
+import { FormItem } from "../Form";
 
 // Hook tùy chỉnh độ rộng của cột dựa vào trạng thái của sidebar và waiting
 const useClassNameCol = () => {
@@ -247,71 +249,121 @@ const CardArtist = (props: ICardArtist) => {
 
 const CardRoom = (props: ICardLive) => {
   const { id = 1, room, className, isLoading } = props;
+  const [isOpen, setIsOpen] = useState(false);
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const classNameCol = useClassNameCol();
 
   const handleClick = () => {
-    router.push(`${paths.ROOM}/${room?.id}`);
+    if (room.public) {
+      router.push(`${paths.ROOM}/${room?.id}`);
+      return;
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (password === "123456") {
+      router.push(`${paths.ROOM}/${room?.id}`);
+    }
   };
 
   return (
-    <MotionDiv
-      variants={variants}
-      initial="hidden"
-      animate="visible"
-      transition={{
-        delay: (id || 0) * 0.2,
-        ease: "easeInOut",
-        duration: 0.5,
-      }}
-      viewport={{ amount: 0 }}
-      className={`${styles.CardLive} ${className} ${classNameCol}`}
-    >
-      <div
-        className={`${styles.CardLive_swapper}`}
-        aria-disabled={isLoading ? "true" : "false"}
+    <>
+      <MotionDiv
+        variants={variants}
+        initial="hidden"
+        animate="visible"
+        transition={{
+          delay: (id || 0) * 0.2,
+          ease: "easeInOut",
+          duration: 0.5,
+        }}
+        viewport={{ amount: 0 }}
+        className={`${styles.CardRoom} ${className} ${classNameCol}`}
       >
-        <div className={`${styles.CardLive_swapper_container}`}>
-          <div className={`${styles.CardLive_swapper_container_image}`}>
-            <Image
-              src={room?.imagePath ? apiImage(room?.imagePath) : IMAGES.AVATAR}
-              alt="image.png"
-              width={200}
-              height={200}
-              quality={100}
-            />
-            <span>LIVE</span>
-
-            <div
-              onClick={handleClick}
-              className={`${styles.CardLive_swapper_container_image_overlay}`}
-            ></div>
-
-            <div
-              className={`${styles.CardLive_swapper_container_image_avatar}`}
-            >
+        <div
+          className={`${styles.CardRoom_swapper}`}
+          aria-disabled={isLoading ? "true" : "false"}
+        >
+          <div className={`${styles.CardRoom_swapper_container}`}>
+            <div className={`${styles.CardRoom_swapper_container_image}`}>
               <Image
                 src={
-                  (room?.creator.imagePath &&
-                    apiImage(room?.creator.imagePath)) ||
-                  IMAGES.SONG
+                  room?.imagePath ? apiImage(room?.imagePath) : IMAGES.AVATAR
                 }
                 alt="image.png"
-                width={50}
-                height={50}
+                width={200}
+                height={200}
                 quality={100}
               />
+              <span>LIVE</span>
+
+              <div
+                onClick={() => handleClick()}
+                className={`${styles.CardRoom_swapper_container_image_overlay}`}
+              ></div>
+
+              <div
+                className={`${styles.CardRoom_swapper_container_image_avatar}`}
+              >
+                <Image
+                  src={
+                    (room?.creator.imagePath &&
+                      apiImage(room?.creator.imagePath)) ||
+                    IMAGES.SONG
+                  }
+                  alt="image.png"
+                  width={50}
+                  height={50}
+                  quality={100}
+                />
+              </div>
+            </div>
+            <div className={`${styles.CardRoom_swapper_container_desc}`}>
+              <Link href={`${paths.LIVE}/123`}>
+                <h4>{room.title}</h4>
+              </Link>
+              <p>{room.membersCount || 0} are listening</p>
             </div>
           </div>
-          <div className={`${styles.CardLive_swapper_container_desc}`}>
-            <Link href={`${paths.LIVE}/123`}>
-              <h4>{room.title}</h4>
-            </Link>
-            <p>{room.membersCount || 0} are listening</p>
-          </div>
         </div>
-      </div>
-    </MotionDiv>
+      </MotionDiv>
+      {isOpen && (
+        <Modal show={isOpen} onClose={() => setIsOpen(false)}>
+          <div className={styles.CardRoom_modal}>
+            <h3>Enter password to join room</h3>
+            <div className={styles.CardRoom_modal_form}>
+              <FormItem
+                label="Password"
+                placeholder="Enter password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                // error={errors.password}
+              />
+            </div>
+            <div className={styles.buttons}>
+              <ButtonLabel
+                onClick={() => setIsOpen(false)}
+                className={`${styles.buttons_btnCancel}`}
+              >
+                <label>Cancel</label>
+              </ButtonLabel>
+
+              <ButtonLabel
+                onClick={() => handleSubmit()}
+                className={`${styles.buttons_btnCreate}`}
+              >
+                <label>Create</label>
+              </ButtonLabel>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 };
 

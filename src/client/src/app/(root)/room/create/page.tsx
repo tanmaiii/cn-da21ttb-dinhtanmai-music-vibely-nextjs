@@ -1,12 +1,12 @@
 "use client";
 
 import { FormRoom } from "@/components/Form";
-import styles from "./style.module.scss";
-import { useMutation } from "@tanstack/react-query";
-import { RoomRequestDto } from "@/types";
-import roomSerive from "@/services/room.service";
 import { useCustomToast } from "@/hooks/useToast";
+import roomSerive from "@/services/room.service";
+import { RoomRequestDto } from "@/types";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import styles from "./style.module.scss";
 
 const Page = () => {
   const { toastSuccess, toastError } = useCustomToast();
@@ -21,8 +21,8 @@ const Page = () => {
       toastSuccess("Create room successfully");
       router.push("/room/" + data.id);
     },
-    onError: () => {
-      toastError("Create room failed");
+    onError: (error) => {
+      toastError((error as Error)?.message || "Create room failed");
     },
   });
 

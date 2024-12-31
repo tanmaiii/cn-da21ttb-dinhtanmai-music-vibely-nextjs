@@ -69,6 +69,18 @@
         border-color: $color-red;
       }
     }
+
+    &_eye {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      i {
+        font-size: $size-18;
+        color: var(--text-color-2);
+      }
+    }
   }
 
   &_error {

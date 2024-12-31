@@ -8,10 +8,11 @@ import { IRoom, ISong, RoomRequestDto } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { Track } from "../Track";
-import { ButtonLabel } from "../ui";
+import { ButtonLabel, Radio } from "../ui";
 import DragDropFile from "./common/DragDropFile";
 import FormItem from "./common/FormItem";
 import styles from "./style.module.scss";
+import { privacy } from "@/lib/data";
 
 interface Props {
   onSubmit: (values: RoomRequestDto) => void;
@@ -23,6 +24,8 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
     title: "",
     description: "",
     imagePath: undefined,
+    public: true,
+    password: "",
   });
   const [errors, setErrors] = React.useState<Partial<RoomRequestDto>>({});
   const [imageFile, setImageFile] = React.useState<File | null>(null);
@@ -181,6 +184,29 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
                 error={errors.description}
                 max={500}
               />
+              <div>
+                <Radio
+                  onChange={(v) =>
+                    handleChange({ public: v == "public" ? true : false })
+                  }
+                  label="Privacy"
+                  value={values?.public ? "public" : "private"}
+                  name="privacy"
+                  options={privacy}
+                />
+              </div>
+              {values.public === false && (
+                <FormItem
+                  label="Password"
+                  placeholder="Enter password"
+                  type="text"
+                  value={values.password ? values.password : ""}
+                  onChange={(e) => handleChange({ password: e.target.value })}
+                  name="password"
+                  error={errors.password}
+                  max={20}
+                />
+              )}
               <div className={styles.buttons}>
                 <ButtonLabel line className={`${styles.buttons_btnCancel}`}>
                   <label>Cancel</label>
