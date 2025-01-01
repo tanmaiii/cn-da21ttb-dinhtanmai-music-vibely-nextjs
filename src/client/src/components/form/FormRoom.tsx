@@ -54,6 +54,11 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
       hasError = true;
     }
 
+    if (values.public === false && !values.password) {
+      errors.password = "Password is required";
+      hasError = true;
+    }
+
     return { errors, hasError };
   };
 
@@ -199,12 +204,11 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
                 <FormItem
                   label="Password"
                   placeholder="Enter password"
-                  type="text"
+                  type="password"
                   value={values.password ? values.password : ""}
                   onChange={(e) => handleChange({ password: e.target.value })}
                   name="password"
                   error={errors.password}
-                  max={20}
                 />
               )}
               <div className={styles.buttons}>

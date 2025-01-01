@@ -9,16 +9,16 @@ export const joinRoomHandler = async (
 ) => {
   try {
     const existsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
-    socket.join(roomId); // Người dùng vào phòng chat
-
+    
     if (existsUser) {
-      console.log(`User ${userId} already in room ${roomId}`);
+      socket.join(roomId); // Người dùng vào phòng chat
+    }else{
+      console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
 
-    await RoomMemberService.addUserToRoom(roomId, userId); // Lưu người dùng vào phòng chat
-
-    console.log(`User ${userId} joined room ${roomId}`);
+    // await RoomMemberService.addUserToRoom(roomId, userId); // Lưu người dùng vào phòng chat
+    // console.log(`User ${userId} joined room ${roomId}`);
   } catch (error) {
     console.error("Error join room:", error);
   }
@@ -31,16 +31,17 @@ export const leaveRoomHandler = async (
   userId: string
 ) => {
   try {
-    const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
+    // const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
+    
     socket.leave(roomId); // Xóa người dùng khỏi phòng chat
-
-    if (!exitsUser) {
-      console.log(`User ${userId} not in room ${roomId}`);
-      return;
-    }
+   
+    // if (!exitsUser) {
+    //   console.log(`User ${userId} not in room ${roomId}`);
+    //   return;
+    // }
 
     console.log("User left room", roomId, userId);
-    await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
+    // await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
   } catch (error) {
     console.error("Error leave room:", error);
   }

@@ -8,6 +8,7 @@ import "./globals.scss";
 import StoreProvider from "./StoreProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthProvider from "@/context/authContex";
+import { PlayerProvider } from "@/context/PlayerContext";
 
 export const metadata: Metadata = {
   title: "Trang chủ | Vibely",
@@ -28,16 +29,18 @@ export default function RootLayout({
       <body suppressHydrationWarning={true}>
         <UIProvider>
           <StoreProvider>
-            <Toaster
-              position="top-center"
-              containerStyle={{ zIndex: 999999 }}
-              reverseOrder={false}
-            />
-            <AuthProvider>
-              <GoogleOAuthProvider clientId={CLIENT_ID}>
-                <div>{children}</div>
-              </GoogleOAuthProvider>
-            </AuthProvider>
+            <PlayerProvider>
+              <Toaster
+                position="top-center"
+                containerStyle={{ zIndex: 999999 }}
+                reverseOrder={false}
+              />
+              <AuthProvider>
+                <GoogleOAuthProvider clientId={CLIENT_ID}>
+                  <div>{children}</div>
+                </GoogleOAuthProvider>
+              </AuthProvider>
+            </PlayerProvider>
           </StoreProvider>
         </UIProvider>
       </body>

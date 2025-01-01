@@ -17,6 +17,7 @@ import { FormPlaylist } from "@/components/Form";
 import { Track } from "@/components/Track";
 import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
 import Loading from "./loading";
+import Empty from "@/components/common/Empty";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -115,10 +116,11 @@ const PlaylistPage = () => {
         </div>
 
         <div className={`${styles.PlaylistPage_content_body}`}>
-          {dataSong && playlist && (
+          {playlist && dataSong && dataSong.length > 0 ? (
             <Table
               onChange={(data) =>
-                playlist && (playlist).creator?.id === currentUser?.id &&
+                playlist &&
+                playlist.creator?.id === currentUser?.id &&
                 mutationUpdatePlaylist.mutate({
                   songIds: data.map((item) => item.id),
                 })
@@ -126,6 +128,8 @@ const PlaylistPage = () => {
               data={dataSong}
               renderItem={(item, index) => <Track key={index} song={item} />}
             />
+          ) : (
+            <Empty />
           )}
         </div>
       </div>

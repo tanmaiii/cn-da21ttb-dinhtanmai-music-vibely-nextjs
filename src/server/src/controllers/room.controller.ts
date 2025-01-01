@@ -17,6 +17,7 @@ import RoomService from "../services/Room.service";
 import RoomMemberService from "../services/RoomMember.service";
 import RoomSongService from "../services/RoomSong.service";
 import ApiError from "../utils/ApiError";
+import PasswordUtil from "../utils/passwordUtil";
 
 // Lấy tất cả có phòng
 export const getAllRoomsHandler = async (
@@ -51,11 +52,23 @@ export const getDetailRoomHandler = async (
   next: NextFunction
 ) => {
   try {
+    const userInfo = get(req, "identity") as IIdentity;
     const room = await RoomService.getById(req.params.id);
 
     if (!room) {
       res.status(StatusCodes.NOT_FOUND).json({ message: "Room not found" });
     }
+
+    if (
+      !(await RoomMemberService.checkUserToRoom(req.params.id, userInfo.id))
+    ) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        "You are not authorized to get this room"
+      );
+    }
+
+    const { password, ...data } = room;
 
     res
       .status(StatusCodes.OK)
@@ -74,10 +87,14 @@ export const createRoomHandler = async (
   try {
     const userInfo = get(req, "identity") as IIdentity;
     const songIds = req.body.songIds;
+    const hashedPassword = req.body.password
+      ? PasswordUtil.hash(req.body.password)
+      : undefined;
 
     const data = {
       ...req.body,
       userId: userInfo.id,
+      password: hashedPassword,
     };
 
     const room = await RoomService.create(data);
@@ -87,6 +104,8 @@ export const createRoomHandler = async (
     }
 
     const newRoom = await RoomService.getById(room.id);
+
+    await RoomMemberService.addUserToRoom(room.id, userInfo.id);
 
     res
       .status(StatusCodes.CREATED)
@@ -262,6 +281,7 @@ export const getSongsInRoomHandler = async (
   }
 };
 
+// Lấy danh sách thành viên trong phòng
 export const getMembersInRoomHandler = async (
   req: Request<
     GetAllMemberInRoomInput["params"],
@@ -274,7 +294,6 @@ export const getMembersInRoomHandler = async (
   try {
     const room = await RoomService.getById(req.params.id);
     const { limit = 10, page = 1, keyword } = req.query;
-
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
@@ -290,6 +309,37 @@ export const getMembersInRoomHandler = async (
     res
       .status(StatusCodes.OK)
       .json({ data: members, message: "Get members in room successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const checkMemberInRoomHandler = async (
+  req: Request<GetRoomInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const room = await RoomService.getById(req.params.id);
+    const userInfo = get(req, "identity") as IIdentity;
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
+    }
+
+    const isMember = await RoomMemberService.checkUserToRoom(
+      req.params.id,
+      userInfo.id
+    );
+
+    if (!isMember) {
+      res
+        .status(StatusCodes.OK)
+        .json({ data: isMember, message: "User not in room" });
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: isMember, message: "Check member in room successfully" });
   } catch (error) {
     next(error);
   }
@@ -318,7 +368,17 @@ export const addMemberToRoomHandler = async (
     );
 
     if (MemberExist) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "Member already exist in room");
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Member already exist in room" });
+      return;
+    }
+
+    if (
+      !room.public &&
+      !(await RoomService.checkPassword(room.id, req.body.password))
+    ) {
+      throw new ApiError(StatusCodes.FORBIDDEN, "Password is incorrect");
     }
 
     await RoomMemberService.addUserToRoom(req.params.id, req.body.userId);

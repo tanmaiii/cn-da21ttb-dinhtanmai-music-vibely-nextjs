@@ -64,7 +64,7 @@ const Room = () => {
           <Section>
             {data &&
               data.map((_, index) => (
-                <CardRoom id={index + 1} key={index} room={_} />
+                <CardRoom index={index + 1} key={index} room={_} />
               ))}
           </Section>
         </div>

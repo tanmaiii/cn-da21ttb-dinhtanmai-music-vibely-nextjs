@@ -51,6 +51,7 @@ const payloadAddSong = {
 const payloadAddMember = {
   body: object({
     userId: string().max(SIZE.UUID, "Id is too long"),
+    password: string().min(1).max(20, "Password is too long").optional(),
   }),
 };
 

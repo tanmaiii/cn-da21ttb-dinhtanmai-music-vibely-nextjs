@@ -1,0 +1,31 @@
+@use "@/scss/index.module.scss" as *;
+
+.Empty {
+  @include flex(center, center, column);
+  //   min-height: calc(100vh - $height-header - $height-playingBar);
+  width: 100%;
+  padding: $space-32;
+  gap: $space-16;
+  &_icon {
+    background-color: var(--background-color-2);
+    border-radius: 50%;
+    padding: 20px;
+    i {
+      @include flex(center, center);
+      width: 100px;
+      height: 100px;
+      font-size: 60px;
+      color: var(--text-color-2);
+    }
+  }
+  h3 {
+    font-size: 30px;
+    font-weight: $font-bold;
+    color: var(--text-color-1);
+  }
+  span {
+    font-size: $size-16;
+    font-weight: $font-light;
+    color: var(--text-color-2);
+  }
+}

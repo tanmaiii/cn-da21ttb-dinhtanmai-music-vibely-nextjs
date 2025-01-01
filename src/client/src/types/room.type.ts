@@ -36,3 +36,8 @@ export interface ChatRequestDto {
   content: string;
   userId: string;
 }
+
+export interface AddMemberRequestDto {
+  userId: string;
+  password?: string;
+}

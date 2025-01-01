@@ -344,12 +344,20 @@
       &_desc {
         @include flex(center, center, column);
         margin-top: $space-8;
-        h4 {
-          font-size: $size-16;
-          font-weight: $font-bold;
-          color: var(--text-color-1);
+        a {
+          @include flex(center, center, row);
+          gap: $space-8;
           margin-top: $space-8;
-          @include text(1);
+          i {
+            font-size: $size-18;
+            color: var(--text-color-1);
+          }
+          h4 {
+            font-size: $size-16;
+            font-weight: $font-bold;
+            color: var(--text-color-1);
+            @include text(1);
+          }
         }
         p {
           font-size: $size-16;
@@ -374,7 +382,7 @@
     color: var(--text-color-1);
     margin-bottom: $space-8;
   }
-  &_form{
+  &_form {
     width: 100%;
   }
   & .buttons {

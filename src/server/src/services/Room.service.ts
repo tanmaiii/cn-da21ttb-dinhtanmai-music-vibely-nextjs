@@ -10,6 +10,7 @@ import { WhereOptions } from "sequelize";
 import { Op } from "sequelize";
 import Song from "../models/Song";
 import { songQueryOptions } from "./Song.service";
+import passwordUtil from "../utils/passwordUtil";
 
 interface GetAllOptions {
   page: number;
@@ -171,6 +172,16 @@ export default class RoomService {
       include: this.options,
     });
   };
+
+  static checkPassword = async (roomId: string, password: string) => {
+    const room = await Room.findByPk(roomId);
+
+    if (!room) {
+      return false;
+    }
+
+    return passwordUtil.compare(password, room.password)
+  }
 
   static create = async (data: Partial<Room>) => {
     return await Room.create(data);

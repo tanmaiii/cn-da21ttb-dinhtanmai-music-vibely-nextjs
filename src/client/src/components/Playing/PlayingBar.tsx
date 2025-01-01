@@ -9,6 +9,7 @@ import { ButtonIcon, ButtonIconSquare } from "../ui/Button";
 import Slider from "../Slider";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
 
 const PlayingBar = () => {
   return (
@@ -55,6 +56,7 @@ const LeftPlayingBar = () => {
 const CenterPlayingBar = () => {
   const [percentage, setPercentage] = React.useState(0);
   const audioRef = React.useRef<HTMLAudioElement>(null);
+  const { currentSong } = usePlayer();
   // const [isPlaying, setIsPlaying] = React.useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +106,7 @@ const CenterPlayingBar = () => {
       <audio
         ref={audioRef}
         onTimeUpdate={onPlaying}
-        src="http://localhost:8000/audio/1.mp3"
+        src={currentSong || ""}
       ></audio>
     </div>
   );

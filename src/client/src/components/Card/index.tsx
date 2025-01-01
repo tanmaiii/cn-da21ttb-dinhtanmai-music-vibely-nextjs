@@ -5,16 +5,21 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { ButtonIconRound, ButtonLabel } from "@/components/ui/Button";
+import { ButtonIconRound } from "@/components/ui/Button";
 import { useUI } from "@/context/UIContext";
+import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES, paths } from "@/lib/constants";
+import { RootState } from "@/lib/store";
 import { apiImage, formatNumber, isSongData } from "@/lib/utils";
+import roomService from "@/services/room.service";
 import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import FormEnterRoom from "../Form/FormEnterRoom";
+import Modal from "../Modal";
 import { MotionDiv } from "../Motion";
 import styles from "./style.module.scss";
-import Modal from "../Modal";
-import { FormItem } from "../Form";
 
 // Hook tùy chỉnh độ rộng của cột dựa vào trạng thái của sidebar và waiting
 const useClassNameCol = () => {
@@ -61,7 +66,7 @@ interface ICardArtist {
 }
 
 interface ICardLive {
-  id?: number;
+  index?: number;
   isLoading?: boolean;
   className?: string;
   room: IRoom;
@@ -248,24 +253,51 @@ const CardArtist = (props: ICardArtist) => {
 };
 
 const CardRoom = (props: ICardLive) => {
-  const { id = 1, room, className, isLoading } = props;
+  const { index = 1, room, className, isLoading } = props;
+  const { toastError } = useCustomToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [password, setPassword] = useState("");
   const router = useRouter();
+  const currentUser = useSelector((state: RootState) => state.user);
   const classNameCol = useClassNameCol();
+  const queryClient = useQueryClient();
+
+  const { data: isMember } = useQuery({
+    queryKey: ["room-check", room.id],
+    queryFn: async () => {
+      const res = room.id && (await roomService.checkMember(room.id));
+      if (res !== "") {
+        return res.data;
+      }
+      return false;
+    },
+  });
+
+  const mutionAddMember = useMutation({
+    mutationFn: async (password?: string) => {
+      return (
+        room.id &&
+        currentUser &&
+        (await roomService.addMember(room.id, {
+          userId: currentUser.id,
+          password: password,
+        }))
+      );
+    },
+    onSuccess: () => {
+      router.push(`${paths.ROOM}/${room?.id}`);
+      queryClient.invalidateQueries({ queryKey: ["room-check", room.id] });
+      queryClient.invalidateQueries({ queryKey: ["room", room.id] });
+    },
+    onError: (error) => {
+      toastError((error as Error)?.message || "Login failed");
+    },
+  });
 
   const handleClick = () => {
-    if (room.public) {
-      router.push(`${paths.ROOM}/${room?.id}`);
-      return;
+    if (room.public || isMember) {
+      mutionAddMember.mutate(undefined);
     } else {
       setIsOpen(true);
-    }
-  };
-
-  const handleSubmit = () => {
-    if (password === "123456") {
-      router.push(`${paths.ROOM}/${room?.id}`);
     }
   };
 
@@ -276,7 +308,7 @@ const CardRoom = (props: ICardLive) => {
         initial="hidden"
         animate="visible"
         transition={{
-          delay: (id || 0) * 0.2,
+          delay: (index || 0) * 0.2,
           ease: "easeInOut",
           duration: 0.5,
         }}
@@ -323,6 +355,7 @@ const CardRoom = (props: ICardLive) => {
             </div>
             <div className={`${styles.CardRoom_swapper_container_desc}`}>
               <Link href={`${paths.LIVE}/123`}>
+                {!room?.public && <i className="fa-light fa-lock"></i>}
                 <h4>{room.title}</h4>
               </Link>
               <p>{room.membersCount || 0} are listening</p>
@@ -332,35 +365,10 @@ const CardRoom = (props: ICardLive) => {
       </MotionDiv>
       {isOpen && (
         <Modal show={isOpen} onClose={() => setIsOpen(false)}>
-          <div className={styles.CardRoom_modal}>
-            <h3>Enter password to join room</h3>
-            <div className={styles.CardRoom_modal_form}>
-              <FormItem
-                label="Password"
-                placeholder="Enter password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                name="password"
-                // error={errors.password}
-              />
-            </div>
-            <div className={styles.buttons}>
-              <ButtonLabel
-                onClick={() => setIsOpen(false)}
-                className={`${styles.buttons_btnCancel}`}
-              >
-                <label>Cancel</label>
-              </ButtonLabel>
-
-              <ButtonLabel
-                onClick={() => handleSubmit()}
-                className={`${styles.buttons_btnCreate}`}
-              >
-                <label>Create</label>
-              </ButtonLabel>
-            </div>
-          </div>
+          <FormEnterRoom
+            onClose={() => setIsOpen(false)}
+            onSubmit={(password) => mutionAddMember.mutate(password)}
+          />
         </Modal>
       )}
     </>

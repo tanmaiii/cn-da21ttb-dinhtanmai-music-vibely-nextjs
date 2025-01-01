@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addMemberToRoomHandler,
   addSongToRoomHandler,
+  checkMemberInRoomHandler,
   createRoomHandler,
   deleteRoomHandler,
   getAllRoomsHandler,
@@ -24,6 +25,7 @@ import {
   updateRoomSchema,
 } from "../schema/room.schema";
 import { PERMISSIONS } from "../utils/contants";
+import { getAllMemberInRoomSchema } from "../schema/room.schema";
 
 const router: Router = Router();
 
@@ -80,8 +82,14 @@ router.get(
 router.get(
   "/:id/member",
   authorize(PERMISSIONS.READ_ROOM),
-  validateData(getRoomSchema),
+  validateData(getAllMemberInRoomSchema),
   getMembersInRoomHandler
+);
+router.get(
+  "/:id/member/check",
+  authorize(PERMISSIONS.READ_ROOM),
+  validateData(getRoomSchema),
+  checkMemberInRoomHandler
 );
 router.post(
   // Thêm thành viên vào phòng
