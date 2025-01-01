@@ -13,9 +13,13 @@ import {
 import { TrackShort } from "../Track";
 import { songs } from "@/lib/data";
 import { ISong } from "@/types";
+import { usePlayer } from "@/context/PlayerContext";
 
 export const Waiting = () => {
   const { toggleWaiting, isWaitingOpen } = useUI();
+  const { isPlaying, queue } = usePlayer();
+  // const { isPlaying } = usePlayer();
+
   const [ready, setReady] = useState(false);
   // const waitingRef = React.useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<ISong[]>(songs);
@@ -59,8 +63,8 @@ export const Waiting = () => {
             <Droppable direction="vertical" droppableId="droppable">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {items &&
-                    items.map((item, index) => (
+                  {queue &&
+                    queue.map((item, index) => (
                       <Draggable
                         key={item.id}
                         draggableId={item.id}

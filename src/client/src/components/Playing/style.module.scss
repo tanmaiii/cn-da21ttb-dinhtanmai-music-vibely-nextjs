@@ -142,7 +142,7 @@
         background-size: cover;
         filter: blur(30px);
         position: absolute;
-        inset: -100px;
+        inset: -50px;
         display: block;
         background-color: $color-primary;
       }
@@ -152,7 +152,7 @@
         position: absolute;
         height: 100%;
         width: 100%;
-        background-color: rgba($color: $color-primary, $alpha: 0.7);
+        background-color: rgba($color: $color-primary, $alpha: 0.3);
         // opacity: 0;
         position: absolute;
       }
@@ -250,7 +250,22 @@
     box-shadow: var(--box-shadow);
     overflow: hidden;
     aspect-ratio: 1/1;
-
+    animation: spin 10s linear infinite;
+    animation-play-state: paused;
+    &_active {
+      animation-play-state: running;
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      99.9% {
+        transform: rotate(359.9deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
     @include mobile {
       display: none;
     }
@@ -437,5 +452,12 @@
         }
       }
     }
+  }
+}
+
+.ControlsPlaying {
+  &_btn_random i,
+  &_btn_repeat i {
+    color: $color-primary !important;
   }
 }

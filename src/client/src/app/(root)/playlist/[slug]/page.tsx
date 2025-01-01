@@ -18,6 +18,7 @@ import { Track } from "@/components/Track";
 import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
 import Loading from "./loading";
 import Empty from "@/components/common/Empty";
+import { usePlayer } from "@/context/PlayerContext";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -26,6 +27,7 @@ const PlaylistPage = () => {
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const currentUser = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
+  const { playPlaylist } = usePlayer();
 
   const {
     data: playlist,
@@ -100,6 +102,7 @@ const PlaylistPage = () => {
       <div className={`${styles.PlaylistPage_content}`}>
         <div className={`${styles.PlaylistPage_content_header}`}>
           <ButtonIconPrimary
+            onClick={() => dataSong && playPlaylist(dataSong)}
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
           />

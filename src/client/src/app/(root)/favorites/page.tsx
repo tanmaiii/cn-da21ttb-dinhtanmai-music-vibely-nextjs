@@ -10,10 +10,12 @@ import songService from "@/services/song.service";
 import { notFound } from "next/navigation";
 import Loading from "./loading";
 import { Track } from "@/components/Track";
+import { usePlayer } from "@/context/PlayerContext";
 
 const Favorites = () => {
   // const [isLoading, setisLoading] = useState(true);
-
+  const { playPlaylist } = usePlayer();
+  
   const { data, isLoading, error } = useQuery({
     queryKey: ["song-favorites"],
     queryFn: async () => {
@@ -34,6 +36,7 @@ const Favorites = () => {
       <div className={`${styles.LikesPage_content}`}>
         <div className={`${styles.LikesPage_content_header}`}>
           <ButtonIconPrimary
+            onClick={() => data && playPlaylist(data)}
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
           />

@@ -1,15 +1,15 @@
 "use client";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
+import { PlayingBar } from "@/components/Playing";
+import ModalLyrics from "@/components/Playing/ModalLyrics";
+import { Waiting } from "@/components/Waiting";
+import { useUI } from "@/context/UIContext";
+import { sidebarLinks } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import styles from "./root.module.scss";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { PlayingBar } from "@/components/Playing";
-import { Waiting } from "@/components/Waiting";
-import ModalLyrics from "@/components/Playing/ModalLyrics";
-import { useUI } from "@/context/UIContext";
-import { useRouter } from "next/navigation";
-import { sidebarLinks } from "@/lib/constants";
 
 export default function RootLayout({
   children,

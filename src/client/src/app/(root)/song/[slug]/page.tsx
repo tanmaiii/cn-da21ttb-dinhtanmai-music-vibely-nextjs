@@ -10,9 +10,11 @@ import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
 
 const SongPage = () => {
   const [nav, setNav] = useState("About");
+  const { play } = usePlayer();
   const [seeMore, setSeeMore] = useState(false);
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
@@ -20,14 +22,20 @@ const SongPage = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["song", slug],
     queryFn: async () => {
-      const res = await songService.getBySlug(slug)
-      return res.data
-    }
+      const res = await songService.getBySlug(slug);
+      return res.data;
+    },
   });
 
   if (isLoading) return <Loading />;
 
   if (error || !slug) return notFound();
+
+  const handlePlay = () => {
+    console.log("play");
+
+    if (data) play(data);
+  };
 
   return (
     <div className={`${styles.SongPage}`}>
@@ -39,6 +47,7 @@ const SongPage = () => {
           <ButtonIconPrimary
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
+            onClick={() => handlePlay()}
           />
           <ButtonIcon
             size="large"

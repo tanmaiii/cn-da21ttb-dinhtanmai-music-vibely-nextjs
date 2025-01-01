@@ -7,6 +7,7 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import { usePlayer } from "./PlayerContext";
 
 // Định nghĩa kiểu cho context
 interface UIContextType {
@@ -32,6 +33,7 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
   const [isPlayingBar, setIsPlayingBar] = useState<boolean>(false);
   const [isLyricsOpen, setIsLyricsOpen] = useState<boolean>(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { isPlaying, currentSong } = usePlayer();
 
   useEffect(() => {
     const savedTheme =
@@ -44,6 +46,16 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
 
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
+
+  useEffect(() => {
+    if (isPlaying) {
+      setIsPlayingBar(true);
+    }
+
+    if(!currentSong) {
+      setIsPlayingBar(false);
+    }
+  }, [isPlaying, currentSong])
 
   const toggleDarkMode = () => {
     const newTheme = theme === "light" ? "dark" : "light";

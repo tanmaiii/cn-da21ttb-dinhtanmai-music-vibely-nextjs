@@ -110,8 +110,9 @@
       & > p {
         @include flex(center, center, row);
         gap: $space-4;
+        flex-wrap: wrap;
 
-        & > i{
+        & > i {
           font-size: $size-16;
           color: var(--text-color-1);
           margin-bottom: 2px;
@@ -171,8 +172,7 @@
             font-size: $size-16;
             font-weight: $font-light;
             color: var(--text-color-1);
-            @include flex(center, unset);
-            gap: $space-4;
+            @include text(1);
             &:hover {
               text-decoration: underline;
             }
@@ -190,8 +190,9 @@
             font-size: $size-14;
             font-weight: $font-light;
             color: var(--text-color-2);
-            @include flex(center, unset);
             gap: $space-4;
+            flex-wrap: nowrap;
+            @include text(1);
             @include mobile {
               justify-content: center;
             }
@@ -358,6 +359,7 @@
             color: var(--text-color-2);
             line-height: 1;
             @include flex(center, unset);
+            flex-wrap: nowrap;
             gap: $space-4;
             @include mobile {
               justify-content: center;

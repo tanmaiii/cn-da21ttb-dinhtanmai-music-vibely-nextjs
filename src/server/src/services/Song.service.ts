@@ -24,6 +24,8 @@ export const attributesSong = [
   "title",
   "description",
   "imagePath",
+  "songPath",
+  "lyricPath",
   "duration",
   "public",
   "createdAt",

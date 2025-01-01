@@ -2,7 +2,7 @@
 
 .Button {
   &:disabled {
-    opacity: 0;
+    opacity: 0.6;
   }
 
   @include tooltip(bottom, center);

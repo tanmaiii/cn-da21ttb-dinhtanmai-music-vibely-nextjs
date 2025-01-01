@@ -1,5 +1,6 @@
 import { IPlaylist, ISong } from "@/types";
 import { StaticImageData } from "next/image";
+import apiConfig from "./api";
 
 //Hàm này nhận vào một chuỗi và trả về chuỗi đã được chuẩn hóa
 export const formatDateTime = (dateString: Date) => {
@@ -146,7 +147,7 @@ export function apiImage(path: string) {
     return path;
   }
 
-  return `${process.env.NEXT_PUBLIC_API_URL}/image/${path}`;
+  return `${apiConfig.imageURL(path)}`;
 }
 
 export const validateImage = (

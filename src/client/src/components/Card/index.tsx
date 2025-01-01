@@ -20,6 +20,7 @@ import FormEnterRoom from "../Form/FormEnterRoom";
 import Modal from "../Modal";
 import { MotionDiv } from "../Motion";
 import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
 
 // Hook tùy chỉnh độ rộng của cột dựa vào trạng thái của sidebar và waiting
 const useClassNameCol = () => {
@@ -75,14 +76,16 @@ interface ICardLive {
 const Card = (props: Props) => {
   const { index = 1, path, isLoading = false, data, className } = props;
   const classNameCol = useClassNameCol();
-  const { togglePlayingBar, isPlayingBar } = useUI();
   const isSong = data && isSongData(data);
   const link = path || `${isSong ? paths.SONG : paths.PLAYLIST}/${data?.slug}`;
+  const { currentSong, isPlaying, pause, play } = usePlayer();
 
   const handlePlay = () => {
-    if (!isPlayingBar) {
-      togglePlayingBar();
+    if (currentSong?.id === data?.id && isPlaying) {
+      pause();
+      return;
     }
+    isSong && play(data);
   };
 
   return (
@@ -128,7 +131,13 @@ const Card = (props: Props) => {
                 <ButtonIconRound
                   onClick={() => handlePlay()}
                   size="large"
-                  icon={<i className="fa-solid fa-play"></i>}
+                  icon={
+                    currentSong?.id === data?.id && isPlaying ? (
+                      <i className="fa-solid fa-pause"></i>
+                    ) : (
+                      <i className="fa-solid fa-play"></i>
+                    )
+                  }
                 />
               </div>
             )}

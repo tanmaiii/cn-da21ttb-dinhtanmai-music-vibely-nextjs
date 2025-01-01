@@ -27,9 +27,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body suppressHydrationWarning={true}>
-        <UIProvider>
-          <StoreProvider>
+        <StoreProvider>
             <PlayerProvider>
+          <UIProvider>
               <Toaster
                 position="top-center"
                 containerStyle={{ zIndex: 999999 }}
@@ -40,9 +40,9 @@ export default function RootLayout({
                   <div>{children}</div>
                 </GoogleOAuthProvider>
               </AuthProvider>
+          </UIProvider>
             </PlayerProvider>
-          </StoreProvider>
-        </UIProvider>
+        </StoreProvider>
       </body>
     </html>
   );

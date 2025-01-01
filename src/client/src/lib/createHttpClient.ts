@@ -1,14 +1,13 @@
 import { ResponseAPI } from "@/types";
-import {
-  RefreshTokenResponseDto
-} from "@/types/auth.type";
+import { RefreshTokenResponseDto } from "@/types/auth.type";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import queryString from "query-string";
 import { paths } from "./constants";
 import tokenService from "./tokenService";
+import apiConfig from "./api";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API = apiConfig.baseUrl;
 
 const createHttpClient = (baseurl: string = "") => {
   const httpClient = axios.create({

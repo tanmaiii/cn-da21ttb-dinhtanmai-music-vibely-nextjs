@@ -6,6 +6,8 @@ export default interface ISong {
   slug?: string; // URL
   description: string;
   imagePath?: string;
+  songPath: string;
+  lyricPath?: string;
   genre?: IGenre; // Thể loại
   owner: IArtist[]; // Tác giả
   creator: IArtist; // Người tạo

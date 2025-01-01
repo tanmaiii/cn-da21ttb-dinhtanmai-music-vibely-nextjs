@@ -2,7 +2,12 @@
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
 import { lyrics, songs } from "@/lib/data";
-import { formatDuration, fromatImg, toggleFullScreen } from "@/lib/utils";
+import {
+  apiImage,
+  formatDuration,
+  formatImg,
+  toggleFullScreen,
+} from "@/lib/utils";
 import img from "@/public/images/anime.jpg";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -10,6 +15,10 @@ import { ButtonIconRound } from "../ui/Button";
 import Slider from "../Slider";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
+import { IMAGES } from "@/lib/constants";
+import { playSong } from "../../services/socket.service";
+import { ISong } from "@/types";
 
 const ModalLyrics = () => {
   const { isLyricsOpen, toggleLyrics } = useUI();
@@ -17,6 +26,7 @@ const ModalLyrics = () => {
   const isInactive = useInactivity(5000); // Bắt sự kiện khi không hoạt động trong 5s
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const { currentSong, play, pause, isPlaying } = usePlayer();
 
   // Hàm kiểm tra trạng thái toàn màn hình
   const checkFullscreenStatus = () => {
@@ -60,7 +70,11 @@ const ModalLyrics = () => {
           <div
             className={`${styles.image}`}
             style={{
-              backgroundImage: `url(${fromatImg(img)})`,
+              backgroundImage: `url(${
+                currentSong?.imagePath
+                  ? formatImg(apiImage(currentSong?.imagePath))
+                  : ""
+              })`,
             }}
           ></div>
           <div className={`${styles.overlay}`}></div>
@@ -105,14 +119,14 @@ const ModalLyrics = () => {
           {active === 1 ? <Lyrics /> : <Waiting />}
         </div>
         <div className={`${styles.ModalLyrics_container_footer}`}>
-          <h6>Sau tất cả - Erik</h6>
+          <h6>{currentSong?.title}</h6>
           <div className={`${styles.ModalLyrics_container_footer_slider}`}>
             <span>{formatDuration(1232)}</span>
             <Slider percentage={50} onChange={() => {}} />
             <span>{formatDuration(1232)}</span>
           </div>
           <div className={`${styles.ModalLyrics_container_footer_controls}`}>
-            <ControlsPlaying />
+            <ControlsPlaying onPlay={() => (isPlaying ? pause() : play())} />
           </div>
         </div>
       </div>
@@ -121,10 +135,25 @@ const ModalLyrics = () => {
 };
 
 const Lyrics = () => {
+  const { currentSong, isPlaying } = usePlayer();
+
   return (
     <div className={styles.Lyrics}>
-      <div className={styles.Lyrics_image}>
-        <Image src={img} alt="Lyrics" />
+      <div
+        className={`${styles.Lyrics_image} ${
+          isPlaying ? styles.Lyrics_image_active : ""
+        }`}
+      >
+        <Image
+          src={
+            currentSong?.imagePath
+              ? apiImage(currentSong?.imagePath)
+              : IMAGES.SONG
+          }
+          alt="Lyrics"
+          width={200}
+          height={200}
+        />
       </div>
       <div className={styles.Lyrics_list}>
         <ul>
@@ -142,16 +171,18 @@ const Lyrics = () => {
 const Waiting = () => {
   const swapperRef = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
+  const { queue } = usePlayer();
+  const { currentSong, play } = usePlayer();
 
   const onClickLeft = () => {
-    if (!lyrics) return;
+    if (!queue) return;
     if (active - 1 >= 0) {
       setActive(active - 1);
     }
   };
   const onClickRight = () => {
-    if (!lyrics) return;
-    if (active + 1 < lyrics?.length) {
+    if (!queue) return;
+    if (active + 1 < queue?.length) {
       setActive(active + 1);
     }
   };
@@ -167,55 +198,73 @@ const Waiting = () => {
     }
   }, [active]);
 
-  // useEffect(() => {
-  //   if (!lyrics) return;
-  //   lyrics.forEach((song, index) => {
-  //     if (song === songPlayId) {
-  //       setActive(index);
-  //     }
-  //   });
-  // }, [songPlayId]);
+  useEffect(() => {
+    if (!queue) return;
+    queue.forEach((_, index) => {
+      if (_ === currentSong) {
+        setActive(index);
+      }
+    });
+  }, [currentSong]);
+
+  const handleClickPlay = ({ index, song }: { index: number; song: ISong }) => {
+    setActive(index);
+    play(song);
+  };
 
   return (
     <div className={`${styles.Waiting}`}>
       <div className={`${styles.Waiting_swapper}`}>
-        <div className={`${styles.Waiting_swapper_button}`}>
-          <button onClick={onClickLeft}>
-            <i className="fa-solid fa-chevron-left"></i>
-          </button>
-        </div>
-        <ul
-          ref={swapperRef}
-          className={`${styles.Waiting_swapper_slider} slider__track`}
-        >
-          {songs.map((song, index) => (
-            <li
-              onClick={() => setActive(index)}
-              key={index}
-              className={`${styles.Waiting_swapper_slider_item} ${
-                active === index ? styles.active : ""
-              }`}
+        {queue.length > 0 && (
+          <>
+            <div className={`${styles.Waiting_swapper_button}`}>
+              <button onClick={onClickLeft}>
+                <i className="fa-solid fa-chevron-left"></i>
+              </button>
+            </div>
+            <ul
+              ref={swapperRef}
+              className={`${styles.Waiting_swapper_slider} slider__track`}
             >
-              <div className={`${styles.Waiting_swapper_slider_item_image}`}>
-                <Image
-                  src={song.imagePath || img}
-                  alt={song.title}
-                  width={200}
-                  height={200}
-                />
-              </div>
-              <div className={`${styles.Waiting_swapper_slider_item_info}`}>
-                <h5>{song.title}</h5>
-                <p>{song?.creator?.name || 'Vibely'}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className={`${styles.Waiting_swapper_button}`}>
-          <button onClick={onClickRight}>
-            <i className="fa-solid fa-chevron-right"></i>
-          </button>
-        </div>
+              {queue &&
+                queue.map((song, index) => (
+                  <li
+                    onClick={() => handleClickPlay({ index, song })}
+                    key={index}
+                    className={`${styles.Waiting_swapper_slider_item} ${
+                      active === index ? styles.active : ""
+                    }`}
+                  >
+                    <div
+                      className={`${styles.Waiting_swapper_slider_item_image}`}
+                    >
+                      <Image
+                        src={
+                          song.imagePath
+                            ? apiImage(song.imagePath)
+                            : IMAGES.SONG
+                        }
+                        alt={song.title}
+                        width={200}
+                        height={200}
+                      />
+                    </div>
+                    <div
+                      className={`${styles.Waiting_swapper_slider_item_info}`}
+                    >
+                      <h5>{song.title}</h5>
+                      <p>{song?.creator?.name || "Vibely"}</p>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+            <div className={`${styles.Waiting_swapper_button}`}>
+              <button onClick={onClickRight}>
+                <i className="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

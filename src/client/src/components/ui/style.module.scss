@@ -128,7 +128,7 @@
       cursor: pointer;
       @include flex(center, center);
       gap: $space-8;
-      span{
+      span {
         font-size: $size-16;
         color: var(--text-color-1);
       }
@@ -154,7 +154,7 @@
         cursor: pointer;
         font-weight: $font-medium;
         @include flex(center, center);
-        span{
+        span {
           font-size: $size-16;
         }
         &:hover {
@@ -166,5 +166,62 @@
         }
       }
     }
+  }
+}
+
+.music_waves {
+  @include flex(center, center);
+  //   align-items: end;
+  gap: 2px;
+
+  span {
+    display: block;
+    height: 5px;
+    width: 4px;
+    // border-radius: $radius-8;
+    background-color: $color-primary;
+    animation: waves 0.6s infinite ease;
+    animation-play-state: paused;
+    &:nth-child(1) {
+      animation-delay: 0.3s;
+      // background: #ff8c00;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.4s;
+      // background: #ffff00;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.6s;
+      // background: #26d53a;
+    }
+    &:nth-child(4) {
+      animation-delay: 0.8s;
+      //   background: #26e6a3;
+    }
+  }
+  &_playing > span {
+    animation-play-state: running;
+  }
+}
+
+@keyframes waves {
+  0% {
+    height: 5px;
+  }
+
+  30% {
+    height: 15px;
+  }
+
+  60% {
+    height: 20px;
+  }
+
+  80% {
+    height: 15px;
+  }
+
+  100% {
+    height: 5px;
   }
 }

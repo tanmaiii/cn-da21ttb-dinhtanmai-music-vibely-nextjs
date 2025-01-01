@@ -12,6 +12,7 @@ interface Props {
   dataTooltip?: string;
   white?: boolean;
   type?: "button" | "submit" | "reset";
+  // disable?: boolean;
 }
 
 const ButtonIconPrimary = (props: Props) => {

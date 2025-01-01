@@ -1,15 +1,18 @@
 "use client";
 
+import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
-import { formatDuration } from "@/lib/utils";
+import apiConfig from "@/lib/api";
+import { apiImage, formatDuration } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { ButtonIcon, ButtonIconSquare } from "../ui/Button";
+import React, { useEffect, useState } from "react";
 import Slider from "../Slider";
+import { ButtonIcon, ButtonIconSquare } from "../ui/Button";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
+import { IMAGES, paths } from "@/lib/constants";
+import uploadService from "@/services/upload.service";
 
 const PlayingBar = () => {
   return (
@@ -30,11 +33,17 @@ const PlayingBar = () => {
 };
 
 const LeftPlayingBar = () => {
+  const { currentSong } = usePlayer();
+
   return (
     <div className={`${styles.LeftPlayingBar}`}>
       <div className={`${styles.LeftPlayingBar_image}`}>
         <Image
-          src={"https://picsum.photos/id/233/60/60"}
+          src={
+            currentSong?.imagePath
+              ? apiImage(currentSong.imagePath)
+              : IMAGES.SONG
+          }
           alt=""
           width={60}
           height={60}
@@ -42,12 +51,10 @@ const LeftPlayingBar = () => {
         />
       </div>
       <div className={`${styles.LeftPlayingBar_desc}`}>
-        <h4>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus
-          aperiam nesciunt autem recusandae repudiandae alias cupiditate,
-          incidunt delectus animi
-        </h4>
-        <Link href="/song/123">Artist Name</Link>
+        <h4>{currentSong?.title}</h4>
+        <Link href={`${paths.ARTIST}/${currentSong?.creator?.slug}`}>
+          {currentSong?.creator?.name}
+        </Link>
       </div>
     </div>
   );
@@ -56,8 +63,17 @@ const LeftPlayingBar = () => {
 const CenterPlayingBar = () => {
   const [percentage, setPercentage] = React.useState(0);
   const audioRef = React.useRef<HTMLAudioElement>(null);
-  const { currentSong } = usePlayer();
-  // const [isPlaying, setIsPlaying] = React.useState(false);
+  const {
+    currentSong,
+    isPlaying,
+    pause,
+    play,
+    playNext,
+    playPrevious,
+    handleSongEnd,
+    queue,
+    volume,
+  } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
@@ -66,15 +82,15 @@ const CenterPlayingBar = () => {
     setPercentage(parseFloat(e.target.value));
   };
 
-  // const handleClick = () => {
-  //   if (audioRef.current?.paused) {
-  //     audioRef.current?.play();
-  //     setIsPlaying(true);
-  //   } else {
-  //     setIsPlaying(false);
-  //     audioRef.current?.pause();
-  //   }
-  // };
+  const handlePlay = () => {
+    if (!isPlaying && audioRef.current?.paused) {
+      audioRef.current?.play();
+      play();
+    } else {
+      pause();
+      audioRef.current?.pause();
+    }
+  };
 
   const onPlaying = () => {
     const audio = audioRef.current;
@@ -85,10 +101,45 @@ const CenterPlayingBar = () => {
     }
   };
 
+  const handlePlayAgain = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Đặt thời gian về 0
+      audioRef.current.play(); // Phát lại từ đầu
+    }
+  };
+
+  useEffect(() => {
+    if (isPlaying) {
+      audioRef.current?.play();
+    } else {
+      audioRef.current?.pause();
+    }
+  }, [isPlaying, currentSong]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.src = apiConfig.audioURL("");
+      audioRef.current.pause();
+
+      audioRef.current.src = apiConfig.audioURL(currentSong?.songPath || "");
+      audioRef.current.play();
+    }
+  }, [currentSong]);
+
   return (
     <div className={`${styles.CenterPlayingBar}`}>
       <div className={`${styles.CenterPlayingBar_top}`}>
-        <ControlsPlaying />
+        <ControlsPlaying
+          onPlay={handlePlay}
+          onNext={() => playNext()}
+          onPrev={() => playPrevious()}
+        />
       </div>
       <div className={`${styles.CenterPlayingBar_bottom}`}>
         <span>
@@ -106,7 +157,12 @@ const CenterPlayingBar = () => {
       <audio
         ref={audioRef}
         onTimeUpdate={onPlaying}
-        src={currentSong || ""}
+        onEnded={queue.length > 0 ? handleSongEnd : handlePlayAgain}
+        src={
+          currentSong && currentSong.songPath
+            ? apiConfig.audioURL(currentSong.songPath)
+            : ""
+        }
       ></audio>
     </div>
   );
@@ -115,9 +171,11 @@ const CenterPlayingBar = () => {
 const RightPlayingBar = () => {
   const { toggleWaiting, toggleLyrics } = useUI();
   const [percentage, setPercentage] = React.useState(50);
+  const { setVolume, volume, queue } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPercentage(parseFloat(e.target.value));
+    setVolume(parseFloat(e.target.value));
   };
 
   return (
@@ -128,15 +186,34 @@ const RightPlayingBar = () => {
           icon={<i className="fa-light fa-microphone-stand"></i>}
         />
         <div className={`${styles.RightPlayingBar_volume}`}>
-          <ButtonIcon icon={<i className="fa-light fa-volume"></i>} />
+          {volume ? (
+            <ButtonIcon
+              onClick={() => setVolume(0)}
+              icon={<i className="fa-light fa-volume"></i>}
+            />
+          ) : (
+            <ButtonIcon
+              onClick={() => {
+                if (percentage === 0) {
+                  setVolume(50);
+                  setPercentage(50);
+                } else {
+                  setVolume(percentage);
+                }
+              }}
+              icon={<i className="fa-light fa-volume-mute"></i>}
+            />
+          )}
           <div className={`${styles.RightPlayingBar_volume_slide}`}>
             <Slider percentage={percentage} onChange={onChange} />
           </div>
         </div>
-        <ButtonIconSquare
-          onClick={toggleWaiting}
-          icon={<i className="fa-duotone fa-list"></i>}
-        />
+        {queue.length > 0 && (
+          <ButtonIcon
+            onClick={toggleWaiting}
+            icon={<i className="fa-duotone fa-list"></i>}
+          />
+        )}
       </div>
     </>
   );

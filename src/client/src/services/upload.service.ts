@@ -23,6 +23,13 @@ class UploadService {
     );
     return res.data;
   }
+
+  async getAudioFile(filename: string): Promise<Blob> {
+    const res = await this.client.get(`/audio/${filename}`, {
+      responseType: "blob",
+    });
+    return res.data;
+  }
 }
 
 export default new UploadService() as UploadService;

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { IMAGES, paths } from "@/lib/constants";
 import {
@@ -17,6 +17,9 @@ import Skeleton from "react-loading-skeleton";
 import { MotionDiv } from "../Motion";
 import { ButtonIcon, ButtonIconRound } from "../ui/Button";
 import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
+import { use } from "react";
+import IconPlay from "../ui/IconPlay";
 
 interface Props {
   num?: number;
@@ -38,6 +41,7 @@ interface ITrackArtist extends Props {
 const Track = (props: ITrack) => {
   const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
   const queryClient = useQueryClient();
+  const { play, pause, currentSong, isPlaying } = usePlayer();
 
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
@@ -68,6 +72,14 @@ const Track = (props: ITrack) => {
       queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
     },
   });
+
+  const handleClickPlay = () => {
+    if (currentSong?.id === song?.id && isPlaying) {
+      pause();
+      return;
+    }
+    play(song);
+  };
 
   return (
     <MotionDiv
@@ -105,9 +117,17 @@ const Track = (props: ITrack) => {
                 quality={90}
               />
             )}
-
-            <button className={`${styles.button_play}`}>
-              <i className="fa-solid fa-play"></i>
+            <button
+              onClick={handleClickPlay}
+              className={`${styles.button_play} ${
+                currentSong?.id === song?.id ? styles.button_play_playing : ""
+              }`}
+            >
+              {isPlaying && currentSong?.id === song?.id ? (
+                <IconPlay playing={isPlaying} />
+              ) : (
+                <i className="fa-solid fa-play"></i>
+              )}
             </button>
           </div>
           <div className={`${styles.Track_swapper_col1_desc}`}>
@@ -186,17 +206,6 @@ const Track = (props: ITrack) => {
                 icon={<i className="fa-solid fa-ellipsis"></i>}
               />
             )}
-
-            {/* {props.addSoong ? (
-              <ButtonIconRound
-                onClick={() => props.addSoong && props.addSoong(props.song)}
-                icon={<i className="fa-solid fa-plus"></i>}
-              />
-            ) : (
-              <ButtonIconRound
-                icon={<i className="fa-solid fa-ellipsis"></i>}
-              />
-            )} */}
           </div>
         </div>
       </div>
@@ -206,6 +215,15 @@ const Track = (props: ITrack) => {
 
 const TrackShort = (props: ITrack) => {
   const { num, isLoading, song, dontShowPlay = false } = props;
+  const { isPlaying, play, currentSong, pause } = usePlayer();
+
+  const handleClickPlay = () => {
+    if (currentSong?.id === song?.id && isPlaying) {
+      pause();
+      return;
+    }
+    play(song);
+  };
 
   return (
     <div aria-disabled={isLoading} className={`${styles.TrackShort}`}>
@@ -230,8 +248,17 @@ const TrackShort = (props: ITrack) => {
               />
             )}
             {!dontShowPlay && (
-              <button className={`${styles.button_play}`}>
-                <i className="fa-solid fa-play"></i>
+              <button
+                onClick={handleClickPlay}
+                className={`${styles.button_play} ${
+                  currentSong?.id === song?.id ? styles.button_play_playing : ""
+                }`}
+              >
+                {isPlaying && currentSong?.id === song?.id ? (
+                  <IconPlay playing={isPlaying} />
+                ) : (
+                  <i className="fa-solid fa-play"></i>
+                )}
               </button>
             )}
           </div>

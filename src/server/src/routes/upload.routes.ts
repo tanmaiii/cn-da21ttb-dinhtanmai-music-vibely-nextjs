@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { uploadHandler } from "../controllers/upload.controller";
-import { uploadFile } from "../middleware";
+import { getAudioFile, uploadHandler } from "../controllers/upload.controller";
+import { authorize, uploadFile } from "../middleware";
 
 const router = Router();
 
-router.post("/", uploadFile, uploadHandler);
+router.post("/",authorize(), uploadFile, uploadHandler);
+router.get("/audio/:filename", authorize(), getAudioFile);
 
 export default router;
