@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { formatFileSize, formatImg } from "@/lib/utils";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
 import { ButtonIconRound } from "@/components/ui/Button";
+import { formatFileSize, formatImg } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
+import Image from "next/image";
 
 interface Props {
   name: string;
@@ -37,8 +37,8 @@ const DragDropFile = (porps: Props) => {
   useEffect(() => {
     if (file) {
       setFileDefault(file);
-    }else{
-      setFileDefault(null)
+    } else {
+      setFileDefault(null);
     }
   }, [file]);
 
@@ -77,7 +77,7 @@ const DragDropFile = (porps: Props) => {
                 className={styles.btn_remove}
                 icon={<i className="fa-solid fa-trash"></i>}
               />
-              <img
+              <Image
                 src={
                   fileDefault
                     ? URL.createObjectURL(fileDefault)

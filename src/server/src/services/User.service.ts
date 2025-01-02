@@ -3,6 +3,7 @@ import Roles from "../models/Roles";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
 import Song from "../models/Song";
+import Permissions from "../models/Permissions";
 
 export const attributesUser = ["id", "name", "email", "slug", "imagePath"];
 export const attributesRole = ["id", "name"];
@@ -130,7 +131,21 @@ export default class UserService {
   static async getById(id: string) {
     return User.findByPk(id, {
       attributes: attributesUser,
-      include: [{ model: Roles, as: "role", attributes: attributesRole }],
+
+      include: [
+        {
+          model: Roles,
+          as: "role",
+          attributes: attributesRole,
+          include: [
+            {
+              model: Permissions,
+              attributes: ["id", "name"],
+              through: { attributes: [] as never[] },
+            },
+          ],
+        },
+      ],
     });
   }
 

@@ -1,7 +1,8 @@
 "use client";
 
 import Table from "@/components/TablePlaylist";
-import { apiImage, validateImage } from "@/lib/utils";
+import { privacy } from "@/lib/data";
+import { apiImage, validateFile } from "@/lib/utils";
 import songService from "@/services/song.service";
 import uploadService from "@/services/upload.service";
 import { IRoom, ISong, RoomRequestDto } from "@/types";
@@ -12,7 +13,6 @@ import { ButtonLabel, Radio } from "../ui";
 import DragDropFile from "./common/DragDropFile";
 import FormItem from "./common/FormItem";
 import styles from "./style.module.scss";
-import { privacy } from "@/lib/data";
 
 interface Props {
   onSubmit: (values: RoomRequestDto) => void;
@@ -89,7 +89,7 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
     setImageFile(null);
     setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
 
-    const { file, error } = validateImage(e);
+    const { file, error } = validateFile(e);
 
     if (!file) {
       handleChange({ imagePath: undefined });

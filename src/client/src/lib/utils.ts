@@ -72,7 +72,10 @@ export const formatDuration = (duration: number): string => {
   const formattedMinutes = String(minutes).padStart(2, "0");
   const formattedSeconds = String(seconds).padStart(2, "0");
 
-  return `${formattedMinutes}:${formattedSeconds}`;
+  if (formattedMinutes && formattedSeconds) {
+    return `${formattedMinutes}:${formattedSeconds}`;
+  }
+  return "00:00";
 };
 
 // Hàm này nhận vào một chuỗi hoặc một đối tượng ảnh và trả về một chuỗi
@@ -150,7 +153,7 @@ export function apiImage(path: string) {
   return `${apiConfig.imageURL(path)}`;
 }
 
-export const validateImage = (
+export const validateFile = (
   e: React.ChangeEvent<HTMLInputElement>,
   maxSize: number = 5 * 1024 * 1024, // 5MB
   validTypes: string[] = ["image/jpeg", "image/png", "image/gif"]
@@ -158,20 +161,30 @@ export const validateImage = (
   const file = e.target.files ? e.target.files[0] : null;
 
   if (!file) {
-    return { file: null, error: "Please select an image." };
+    return { file: null, error: "Please select an file." };
   }
 
   if (file.size > maxSize) {
     return {
       file: null,
-      error: `Image size must be less than ${formatFileSize(maxSize)}`,
+      error: `File size must be less than ${formatFileSize(maxSize)}`,
     };
+  }
+
+  if (validTypes.includes("lrc") && file.type !== "application/octet-stream") {
+    if (file.name.split(".").pop()?.toLowerCase() !== "lrc") {
+      return {
+        file: null,
+        error: "File extension must be .lrc",
+      };
+    }
+    return { file, error: null };
   }
 
   if (!validTypes.includes(file.type)) {
     return {
       file: null,
-      error: "Only accept .png, .jpg, .jpeg files",
+      error: "Pass a valid file type: " + validTypes.join(", "),
     };
   }
 

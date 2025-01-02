@@ -9,7 +9,7 @@ import {
 import Input from "@/components/ui/Input";
 import { useUI } from "@/context/UIContext";
 import { useCustomToast } from "@/hooks/useToast";
-import { IMAGES, paths } from "@/lib/constants";
+import { IMAGES, paths, PERMISSIONS, ROLES } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import { apiImage } from "@/lib/utils";
 import Image from "next/image";
@@ -26,10 +26,15 @@ const Header = () => {
   const [keyword, setKeyword] = React.useState<string>("");
   const router = useRouter();
   const { toastSuccess } = useCustomToast();
-  const user = useSelector((state: RootState) => state.user);
+  const currentUser = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const body = document.querySelector(".RootLayout_main");
+    console
+      .log
+      // currentUser?.role.permissions.map("CREATE_SONGS")
+      ();
+    console.log(currentUser?.role.permissions);
 
     const handleScrollHeader = () => {
       const scrollTop =
@@ -90,10 +95,18 @@ const Header = () => {
           </div>
         </div>
         <div className={`${styles.Header_right}`}>
-          <ButtonIconRound
-            icon={<i className="fa-regular fa-upload"></i>}
-            onClick={() => router.push(paths.UPLOAD)}
-          />
+          {currentUser?.role.permissions.map((permission, index) => {
+            if (permission.name === PERMISSIONS.CREATE_SONGS) {
+              return (
+                <ButtonIconRound
+                  key={index}
+                  icon={<i className="fa-regular fa-upload"></i>}
+                  onClick={() => router.push(paths.UPLOAD)}
+                />
+              );
+            }
+            return null;
+          })}
           <ButtonIconRound
             onClick={() => toastSuccess("Hello")}
             icon={<i className="fa-regular fa-gear"></i>}
@@ -102,12 +115,24 @@ const Header = () => {
             icon={<i className="fa-regular fa-bell"></i>}
             onClick={() => setActiveModal(true)}
           />
-          {user ? (
+          {currentUser ? (
             <div className={`${styles.Header_right_user}`}>
-              <button className={`${styles.Header_right_user_image}`}>
+              <button
+                className={`${styles.Header_right_user_image} ${
+                  currentUser.role?.name === ROLES.ARTIST &&
+                  styles.Header_right_user_image_artist
+                } 
+                   ${
+                     currentUser.role?.name === ROLES.ADMIN &&
+                     styles.Header_right_user_image_admin
+                   } 
+                  `}
+              >
                 <Image
                   src={
-                    user?.imagePath ? apiImage(user.imagePath) : IMAGES.AVATAR
+                    currentUser?.imagePath
+                      ? apiImage(currentUser.imagePath)
+                      : IMAGES.AVATAR
                   }
                   alt="avatar"
                   width={40}

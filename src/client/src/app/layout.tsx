@@ -12,6 +12,7 @@ import { PlayerProvider } from "@/context/PlayerContext";
 
 export const metadata: Metadata = {
   title: "Trang chủ | Vibely",
+  description: "Vibely - Music for everyone",
 };
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_GOOGLE_CLIENT_ID || "";

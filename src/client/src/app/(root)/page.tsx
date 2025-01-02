@@ -8,13 +8,12 @@ import { artists, playlists, songs } from "@/lib/data";
 import { fadeIn } from "@/lib/utils";
 import styles from "./root.module.scss";
 
-
 const Home = () => {
   return (
     <div className={styles.Home}>
       <Slideshow />
 
-      <SectionOneRow title="Song popular" path={paths.PLAYLIST}>
+      <SectionOneRow title="Song popular" path={paths.SONG}>
         {songs.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
@@ -62,7 +61,7 @@ const Home = () => {
         </div>
       </div>
 
-      <SectionOneRow title="Song popular" path={paths.PLAYLIST}>
+      <SectionOneRow title="Song popular" path={paths.SONG}>
         {songs.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}

@@ -5,9 +5,11 @@
   height: 100%;
   flex: 1;
   @include flex(flex-start, flex-start, column);
+  padding: $space-24 0;
 
   & > .top {
-    min-height: 80px;
+    // min-height: 80px;
+    height: 100%;
     width: 100%;
     background-color: var(--background-color-1);
     border-radius: $radius-12;

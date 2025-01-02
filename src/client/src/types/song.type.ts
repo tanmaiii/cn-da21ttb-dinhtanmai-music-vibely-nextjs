@@ -19,3 +19,15 @@ export default interface ISong {
   likes: number; // Lượt thích
   moods?: IMood[]; // Tâm trạng
 }
+
+export interface SongRequestDto {
+  title: string;
+  description: string;
+  genreId: string;
+  moodIds: string[];
+  public: boolean;
+  songPath: string;
+  duration?: string;
+  imagePath?: string;
+  lyricPath?: string;
+}

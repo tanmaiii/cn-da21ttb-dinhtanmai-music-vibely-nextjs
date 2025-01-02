@@ -1,7 +1,7 @@
 "use client";
 
 import { privacy } from "@/lib/data";
-import { apiImage, validateImage } from "@/lib/utils";
+import { apiImage, validateFile } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import { IPlaylist, PlaylistRequestDto } from "@/types";
 import React, { useEffect } from "react";
@@ -97,7 +97,7 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
     setImageFile(null);
     setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
 
-    const { file, error } = validateImage(e);
+    const { file, error } = validateFile(e);
 
     if (!file) {
       handleChange({ imagePath: undefined });

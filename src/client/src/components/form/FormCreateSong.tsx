@@ -1,94 +1,93 @@
 "use client";
 import { DragDropFile } from "@/components/Form";
-import { useCustomToast } from "@/hooks/useToast";
-import { genres, moods, privacy } from "@/lib/data";
-import { formatFileSize } from "@/lib/utils";
+import { privacy } from "@/lib/data";
+import { validateFile } from "@/lib/utils";
+import ISong, { SongRequestDto } from "@/types/song.type";
 import React, { useState } from "react";
+import SelectGenre from "../SelectGenre";
+import SelectMood from "../SelectMood";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
-import Dropdown from "./common/Dropdown";
 import FormItem from "./common/FormItem";
-import MultipleSelect, { IOptionSelect } from "./common/MultipleSelect";
 import styles from "./style.module.scss";
+import BoxAudio from "../BoxAudio";
 
-const FormCreateSong = () => {
-  const [title, setTitle] = React.useState("");
-  const [desc, setDesc] = React.useState("");
-  const { toastError } = useCustomToast();
+interface Props {
+  onSubmit: (values: SongRequestDto) => void;
+  file: File | null;
+  initialData?: ISong;
+  open?: boolean;
+}
+
+const FormCreateSong = ({ file: fileMp3 }: Props) => {
+  // const { toastError } = useCustomToast();
+  const [errors, setErrors] = React.useState<Partial<SongRequestDto>>({});
+  const [form, setForm] = React.useState<SongRequestDto>({
+    title: "",
+    description: "",
+    genreId: "",
+    moodIds: [],
+    imagePath: undefined,
+    songPath: "",
+    lyricPath: "",
+    public: true,
+  });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [lyricFile, setLyricFile] = useState<File | null>(null);
-  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(fileMp3);
 
-  const [genreSelect, setGenreSelect] = React.useState<
-    IOptionSelect | undefined
-  >(undefined);
-
-  // const [mood, setMood] = React.useState<IOptionSelect | undefined>(undefined);
-  const [moodSelect, setMoodSelect] = React.useState<
-    IOptionSelect[] | undefined
-  >(undefined);
-
-  
+  const handleChange = (value: Partial<SongRequestDto>) => {
+    setForm((prev) => ({ ...prev, ...value }));
+  };
 
   //Xử lý sự kiện thay đổi file hình ảnh
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
-    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-    const file = e.target.files && e.target.files[0];
-    const size = 5 * 1024 * 1024;
-    if (file && file?.size > size) {
-      toastError(`Image size must be less than ${formatFileSize(size)}`);
+    setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
+
+    const { file, error } = validateFile(e);
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, imagePath: error }));
       return;
     }
 
-    if (file && !validImageTypes.includes(file.type)) {
-      toastError("Only accept .png, .jpg, .jpeg files");
-      return;
-    }
-    setImageFile(file);
+    setImageFile(file || null); // Update file if valid, otherwise null
   };
 
   const onChangeAudio = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAudioFile(null);
-    const file = e.target.files && e.target.files[0];
-    const validAudioTypes = ["audio/mpeg", "audio/wav", "audio/ogg"];
-    const size = 10 * 1024 * 1024;
-    if (file && file?.size > size) {
-      toastError(`Audio size must be less than ${formatFileSize(size)}`);
+    setErrors((prev) => ({ ...prev, songPath: "" })); // Reset error
+
+    const { file, error } = validateFile(e, 50 * 1024 * 1024, ["audio/mpeg"]);
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, songPath: error }));
       return;
     }
-    if (file && !validAudioTypes.includes(file.type)) {
-      toastError("Only accept .mp3, .wav, .ogg files");
-      return;
-    }
-    setAudioFile(file);
+
+    setAudioFile(file || null); // Update file if valid, otherwise null
   };
 
   const onChangeLyric = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLyricFile(null);
-    const file = e.target.files && e.target.files[0];
-    if (file && file.name.split(".").pop() !== "lrc") {
-      toastError("Accept only .lrc files");
+    setErrors((prev) => ({ ...prev, lyricPath: "" })); // Reset error
+
+    const { file, error } = validateFile(e, 5 * 1024 * 1024, ["lrc"]);
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, lyricPath: error }));
       return;
-    } else {
-      setLyricFile(file);
     }
+
+    setLyricFile(file || null); // Update file if valid, otherwise null
   };
 
   return (
     <div className={`${styles.FormCreateSong}`}>
       <div className={`${styles.top}`}>
-        {/* <BoxAudio file={fileMp3} stop={true} /> */}
-
-        <audio
-          id="audio"
-          src={"/audio/song.mp3"}
-          // src={song && apiConfig.mp3Url(song?.song_path)}
-          autoPlay
-        ></audio>
-
-        {/* <Waveform audioFile={"/audio/song.mp3"} /> */}
+        {audioFile && <BoxAudio file={audioFile} />}
       </div>
 
       <div className={`${styles.body} `}>
@@ -100,8 +99,8 @@ const FormCreateSong = () => {
                 label="Title (required)"
                 placeholder="Enter title"
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={form.title}
+                onChange={(e) => handleChange({ title: e.target.value })}
                 name="title"
                 max={60}
               />
@@ -109,8 +108,8 @@ const FormCreateSong = () => {
                 label="Description"
                 placeholder="Enter title"
                 type="textarea"
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
+                value={form.description}
+                onChange={(e) => handleChange({ description: e.target.value })}
                 name="title"
                 max={500}
               />
@@ -125,6 +124,7 @@ const FormCreateSong = () => {
                 label="Drop audio here to upload"
                 name="audio"
                 onChange={(file) => onChangeAudio(file)}
+                error={errors.songPath}
               />
               <span className={styles.desc}>
                 Upload your song in mp3 format. Maximum file size 50MB.
@@ -132,7 +132,15 @@ const FormCreateSong = () => {
             </div>
 
             <div className={styles.privacy}>
-              <Radio onChange={(value) => console.log(value)} label="Privacy" name="privacy" options={privacy} />
+              <Radio
+                onChange={(v) =>
+                  handleChange({ public: v == "public" ? true : false })
+                }
+                label="Privacy"
+                value={form?.public ? "public" : "private"}
+                name="privacy"
+                options={privacy}
+              />
             </div>
           </div>
           <div className="col pc-4 t-4 m-12">
@@ -148,6 +156,7 @@ const FormCreateSong = () => {
                   name="thumbnail"
                   onChange={(file) => onChangeImage(file)}
                   image={true}
+                  error={errors.imagePath}
                 />
 
                 <span className={styles.desc}>
@@ -166,6 +175,7 @@ const FormCreateSong = () => {
                 label="Drop lyric here to upload"
                 name="lyric"
                 onChange={(file) => onChangeLyric(file)}
+                error={errors.lyricPath}
               />
               <span className={styles.desc}>
                 Upload your song lyric in lrc format. Maximum file size 5MB.
@@ -175,24 +185,16 @@ const FormCreateSong = () => {
             <div className={styles.details}>
               <h3 className={`${styles.title}`}>Song details</h3>
 
-              <Dropdown
-                label="Genre"
-                desc="Add song to a genre."
-                name="genre"
-                options={genres.map((g) => {
-                  return { value: g.id, label: g.title };
-                })}
-                onChange={(valueSelect) => setGenreSelect(valueSelect)}
+              <SelectGenre
+                error={errors.genreId}
+                value={form.genreId}
+                handleChange={(value) => handleChange({ genreId: value })}
               />
 
-              <MultipleSelect
-                label="Mood"
-                desc="Add tags for song."
-                name="mood"
-                options={moods.map((g) => {
-                  return { value: g.id, label: g.title };
-                })}
-                onChange={(value) => console.log(value)}
+              <SelectMood
+                value={form.moodIds}
+                error={errors.moodIds}
+                handleChange={(value) => handleChange({ moodIds: value })}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { IArtist } from "@/types";
+import { IUser } from "@/types/auth.type";
 // export interface userState {
 //   id: string;
 //   name: string;
@@ -16,9 +16,9 @@ import { IArtist } from "@/types";
 
 export const userSlide = createSlice({
   name: "user",
-  initialState: null as IArtist | null,
+  initialState: null as IUser | null,
   reducers: {
-    setUser: (state, action: PayloadAction<IArtist | null>) => {
+    setUser: (state, action: PayloadAction<IUser | null>) => {
       state = action.payload;
       return state;
     },

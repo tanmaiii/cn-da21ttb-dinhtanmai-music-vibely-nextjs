@@ -78,6 +78,13 @@
           object-fit: cover;
           border-radius: 50%;
         }
+        &_artist img {
+          border: 2px solid var(--primary-color);
+        }
+
+        &_admin img{
+          border: 2px solid var($color-pink);
+        }
       }
     }
   }

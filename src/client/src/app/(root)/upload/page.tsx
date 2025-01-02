@@ -2,6 +2,7 @@
 import { ButtonLabel } from "@/components/ui/Button";
 import React, { useState } from "react";
 import styles from "./style.module.scss";
+import { FormCreateSong } from "@/components/Form";
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -43,7 +44,7 @@ const UploadPage = () => {
         onDragEnter={onDragEnter}
         className={`${styles.UploadPage_body} ${openDrop ? styles.open : ""}`}
       >
-        {false ? (
+        {!file ? (
           <>
             <div className={`${styles.UploadPage_body_upload}`}>
               <div className={`${styles.UploadPage_body_upload_icon}`}>
@@ -80,49 +81,10 @@ const UploadPage = () => {
             )}
           </>
         ) : (
-          // <div className={`${styles.UploadPage_body_header}`}>
-          //   <button
-          //     className={`${styles.UploadPage_body_header_item} ${
-          //       step === 1 && styles.UploadPage_body_header_item_active
-          //     }`}
-          //     onClick={() => setStep(1)}
-          //   >
-          //     <div
-          //       className={`${styles.UploadPage_body_header_item_swapper}`}
-          //     >
-          //       <h4>Detail</h4>
-          //       <div
-          //         className={`${styles.UploadPage_body_header_item_swapper_icon}`}
-          //       ></div>
-          //     </div>
-          //     <div
-          //       className={`${styles.UploadPage_body_header_item_line}`}
-          //     ></div>
-          //   </button>
-          //   <button
-          //     className={`${styles.UploadPage_body_header_item} ${
-          //       step === 2 && styles.UploadPage_body_header_item_active
-          //     }`}
-          //     onClick={() => setStep(2)}
-          //   >
-          //     <div
-          //       className={`${styles.UploadPage_body_header_item_swapper}`}
-          //     >
-          //       <h4>Lyrics</h4>
-          //       <div
-          //         className={`${styles.UploadPage_body_header_item_swapper_icon}`}
-          //       ></div>
-          //     </div>
-          //     {/* <div className={`${styles.UploadPage_body_header_item_line}`}></div> */}
-          //   </button>
-          // </div>
-          // <FormCreateSong />
-          <div>Xin chao</div>
-
-          // step == 1 ? (
-          //   <FormCreateSong />
-          // ) : (
-          //   <FormCreateLyrics />
+          <FormCreateSong
+            file={file}
+            onSubmit={(data) => console.log(data)}
+          />
         )}
       </div>
     </div>

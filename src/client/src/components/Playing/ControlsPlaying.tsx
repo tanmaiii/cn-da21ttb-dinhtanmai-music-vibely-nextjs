@@ -6,13 +6,15 @@ import styles from "./style.module.scss";
 export const ControlPlayPause = ({
   isPlaying,
   onChange,
+  size = 'large'
 }: {
   isPlaying: boolean;
   onChange: () => void;
+  size?: "large" | "medium";
 }) => {
   return (
     <ButtonIconPrimary
-      size="large"
+      size={size}
       icon={
         isPlaying ? (
           <i className="fa-solid fa-pause"></i>

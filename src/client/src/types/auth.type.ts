@@ -1,6 +1,21 @@
 import IArtist from "./artist.type";
 
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  slug: string;
+  role: IRole;
+  imagePath: string;
+}
+
 export interface IRole {
+  id: string;
+  name: string;
+  permissions: IPermission[];
+}
+
+export interface IPermission {
   id: string;
   name: string;
 }

@@ -1,0 +1,31 @@
+@use "@/scss/index.module.scss" as *;
+
+.BoxAudio {
+  width: 100%;
+  min-height: 100%;
+  @include flex(center, space-between, row);
+  padding: $space-18 $space-12;
+  gap: $space-12;
+  &_button {
+  }
+  &_body {
+    flex: 1;
+    position: relative;
+    & > .time {
+      position: absolute;
+      @include flex(center, space-between, row);
+      width: 100%;
+      left: 0;
+      top: calc(100%);
+
+      span {
+        color: var(--text-color-2);
+        font-size: $size-12;
+      }
+    }
+  }
+  &_volume {
+    max-width: 120px;
+    @include flex(center, center row);
+  }
+}

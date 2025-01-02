@@ -6,6 +6,34 @@ import song from "@/public/images/song.png";
 import logo from "@/public/images/logo.png";
 import google from "@/public/images/google.png";
 
+export const ROLES: { [key: string]: string } = {
+  ADMIN: "Admin",
+  ARTIST: "Artist",
+  USER: "User",
+};
+
+
+export const PERMISSIONS: { [key: string]: string } = {
+  MANAGE_USERS: "MANAGE_USERS",
+  MANAGE_MOODS: "MANAGE_MOODS",
+  MANAGE_GENRE: "MANAGE_GENRE",
+  READ_SONGS: "READ_SONGS",
+  CREATE_SONGS: "CREATE_SONGS",
+  UPDATE_SONGS: "UPDATE_SONGS",
+  DELETE_SONGS: "DELETE_SONGS",
+  READ_PLAYLISTS: "READ_PLAYLISTS",
+  CREATE_PLAYLIST: "CREATE_PLAYLISTS",
+  UPDATE_PLAYLISTS: "UPDATE_PLAYLISTS",
+  DELETE_PLAYLISTS: "DELETE_SONGS",
+  PLAY_SONGS: "PLAY_SONGS",
+  DELETE_ROOM: "DELETE_ROOM",
+  CREATE_ROOM: "CREATE_ROOM",
+  UPDATE_ROOM: "UPDATE_ROOM",
+  READ_ROOM: "READ_ROOM",
+  CHAT_ROOM: "CHAT_ROOM",
+}
+
+
 export const paths = {
   HOME: "/",
   TRENDING: "/trending",

@@ -2,7 +2,7 @@
 
 .UploadPage {
   @include flex(column, center, center);
-  // height: calc(100vh - $height-header - $height-playingBar - 20px);
+  min-height: calc(100vh - $height-header);
   background-color: var(--background-color-2);
   padding: 0 $space-32 $space-32;
 
@@ -14,9 +14,7 @@
   }
 
   &_body {
-    min-height: 80vh;
-    height: 100%;
-    // height: calc(100vh - $height-header - $height-playingBar - 20px);
+    min-height: 100%;
     margin-top: 10px;
     width: 100%;
     // box-shadow: var(--box-shadow);
