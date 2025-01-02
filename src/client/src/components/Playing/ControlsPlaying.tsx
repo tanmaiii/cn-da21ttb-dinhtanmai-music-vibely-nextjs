@@ -10,8 +10,6 @@ export const ControlPlayPause = ({
   isPlaying: boolean;
   onChange: () => void;
 }) => {
-  // const [isPlaying, setIsPlaying] = React.useState(false);
-
   return (
     <ButtonIconPrimary
       size="large"

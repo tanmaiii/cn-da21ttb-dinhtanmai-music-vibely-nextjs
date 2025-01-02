@@ -3,16 +3,15 @@
 import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
 import apiConfig from "@/lib/api";
+import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatDuration } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Slider from "../Slider";
-import { ButtonIcon, ButtonIconSquare } from "../ui/Button";
+import { ButtonIcon } from "../ui/Button";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
-import { IMAGES, paths } from "@/lib/constants";
-import uploadService from "@/services/upload.service";
 
 const PlayingBar = () => {
   return (

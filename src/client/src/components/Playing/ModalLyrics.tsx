@@ -1,24 +1,22 @@
 "use client";
+import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
-import { lyrics, songs } from "@/lib/data";
+import { IMAGES } from "@/lib/constants";
+import { lyrics } from "@/lib/data";
 import {
   apiImage,
   formatDuration,
   formatImg,
   toggleFullScreen,
 } from "@/lib/utils";
-import img from "@/public/images/anime.jpg";
+import { ISong } from "@/types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ButtonIconRound } from "../ui/Button";
 import Slider from "../Slider";
+import { ButtonIconRound } from "../ui/Button";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
-import { IMAGES } from "@/lib/constants";
-import { playSong } from "../../services/socket.service";
-import { ISong } from "@/types";
 
 const ModalLyrics = () => {
   const { isLyricsOpen, toggleLyrics } = useUI();
