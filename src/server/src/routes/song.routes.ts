@@ -16,7 +16,6 @@ import {
 import {
   authorize,
   isSongAuthor,
-  uploadFile,
   validateData,
 } from "../middleware";
 import {
@@ -88,7 +87,6 @@ router.get(
 router.post(
   "/",
   authorize(PERMISSIONS.CREATE_SONGS),
-  uploadFile,
   validateData(createSongSchema),
   createSongHandler
 );
@@ -96,7 +94,6 @@ router.post(
 // Cập nhật bài hát
 router.put(
   "/:id",
-  uploadFile,
   authorize(PERMISSIONS.UPDATE_SONGS),
   isSongAuthor,
   validateData(updateSongSchema),

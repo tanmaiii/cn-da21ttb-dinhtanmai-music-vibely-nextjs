@@ -156,9 +156,14 @@ export function apiImage(path: string) {
 export const validateFile = (
   e: React.ChangeEvent<HTMLInputElement>,
   maxSize: number = 5 * 1024 * 1024, // 5MB
-  validTypes: string[] = ["image/jpeg", "image/png", "image/gif"]
-): { file: File | null; error: string | null } => {
+  validTypes: string[] = ["image/jpeg", "image/png", "image/gif"],
+  required = true,
+): { file: File | null; error: string | null; required?: boolean } => {
   const file = e.target.files ? e.target.files[0] : null;
+
+  if (!required) {
+    return { file, error: null };
+  }
 
   if (!file) {
     return { file: null, error: "Please select an file." };
@@ -190,3 +195,8 @@ export const validateFile = (
 
   return { file, error: null };
 };
+
+export const hasPermission = (
+  permissions: { name: string }[] = [],
+  permission: string
+) => permissions?.some(({ name }) => name === permission);

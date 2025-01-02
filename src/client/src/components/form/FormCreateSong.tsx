@@ -1,16 +1,20 @@
 "use client";
 import { DragDropFile } from "@/components/Form";
+import { paths } from "@/lib/constants";
 import { privacy } from "@/lib/data";
 import { validateFile } from "@/lib/utils";
+import uploadService from "@/services/upload.service";
 import ISong, { SongRequestDto } from "@/types/song.type";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import BoxAudio from "../BoxAudio";
+import Modal from "../Modal";
 import SelectGenre from "../SelectGenre";
 import SelectMood from "../SelectMood";
 import { ButtonLabel } from "../ui/Button";
 import Radio from "../ui/Radio";
 import FormItem from "./common/FormItem";
 import styles from "./style.module.scss";
-import BoxAudio from "../BoxAudio";
 
 interface Props {
   onSubmit: (values: SongRequestDto) => void;
@@ -19,9 +23,11 @@ interface Props {
   open?: boolean;
 }
 
-const FormCreateSong = ({ file: fileMp3 }: Props) => {
+const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
   // const { toastError } = useCustomToast();
   const [errors, setErrors] = React.useState<Partial<SongRequestDto>>({});
+  const [isExit, setIsExit] = React.useState<boolean>(false);
+  const router = useRouter();
   const [form, setForm] = React.useState<SongRequestDto>({
     title: "",
     description: "",
@@ -41,9 +47,42 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
     setForm((prev) => ({ ...prev, ...value }));
   };
 
+  const validateForm = (values: SongRequestDto, imageFile: File | null) => {
+    const errors: Partial<SongRequestDto> = {};
+    let hasError = false;
+
+    if (!values?.imagePath && !imageFile) {
+      errors.imagePath = "Please upload an image";
+      hasError = true;
+    }
+
+    if (!values?.songPath && !audioFile) {
+      errors.songPath = "Please upload an audio file";
+      hasError = true;
+    }
+
+    if (!values?.title) {
+      errors.title = "Title is required";
+      hasError = true;
+    }
+
+    if (values?.description?.length > 255) {
+      errors.description = "Description is too long";
+      hasError = true;
+    }
+
+    if (!values?.genreId) {
+      errors.genreId = "Genre is required";
+      hasError = true;
+    }
+
+    return { errors, hasError };
+  };
+
   //Xử lý sự kiện thay đổi file hình ảnh
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageFile(null);
+    handleChange({ imagePath: "" });
     setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
 
     const { file, error } = validateFile(e);
@@ -60,7 +99,7 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
     setAudioFile(null);
     setErrors((prev) => ({ ...prev, songPath: "" })); // Reset error
 
-    const { file, error } = validateFile(e, 50 * 1024 * 1024, ["audio/mpeg"]);
+    const { file, error } = validateFile(e, 50 * 1024 * 1024, ["audio/mpeg"], false);
 
     if (error) {
       setErrors((prev) => ({ ...prev, songPath: error }));
@@ -84,6 +123,36 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
     setLyricFile(file || null); // Update file if valid, otherwise null
   };
 
+  const handleSubmit = async (formValues: SongRequestDto) => {
+    const { errors, hasError } = validateForm(form, imageFile);
+    setErrors(errors);
+    if (hasError) return;
+
+    try {
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const image = await uploadService.upload(formData);
+        formValues.imagePath = image.data.path;
+      }
+      if (audioFile) {
+        const formData = new FormData();
+        formData.append("audio", audioFile);
+        const audio = await uploadService.upload(formData);
+        formValues.songPath = audio.data.path;
+      }
+      if (lyricFile) {
+        const formData = new FormData();
+        formData.append("lyric", lyricFile);
+        const lyric = await uploadService.upload(formData);
+        formValues.lyricPath = lyric.data.path;
+      }
+      await onSubmit(formValues);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
   return (
     <div className={`${styles.FormCreateSong}`}>
       <div className={`${styles.top}`}>
@@ -103,6 +172,7 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
                 onChange={(e) => handleChange({ title: e.target.value })}
                 name="title"
                 max={60}
+                error={errors.title}
               />
               <FormItem
                 label="Description"
@@ -110,8 +180,9 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
                 type="textarea"
                 value={form.description}
                 onChange={(e) => handleChange({ description: e.target.value })}
-                name="title"
+                name="description"
                 max={500}
+                error={errors.description}
               />
             </div>
 
@@ -202,14 +273,38 @@ const FormCreateSong = ({ file: fileMp3 }: Props) => {
       </div>
 
       <div className={styles.buttons}>
-        <ButtonLabel line className={`${styles.buttons_btnCancel}`}>
+        <ButtonLabel
+          onClick={() => setIsExit(true)}
+          className={`${styles.buttons_btnCancel}`}
+        >
           <label>Cancel</label>
         </ButtonLabel>
 
-        <ButtonLabel className={`${styles.buttons_btnCreate}`}>
+        <ButtonLabel
+          onClick={() => handleSubmit(form)}
+          className={`${styles.buttons_btnCreate}`}
+        >
           <label>Create</label>
         </ButtonLabel>
       </div>
+
+      <Modal show={isExit} onClose={() => setIsExit(false)}>
+        <div className={styles.modal_exit}>
+          <h4>Are you sure you want to exit?</h4>
+          <div className={styles.modal_exit_buttons}>
+            <ButtonLabel onClick={() => setIsExit(true)}>
+              <label>Cancel</label>
+            </ButtonLabel>
+
+            <ButtonLabel
+              onClick={() => router.push(paths.HOME)}
+              className={`col ${styles.buttons_btnCreate}`}
+            >
+              <label>Yes</label>
+            </ButtonLabel>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

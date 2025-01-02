@@ -1,4 +1,3 @@
-import IArtist from "./artist.type";
 
 export interface IUser {
   id: string;
@@ -32,7 +31,7 @@ export interface LoginGoogleRequestDto {
 }
 
 export interface LoginResponseDto {
-  data: IArtist & {
+  data: IUser & {
     accessToken: string;
     refreshToken: string;
   };
@@ -40,7 +39,7 @@ export interface LoginResponseDto {
 }
 
 export interface ValidationeResponseDto {
-  data: IArtist;
+  data: IUser;
   message: string;
 }
 
@@ -53,7 +52,7 @@ export interface RegisterRequestDto {
 }
 
 export interface RegisterResponseDto {
-  data: IArtist & {
+  data: IUser & {
     accessToken: string;
     refreshToken: string;
   };
@@ -71,5 +70,5 @@ export interface RefreshTokenResponseDto {
 }
 
 export interface CheckUserRequestDto {
-  data: IArtist;
+  data: IUser;
 }

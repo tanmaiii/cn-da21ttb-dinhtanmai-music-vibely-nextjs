@@ -11,7 +11,7 @@ import { useUI } from "@/context/UIContext";
 import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES, paths, PERMISSIONS, ROLES } from "@/lib/constants";
 import { RootState } from "@/lib/store";
-import { apiImage } from "@/lib/utils";
+import { apiImage, hasPermission } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -30,11 +30,6 @@ const Header = () => {
 
   useEffect(() => {
     const body = document.querySelector(".RootLayout_main");
-    console
-      .log
-      // currentUser?.role.permissions.map("CREATE_SONGS")
-      ();
-    console.log(currentUser?.role.permissions);
 
     const handleScrollHeader = () => {
       const scrollTop =
@@ -95,18 +90,15 @@ const Header = () => {
           </div>
         </div>
         <div className={`${styles.Header_right}`}>
-          {currentUser?.role.permissions.map((permission, index) => {
-            if (permission.name === PERMISSIONS.CREATE_SONGS) {
-              return (
-                <ButtonIconRound
-                  key={index}
-                  icon={<i className="fa-regular fa-upload"></i>}
-                  onClick={() => router.push(paths.UPLOAD)}
-                />
-              );
-            }
-            return null;
-          })}
+          {hasPermission(
+            currentUser?.role.permissions,
+            PERMISSIONS.CREATE_SONGS
+          ) && (
+            <ButtonIconRound
+              icon={<i className="fa-regular fa-upload"></i>}
+              onClick={() => router.push(paths.UPLOAD)}
+            />
+          )}
           <ButtonIconRound
             onClick={() => toastSuccess("Hello")}
             icon={<i className="fa-regular fa-gear"></i>}

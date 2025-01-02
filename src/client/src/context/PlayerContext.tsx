@@ -1,8 +1,7 @@
 "use client";
 
-import React, { createContext, useState, useContext } from "react";
-import { useUI } from "./UIContext";
 import { ISong } from "@/types";
+import React, { createContext, useContext, useState } from "react";
 
 type PlayMode = "normal" | "random";
 
@@ -14,6 +13,7 @@ interface PlayerState {
   playMode: PlayMode;
   play: (song?: ISong) => void;
   pause: () => void;
+  stop: () => void;
   setVolume: (volume: number) => void;
   addToQueue: (song: ISong) => void;
   removeFromQueue: (id: string) => void;
@@ -156,6 +156,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setPlayMode((prev) => (prev === "normal" ? "random" : "normal")); // Chuyển đổi giữa normal và shuffle
   };
 
+  const stop = () => {
+    setCurrentSong(null);
+    setIsPlaying(false);
+    setQueue([]);
+  }
+
   return (
     <PlayerContext.Provider
       value={{
@@ -166,6 +172,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         playMode,
         play,
         pause,
+        stop,
         setVolume,
         addToQueue,
         removeFromQueue,

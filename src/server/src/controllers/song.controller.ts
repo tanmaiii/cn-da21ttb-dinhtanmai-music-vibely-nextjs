@@ -118,26 +118,11 @@ export const createSongHandler = async (
 
     if (!genreId) throw new ApiError(StatusCodes.NOT_FOUND, "Genre not found");
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
     const moodIds = req.body.moodId;
-
-    if (!getFilePath(files, "audio")) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Audio file is invalid");
-    }
 
     const data = {
       ...req.body,
       userId: userId,
-      ...(getFilePath(files, "audio") && {
-        songPath: getFilePath(files, "audio"),
-      }),
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
-      ...(getFilePath(files, "lyric") && {
-        lyricPath: getFilePath(files, "lyric"),
-      }),
     };
 
     const createSong = await SongService.createSong(data);
@@ -169,20 +154,10 @@ export const updateSongHandler = async (
 
     if (!song) throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     const moodIds = req.body.moodId;
 
     const data = {
       ...req.body,
-      ...(getFilePath(files, "audio") && {
-        songPath: getFilePath(files, "audio"),
-      }),
-      ...(getFilePath(files, "image") && {
-        imagePath: getFilePath(files, "image"),
-      }),
-      ...(getFilePath(files, "lyric") && {
-        lyricPath: getFilePath(files, "lyric"),
-      }),
     };
 
     await SongService.updateSong(req.params.id, data);
