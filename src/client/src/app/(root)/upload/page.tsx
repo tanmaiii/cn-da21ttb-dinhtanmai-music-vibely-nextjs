@@ -59,8 +59,8 @@ const UploadPage = () => {
       return res;
     },
     onSuccess: (data) => {
-      toastSuccess("Create playlist success");
-      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      toastSuccess("Create song success");
+      queryClient.invalidateQueries({ queryKey: ["song"] });
       if (data.data.slug) {
         router.push(paths.SONG + "/" + data.data.slug);
       } else {

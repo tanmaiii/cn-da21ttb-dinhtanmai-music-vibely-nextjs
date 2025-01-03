@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 import { Checkbox } from "@/components/ui";
 
@@ -15,6 +15,7 @@ interface TableProps<T> {
   renderRow: (item: T) => React.ReactNode;
   data: T[];
   className?: string;
+  onSelectRow?: (items: T[]) => void;
 }
 
 const Table = <T extends object>({
@@ -22,6 +23,7 @@ const Table = <T extends object>({
   renderRow,
   data,
   className,
+  onSelectRow,
 }: TableProps<T>) => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
@@ -33,9 +35,16 @@ const Table = <T extends object>({
       } else {
         newSelectedRows.add(id);
       }
+
       return newSelectedRows;
     });
   };
+
+  useEffect(() => {
+    if (onSelectRow) {
+      onSelectRow(data.filter((_, index) => selectedRows.has(index)));
+    }
+  }, [selectedRows, data]);
 
   return (
     <table className={`${styles.Table} ${className}`}>

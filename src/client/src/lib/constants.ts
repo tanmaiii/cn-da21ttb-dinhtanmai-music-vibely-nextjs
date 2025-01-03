@@ -12,7 +12,6 @@ export const ROLES: { [key: string]: string } = {
   USER: "User",
 };
 
-
 export const PERMISSIONS: { [key: string]: string } = {
   MANAGE_USERS: "MANAGE_USERS",
   MANAGE_MOODS: "MANAGE_MOODS",
@@ -31,8 +30,7 @@ export const PERMISSIONS: { [key: string]: string } = {
   UPDATE_ROOM: "UPDATE_ROOM",
   READ_ROOM: "READ_ROOM",
   CHAT_ROOM: "CHAT_ROOM",
-}
-
+};
 
 export const paths = {
   HOME: "/",
@@ -54,6 +52,8 @@ export const paths = {
   SETTINGS: "/settings",
   NOT_FOUND: "/404",
   ADMIN: "/admin",
+  USERS: "/users",
+  ROLES: "/roles",
 };
 
 export const sidebarLinks = [
@@ -173,8 +173,8 @@ export const sidebarAdminLinks = [
         icon: "fa-sharp fa-light fa-list-music",
       },
       {
-        title: "Artists",
-        paths: [paths.ADMIN + paths.ARTIST],
+        title: "Users",
+        paths: [paths.ADMIN + paths.USERS],
         icon: "fa-light fa-user",
       },
       {
@@ -186,6 +186,12 @@ export const sidebarAdminLinks = [
         title: "Rooms",
         paths: [paths.ADMIN + paths.ROOM],
         icon: "fa-light fa-users-medical",
+      },
+      {
+        title: "Roles",
+        paths: [paths.ADMIN + paths.ROLES],
+        icon: "fa-light fa-user-gear",
+        // <i class="fa-light fa-user-gear"></i>
       },
     ],
   },

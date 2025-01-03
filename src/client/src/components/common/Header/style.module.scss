@@ -74,16 +74,16 @@
         img {
           width: var(--size);
           height: var(--size);
-          //   border: 2px solid var(--primary-color);
+          border: 2px solid $color-white;
           object-fit: cover;
           border-radius: 50%;
         }
         &_artist img {
-          border: 2px solid var(--primary-color);
+          border: 2px solid $color-primary;
         }
 
-        &_admin img{
-          border: 2px solid var($color-pink);
+        &_admin img {
+          border: 2px solid $color-red;
         }
       }
     }

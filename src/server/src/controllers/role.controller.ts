@@ -3,7 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import {
   CreateRoleInput,
   DeleteRoleInput,
-  UpdateRoleInput
+  GetRoleInput,
+  UpdateRoleInput,
 } from "../schema/role.schema";
 import RoleService from "../services/Role.service";
 import ApiError from "../utils/ApiError";
@@ -23,15 +24,35 @@ export const getAllRolesHandler = async (
   }
 };
 
+export const getRoleByIdHandler = async (
+  req: Request<GetRoleInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const role = await RoleService.getRoleById(req.params.id);
+
+    if (!role) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Role not found");
+    }
+
+    res.status(StatusCodes.OK).json({ data: role });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createRoleHandler = async (
   req: Request<{}, {}, CreateRoleInput["body"]>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const role = await RoleService.createRole(req.body);
+    const role = await RoleService.createRole({
+      name: req.body.name,
+    });
 
-    const PermissionsIs = req.body.permissionsId;
+    const PermissionsIs = req.body.permissions;
 
     if (PermissionsIs) {
       await RoleService.addPermissionToRole(role.id, PermissionsIs);
@@ -59,9 +80,11 @@ export const updateRoleHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Role not found");
     }
 
-    await RoleService.updateRole(req.params.id, req.body);
+    await RoleService.updateRole(req.params.id, {
+      name: req.body.name,
+    });
 
-    const PermissionsIs = req.body.permissionsId;
+    const PermissionsIs = req.body.permissions;
 
     if (PermissionsIs && PermissionsIs?.length > 0) {
       await RoleService.updatePermissionToRole(req.params.id, PermissionsIs);

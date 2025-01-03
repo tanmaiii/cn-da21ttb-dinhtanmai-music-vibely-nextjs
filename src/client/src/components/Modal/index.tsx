@@ -1,13 +1,13 @@
 // "use client";
 import React, { useEffect } from "react";
 import styles from "./style.module.scss";
-import { ButtonIconRound } from "../ui/Button";
+import { ButtonIconRound, ButtonLabel } from "../ui/Button";
 
 interface ModalProps {
   show: boolean;
   title?: string;
   onClose: () => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Modal = (props: ModalProps) => {
@@ -40,3 +40,34 @@ const Modal = (props: ModalProps) => {
 };
 
 export default Modal;
+
+interface ModalConfirmProps extends ModalProps {
+  onConfirm: () => void;
+}
+
+export const ModalConfirm = (props: ModalConfirmProps) => {
+  return (
+    <Modal {...props}>
+      <div className={`${styles.Modal_confirm}`}>
+        <h4>{props.title}</h4>
+        <div className={styles.buttons}>
+          <ButtonLabel
+            onClick={() => {
+              props.onClose();
+            }}
+            line={true}
+            className={styles.buttons_button}
+          >
+            <label htmlFor="">Cancel</label>
+          </ButtonLabel>
+          <ButtonLabel
+            onClick={() => props.onConfirm()}
+            className={`${styles.buttons_btnCreate}`}
+          >
+            <label htmlFor="">Ok</label>
+          </ButtonLabel>
+        </div>
+      </div>
+    </Modal>
+  );
+};

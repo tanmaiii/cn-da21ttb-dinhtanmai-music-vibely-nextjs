@@ -90,7 +90,6 @@ const SongPage = () => {
                 </button>
                 <Input placeholder="Search song" />
               </div>
-              {/* <ButtonIconSquare className={styles.btn_add} icon={<i className="fa-solid fa-plus"></i>} /> */}
               <ButtonLabel  className={styles.btn_add}>
                 <i className="fa-solid fa-plus"></i>
                 <label htmlFor="">New</label>
@@ -102,7 +101,7 @@ const SongPage = () => {
               label="Filters"
               name="filters"
               onChange={() => console.log("asd")}
-              value={{ value: "asd", label: "asdad" }}
+              value="asd"
               options={[
                 {
                   value: "asd",

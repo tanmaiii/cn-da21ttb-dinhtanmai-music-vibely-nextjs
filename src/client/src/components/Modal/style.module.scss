@@ -60,6 +60,28 @@
         overflow-y: auto;
         overflow-x: hidden;
       }
+
+      & > .Modal_confirm {
+        padding-top: $space-20;
+        h4 {
+          font-size: $size-18;
+          font-weight: $font-bold;
+          color: var(--text-color-1);
+          margin-bottom: $space-16;
+        }
+      }
+    }
+
+    & .buttons {
+      @include flex(center, flex-end, row);
+      gap: $space-8;
+      margin-top: $space-16;
+      &_btnCreate {
+        background-color: $color-primary;
+        label {
+          color: $color-white-1;
+        }
+      }
     }
   }
 }

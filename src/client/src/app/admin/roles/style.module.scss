@@ -1,0 +1,108 @@
+@use "@/scss/index.module.scss" as *;
+
+.RolesPage {
+  min-height: 100vh;
+  padding: $space-16 $space-24;
+  background-color: var(--background-color-2);
+
+  @include tablet {
+    padding: $space-16 $space-16;
+  }
+  @include mobile {
+    padding: $space-16 $space-8;
+  }
+
+  @include flex(center, flex-start, column);
+
+  & .swapper {
+    background-color: var(--background-color-1);
+    padding: 30px $space-24;
+    border-radius: $radius-12;
+    width: 100%;
+
+    & .header {
+      margin-bottom: $space-24;
+      h2 {
+        font-size: 40px;
+        font-weight: $font-bold;
+        color: var(--text-color-1);
+      }
+      span {
+        font-size: $size-16;
+        font-weight: $font-light;
+        color: var(--text-color-2);
+      }
+    }
+
+    & .body {
+      width: 100%;
+      & .filters {
+        padding: $space-12 0;
+        @include flex(center, space-between, row);
+        & .left {
+          @include flex(center, center, row);
+          gap: $space-8;
+
+          & .search {
+            width: max-content;
+            border: 1px solid var(--border-color);
+            padding: $space-12 $space-12;
+            border-radius: $radius-8;
+            button {
+              cursor: pointer;
+              margin-right: $space-8;
+              i {
+                font-size: 16px;
+                color: var(--text-color-1);
+              }
+            }
+            input {
+              font-size: $size-16;
+              font-weight: $font-light;
+              color: var(--text-color-1);
+              width: 200px;
+            }
+          }
+
+          & .btn_add {
+            background-color: $color-blue;
+            i,
+            label {
+              color: $color-white-1;
+            }
+          }
+        }
+
+        & .dropdown {
+          width: 200px;
+        }
+      }
+      & .Table {
+      }
+    }
+  }
+}
+
+.form_role {
+  width: 600px;
+  @include mobile {
+    width: 100%;
+  }
+  & > h4 {
+    font-size: $size-20;
+    font-weight: $font-bold;
+    color: var(--text-color-1);
+    margin-bottom: $space-16;
+  }
+  & .buttons {
+    @include flex(center, flex-end, row);
+    gap: $space-8;
+    margin-top: $space-16;
+    &_btnCreate {
+      background-color: $color-primary;
+      label {
+        color: $color-white-1;
+      }
+    }
+  }
+}

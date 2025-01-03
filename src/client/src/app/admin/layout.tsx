@@ -9,6 +9,7 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <main className={styles.AdminLayout}>
       <div className={`row no-gutters ${styles.AdminLayout_top}`}>

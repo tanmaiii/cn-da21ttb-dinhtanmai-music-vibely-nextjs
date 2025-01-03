@@ -5,8 +5,8 @@ interface Props {
   label?: string;
   name: string;
   desc?: string;
-  type: "text" | "password" | "email" | "number" | "textarea" | "select";
-  placeholder: string;
+  type?: "text" | "password" | "email" | "number" | "textarea" | "select";
+  placeholder?: string;
   value: string;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

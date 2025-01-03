@@ -8,7 +8,7 @@ const payload = {
     })
       .max(SIZE.NAME, "Name is too long")
       .optional(),
-    permissionsId: array(string()).optional(),
+    permissions: array(string()).optional(),
   }),
 };
 

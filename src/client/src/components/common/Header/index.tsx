@@ -113,11 +113,10 @@ const Header = () => {
                 className={`${styles.Header_right_user_image} ${
                   currentUser.role?.name === ROLES.ARTIST &&
                   styles.Header_right_user_image_artist
+                }  ${
+                  currentUser.role?.name === ROLES.ADMIN &&
+                  styles.Header_right_user_image_admin
                 } 
-                   ${
-                     currentUser.role?.name === ROLES.ADMIN &&
-                     styles.Header_right_user_image_admin
-                   } 
                   `}
               >
                 <Image
