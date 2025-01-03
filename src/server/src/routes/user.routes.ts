@@ -13,26 +13,25 @@ import { authorize } from "../middleware/auth.middleware";
 import { validateData } from "../middleware/validate.middleware";
 import {
   createUserSchema,
+  getAllUserSchema,
   getUserSchema,
-  UpdateRoleUserSchema,
+  updateRoleUserSchema,
   updateUserSchema,
 } from "../schema/user.schema";
 import { PERMISSIONS } from "../utils/contants";
 const router: Router = Router();
 
-router.get("/", getAllUsersHandler);
+router.get("/", validateData(getAllUserSchema), getAllUsersHandler);
 router.get("/:id", validateData(getUserSchema), getUserHandler);
 router.post(
   "/",
   authorize(PERMISSIONS.MANAGE_USERS),
-  uploadFile,
   validateData(createUserSchema),
   createUserHandler
 );
 router.put(
   "/:id",
   authorize(),
-  uploadFile,
   validateData(updateUserSchema),
   updateUserHandler
 );
@@ -45,7 +44,7 @@ router.delete(
 router.put(
   "/:id/role",
   authorize(PERMISSIONS.MANAGE_USERS),
-  validateData(UpdateRoleUserSchema),
+  validateData(updateRoleUserSchema),
   updateUserRoleHandler
 );
 

@@ -1,16 +1,17 @@
 import createHttpClient from "@/lib/createHttpClient";
 import { ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
 import { SongRequestDto } from "@/types/song.type";
+import { AxiosInstance } from "axios";
 
 class SongService {
-  private client;
+  private client: AxiosInstance;
 
   constructor() {
     this.client = createHttpClient("api/song");
   }
 
   async create(data: SongRequestDto): Promise<ResponseAPI<ISong>> {
-    const res =  await this.client.post<ResponseAPI<ISong>>("", data);
+    const res = await this.client.post<ResponseAPI<ISong>>("", data);
     return res.data;
   }
 
@@ -34,12 +35,12 @@ class SongService {
   }
 
   async checkLiked(songId: string): Promise<ResponseAPI<boolean>> {
-    const res = await  this.client.get<ResponseAPI<boolean>>(songId + "/like");
+    const res = await this.client.get<ResponseAPI<boolean>>(songId + "/like");
     return res.data;
   }
 
   async likeSong(songId: string): Promise<ResponseAPI<null>> {
-    const res = await  this.client.post<ResponseAPI<null>>(songId + "/like");
+    const res = await this.client.post<ResponseAPI<null>>(songId + "/like");
     return res.data;
   }
 

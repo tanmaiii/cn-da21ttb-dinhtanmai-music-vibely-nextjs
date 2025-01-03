@@ -4,8 +4,8 @@ import { IRole } from "@/types/auth.type";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 
-import styles from "./style.module.scss";
 import { ButtonLabel } from "@/components/ui";
+import styles from "./style.module.scss";
 
 interface Props {
   initialData?: IRole;
@@ -18,6 +18,7 @@ const Form = ({ initialData, onClose, onSubmit }: Props) => {
     name: "",
     permissions: [],
   });
+  const [error, setError] = React.useState<Partial<RoleRequestDto>>({});
   const { data: permissions } = useQuery({
     queryKey: ["permissions"],
     queryFn: async () => {
@@ -47,6 +48,12 @@ const Form = ({ initialData, onClose, onSubmit }: Props) => {
   };
 
   const handleSubmit = (value: RoleRequestDto) => {
+    if(!value.name) {
+      setError({
+        name: "Name is required",
+      });
+      return;
+    };
     onSubmit(value);
     clearForm();
   };
@@ -61,6 +68,7 @@ const Form = ({ initialData, onClose, onSubmit }: Props) => {
           value={form?.name || ""}
           onChange={(e) => handleChange({ name: e.target.value })}
           placeholder="Role name"
+          error={error.name}
         />
       </div>
       <MultipleSelect

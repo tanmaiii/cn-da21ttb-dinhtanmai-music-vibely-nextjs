@@ -1,6 +1,6 @@
 "use client";
 import { Card } from "@/components/Card";
-import {FormPlaylist} from "@/components/Form";
+import { FormPlaylist } from "@/components/Form";
 import Modal from "@/components/Modal";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Loading from "./loading";
 import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
+import Empty from "@/components/common/Empty";
 
 const DataSort: { id: number; name: string; value: string }[] = [
   { id: 1, name: "All", value: "false" },
@@ -41,8 +42,8 @@ const MyPlaylistPage = () => {
   });
 
   useEffect(() => {
-    console.log(data)
-  },[data])
+    console.log(data);
+  }, [data]);
 
   const mutationAdd = useMutation({
     mutationFn: async (data: PlaylistRequestDto) => {
@@ -58,6 +59,8 @@ const MyPlaylistPage = () => {
       toastError(error.message);
     },
   });
+
+  if (isLoading) <Loading />;
 
   return (
     <div className={`${styles.MyPlaylistPage}`}>
@@ -78,22 +81,21 @@ const MyPlaylistPage = () => {
           />
         </div>
       </div>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.MyPlaylistPage_body} row no-gutters`}>
+      <div className={`${styles.MyPlaylistPage_body} row no-gutters`}>
+        {data && data?.length > 0 ? (
           <Section>
-            {data &&
-              data.map((item: IPlaylist, index: number) => (
-                <Card index={index} key={index} data={item} />
-              ))}
+            {data.map((item: IPlaylist, index: number) => (
+              <Card index={index} key={index} data={item} />
+            ))}
             <LoadMore
               setNextPage={setNextPage}
               params={{ page: nextPage, my: active }}
             />
           </Section>
-        </div>
-      )}
+        ) : (
+          <Empty />
+        )}
+      </div>
       <Modal show={showAdd} onClose={() => setShowAdd(false)}>
         <FormPlaylist
           onClose={() => setShowAdd(false)}

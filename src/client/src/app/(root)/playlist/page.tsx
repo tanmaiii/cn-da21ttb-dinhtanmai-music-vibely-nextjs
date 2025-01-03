@@ -13,6 +13,7 @@ import Loading from "./loading";
 import styles from "./style.module.scss";
 import LoadMore from "./LoadMore";
 import { FormPlaylist } from "@/components/Form";
+import Empty from "@/components/common/Empty";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "Popular", value: "mostLikes" },
@@ -56,6 +57,8 @@ const PlaylistPage = () => {
     },
   });
 
+  if (isLoading) <Loading />;
+
   return (
     <div className={`${styles.PlaylistPage}`}>
       <div className={`${styles.PlaylistPage_top}`}>
@@ -75,22 +78,21 @@ const PlaylistPage = () => {
           />
         </div>
       </div>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.PlaylistPage_body} row no-gutters`}>
+      <div className={`${styles.PlaylistPage_body} row no-gutters`}>
+        {data && data?.length > 0 ? (
           <Section>
-            {data &&
-              data.map((item: IPlaylist, index: number) => (
-                <Card index={index} key={index} data={item} />
-              ))}
+            {data.map((item: IPlaylist, index: number) => (
+              <Card index={index} key={index} data={item} />
+            ))}
             <LoadMore
               setNextPage={setNextPage}
               params={{ sort: active, page: nextPage }}
             />
           </Section>
-        </div>
-      )}
+        ) : (
+          <Empty />
+        )}
+      </div>
       <Modal show={showAdd} onClose={() => setShowAdd(false)}>
         <FormPlaylist
           onClose={() => setShowAdd(false)}

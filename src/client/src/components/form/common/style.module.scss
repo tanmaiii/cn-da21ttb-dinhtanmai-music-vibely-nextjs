@@ -96,7 +96,8 @@
   &_label {
     font-size: $size-16;
     font-weight: $font-medium;
-    color: var(--text-color-2);
+    color: var(--text-color-1);
+    margin-bottom: $space-8;
   }
   &_desc {
     font-size: $size-14;

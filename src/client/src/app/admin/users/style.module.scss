@@ -1,6 +1,6 @@
 @use "@/scss/index.module.scss" as *;
 
-.RolesPage {
+.UserPage {
   min-height: 100vh;
   padding: $space-16 $space-24;
   background-color: var(--background-color-2);
@@ -36,6 +36,7 @@
 
     & .body {
       width: 100%;
+      min-height: 60vh;
       & .filters {
         padding: $space-8 0;
         @include flex(center, space-between, row);
@@ -64,9 +65,10 @@
             }
           }
 
-          & .btn_add  {
+          & .btn_add {
             background-color: $color-blue;
-            i, label {
+            i,
+            label {
               color: $color-white-1;
             }
           }
@@ -77,15 +79,13 @@
         }
       }
       & .Table {
-        // border: 1px solid var(--border-color);
-        // border-radius: $radius-8;
         & .col_1 {
           @include flex(center, flex-start);
           gap: $space-16;
           text-align: left;
           img {
             --size: 56px;
-            border-radius: $radius-4;
+            border-radius: 50%;
             background-color: var(--background-color-2);
             border: 1px solid var(--border-color);
             width: var(--size);
@@ -104,6 +104,70 @@
             font-weight: $font-light;
             color: var(--text-color-2);
             text-align: left;
+          }
+        }
+
+        & .col_6 {
+          .role {
+            @include flex(center, center);
+            gap: $space-16;
+            text-align: left;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            background-color: #d7e4ff;
+            padding: $space-4 $space-12;
+            color: #001050;
+            border-radius: $radius-8;
+            width: max-content;
+          }
+        }
+      }
+    }
+  }
+}
+
+.form_user {
+  h4 {
+    font-size: $size-20;
+    font-weight: $font-bold;
+    color: var(--text-color-1);
+    margin-bottom: $space-16;
+  }
+  &_content {
+    @include flex(flex-start, center, row);
+    gap: $space-12;
+    &_image {
+      width: 240px;
+      & > .title {
+        font-size: $size-16;
+        font-weight: $font-medium;
+        color: var(--text-color-1);
+        margin-bottom: $space-8;
+      }
+      .image_swapper {
+        --size: 100%;
+        width: var(--size);
+        height: var(--size);
+      }
+      & > .desc {
+        margin-top: $space-8;
+        font-size: $size-14;
+        font-weight: $font-light;
+        color: var(--text-color-2);
+      }
+    }
+    &_info {
+      width: 340px;
+      @include flex(unset, flex-end, column);
+      gap: $space-8;
+      & .buttons {
+        @include flex(center, flex-end, row);
+        gap: $space-8;
+        margin-top: $space-16;
+        &_btnCreate {
+          background-color: $color-primary;
+          label {
+            color: $color-white-1;
           }
         }
       }

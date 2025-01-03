@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useEffect } from "react";
 import styles from "./style.module.scss";
@@ -27,12 +27,12 @@ const Dropdown = (props: Props) => {
   const DropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if(value){
-      setValueDefault(value)
-    }else{
-      setValueDefault("")
+    if (value) {
+      setValueDefault(value);
+    } else {
+      setValueDefault("");
     }
-  }, [value])
+  }, [value]);
 
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -55,12 +55,21 @@ const Dropdown = (props: Props) => {
 
   return (
     <div className={`${styles.Dropdown} ${className}`}>
+      {/* {label && (
+        <label className={`${styles.Dropdown_label}`} htmlFor={name}>
+          {label}
+        </label>
+      )} */}
       <div ref={DropdownRef} className={`${styles.Dropdown_box}`}>
         <div className={`${styles.Dropdown_box_header}`}>
           <input
             type="text"
             name={name}
-            value={valueDefault ? options.find((o) => o.value === valueDefault)?.label : ""}
+            value={
+              valueDefault
+                ? options.find((o) => o.value === valueDefault)?.label
+                : ""
+            }
             readOnly
             placeholder=" "
             onClick={() => setActive(!active)}

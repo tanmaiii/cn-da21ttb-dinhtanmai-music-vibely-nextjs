@@ -132,6 +132,9 @@
         font-size: $size-16;
         color: var(--text-color-1);
       }
+      i{
+        color: var(--text-color-1);
+      }
       &:hover {
         background-color: $color-hover;
       }
@@ -164,6 +167,11 @@
           background-color: $color-primary;
           color: $color-white;
         }
+      }
+
+      span{
+        font-size: $size-16;
+        color: var(--text-color-1);
       }
     }
   }

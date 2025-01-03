@@ -4,8 +4,11 @@ export interface IUser {
   name: string;
   email: string;
   slug: string;
-  role: IRole;
   imagePath: string;
+  followers: number;
+  songs: number;
+  playlists: number;
+  role: IRole;
 }
 
 export interface IRole {
@@ -18,6 +21,16 @@ export interface IPermission {
   id: string;
   name: string;
 }
+
+
+export interface UserRequestDto{
+  name: string,
+  email: string,
+  password: string,
+  role?: string,
+  imagePath?: string,
+}
+
 
 // Đăng nhập
 export interface LoginRequestDto {

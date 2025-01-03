@@ -46,10 +46,9 @@ const DragDropFile = (porps: Props) => {
     if (image_default) {
       setImageDefault(image_default);
     }
-  }, [image_default]);
+  }, [image_default, error]);
 
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
     onChange(e);
     setOpenDrop(false);
   };

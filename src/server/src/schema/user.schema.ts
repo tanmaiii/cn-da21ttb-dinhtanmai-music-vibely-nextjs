@@ -1,45 +1,5 @@
-import { date, object, string, TypeOf, number, ZodEnum } from "zod";
-import { ROLES } from "../utils/contants";
-
-/**
- * @openapi
- * components:
- *  schemas:
- *    CreateUserInput:
- *      type: object
- *      required:
- *        - email
- *        - name
- *        - password
- *        - passwordConfirmation
- *      properties:
- *        email:
- *          type: string
- *          default: jane.doe@example.com
- *        name:
- *          type: string
- *          default: Jane Doe
- *        password:
- *          type: string
- *          default: stringPassword123
- *        passwordConfirmation:
- *          type: string
- *          default: stringPassword123
- *    CreateUserResponse:
- *      type: object
- *      properties:
- *        email:
- *          type: string
- *        name:
- *          type: string
- *        id:
- *          type: string
- *        createdAt:
- *          type: string
- *        updatedAt:
- *          type: string
-
- */
+import { object, string, TypeOf } from "zod";
+import { querySchema } from "./common.schema";
 
 const params = {
   params: object({
@@ -55,15 +15,16 @@ const payload = {
     email: string().email("Not a valid email").nullable().optional(),
     password: string().min(6, "Password too short").nullable().optional(),
     imagePath: string().nullable().optional(),
-    roleId: string().nullable().optional(),
+    role: string().nullable().optional(),
   }),
 };
 
+export const getAllUserSchema = object({ ...querySchema });
+export const getUserSchema = object({ ...params });
 export const createUserSchema = object({ ...payload });
 export const updateUserSchema = object({ ...params, ...payload });
-export const getUserSchema = object({ ...params });
-export const DeleteUserSchema = object({ ...params });
-export const UpdateRoleUserSchema = object({
+export const deleteUserSchema = object({ ...params });
+export const updateRoleUserSchema = object({
   ...params,
   body: object({
     roleId: string({
@@ -77,8 +38,8 @@ export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   "body.password_confirmation"
 >;
+export type GetAllUserInput = TypeOf<typeof getAllUserSchema>;
 export type GetUserInput = TypeOf<typeof getUserSchema>;
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>;
-export type CreateUserResponse = TypeOf<typeof createUserSchema>;
-export type DeleteUserInput = TypeOf<typeof DeleteUserSchema>;
-export type UpdateRoleUserInput = TypeOf<typeof UpdateRoleUserSchema>;
+export type DeleteUserInput = TypeOf<typeof deleteUserSchema>;
+export type UpdateRoleUserInput = TypeOf<typeof updateRoleUserSchema>;

@@ -1,9 +1,15 @@
 import React from "react";
 import styles from "./style.module.scss";
 
-const Pagination = () => {
-  const total = 10;
-  const [paginate, setPaginate] = React.useState(1);
+type Props = {
+  total: number;
+  paginate: number;
+  setPaginate: (num: number) => void;
+};
+
+const Pagination = ({ total = 10, paginate = 1, setPaginate }: Props) => {
+  // const total = 10;
+  // const [paginate, setPaginate] = React.useState(1);
 
   const handleClickLeft = () => {
     if (paginate - 1 < 0) return;
@@ -18,13 +24,15 @@ const Pagination = () => {
   return (
     <div className={styles.Pagination}>
       <div className={styles.swapper}>
-        <button
-          onClick={() => handleClickLeft()}
-          className={styles.button_control}
-        >
-          <i className="fa-solid fa-chevron-left"></i>
-          <span>Prev</span>
-        </button>
+        {paginate !== 1 && (
+          <button
+            onClick={() => handleClickLeft()}
+            className={styles.button_control}
+          >
+            <i className="fa-solid fa-chevron-left"></i>
+            <span>Prev</span>
+          </button>
+        )}
 
         <div className={styles.list}>
           {paginate > 3 && total > 5 && (
@@ -64,7 +72,7 @@ const Pagination = () => {
           })}
           {total > 5 && paginate < total - 2 && (
             <>
-             {total > 6 && paginate < total - 3 && <span>....</span>}
+              {total > 6 && paginate < total - 3 && <span>....</span>}
               <button
                 onClick={() => setPaginate(total)}
                 key={`page-${total}`}
@@ -78,13 +86,15 @@ const Pagination = () => {
           )}
         </div>
 
-        <button
-          onClick={() => handleClickRight()}
-          className={styles.button_control}
-        >
-          <span>Next</span>
-          <i className="fa-solid fa-chevron-right"></i>
-        </button>
+        {paginate < total && (
+          <button
+            onClick={() => handleClickRight()}
+            className={styles.button_control}
+          >
+            <span>Next</span>
+            <i className="fa-solid fa-chevron-right"></i>
+          </button>
+        )}
       </div>
     </div>
   );
