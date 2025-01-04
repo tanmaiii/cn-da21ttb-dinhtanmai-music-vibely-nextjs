@@ -4,7 +4,7 @@ import { CardRoom } from "@/components/Card";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
 import { ButtonIcon } from "@/components/ui";
-import { paths } from "@/lib/constants";
+import { paths, PERMISSIONS } from "@/lib/constants";
 import roomSerive from "@/services/room.service";
 import { ISort } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import { hasPermission } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
   { id: 1, name: "Phổ biến", value: "mostListens" },
@@ -21,6 +24,7 @@ const DataSort: { id: number; name: string; value: ISort }[] = [
 
 const Room = () => {
   const [active, setActive] = useState<ISort>("mostListens");
+  const currentUser = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -37,17 +41,21 @@ const Room = () => {
     queryClient.invalidateQueries({ queryKey: ["playlist"] });
   }, [active, queryClient]);
 
-
   return (
     <div className={`${styles.RoomPage}`}>
       <div className={`${styles.RoomPage_top}`}>
         <div className={styles.header}>
           <h1>Room</h1>
-          <ButtonIcon
-            dataTooltip="Create playlist"
-            onClick={() => router.push(`${paths.ROOM}/create`)}
-            icon={<i className="fa-solid fa-plus"></i>}
-          />
+          {hasPermission(
+            currentUser?.role?.permissions,
+            PERMISSIONS.CREATE_ROOM
+          ) && (
+            <ButtonIcon
+              dataTooltip="Create playlist"
+              onClick={() => router.push(`${paths.ROOM}/create`)}
+              icon={<i className="fa-solid fa-plus"></i>}
+            />
+          )}
         </div>
         <div className={styles.slider}>
           <SliderNav

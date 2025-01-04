@@ -200,3 +200,8 @@ export const hasPermission = (
   permissions: { name: string }[] = [],
   permission: string
 ) => permissions?.some(({ name }) => name === permission);
+
+export const checkEmail = (value: string): boolean => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(value);
+}

@@ -3,7 +3,7 @@ import { IUser, UserRequestDto } from "@/types/auth.type";
 import React, { useEffect, useState } from "react";
 
 import { ButtonLabel } from "@/components/ui";
-import { apiImage, validateFile } from "@/lib/utils";
+import { apiImage, checkEmail, validateFile } from "@/lib/utils";
 import roleService from "@/services/role.service";
 import uploadService from "@/services/upload.service";
 import { useQuery } from "@tanstack/react-query";
@@ -37,10 +37,11 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
   useEffect(() => {
     if (initialData) {
       setForm({
-        name: initialData.name,
-        email: initialData.email,
+        name: initialData?.name,
+        email: initialData?.email,
+        imagePath: initialData?.imagePath,
         password: "",
-        role: initialData.role.id,
+        role: initialData?.role?.id,
       });
     }
   }, [initialData]);
@@ -64,8 +65,13 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
       hasError = true;
     }
 
-    if (!values?.email) {
-      errors.email = "Email is required";
+    if (values?.password && values?.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+      hasError = true;
+    }
+
+    if (!values?.email || !checkEmail(values?.email)) {
+      errors.email = "Email not valid";
       hasError = true;
     }
 
@@ -86,8 +92,6 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
     handleChange({ imagePath: "" });
 
     const { file, error } = validateFile(e);
-
-    console.log(file, error);
 
     if (error) {
       setErrors((prev) => ({ ...prev, imagePath: error }));
@@ -119,8 +123,6 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
         const image = await uploadService.upload(formData);
         formValues.imagePath = image.data.path;
       }
-
-      console.log(formValues);
 
       await onSubmit(formValues);
     } catch (error) {
@@ -176,19 +178,21 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
             error={errors.password}
           />
           <div className="pt-3">
-            <Dropdown
-              label="Role"
-              name="role"
-              value={form?.role || ""}
-              onChange={(role) => handleChange({ role: role.value })}
-              options={
-                roles?.map((role) => ({
-                  label: role.name,
-                  value: role.id,
-                })) || []
-              }
-              error={errors.role}
-            />
+            {roles && (
+              <Dropdown
+                label="Role"
+                name="role"
+                value={form?.role || ""}
+                onChange={(role) => handleChange({ role: role.value })}
+                options={
+                  roles?.map((role) => ({
+                    label: role.name,
+                    value: role.id,
+                  })) || []
+                }
+                error={errors.role}
+              />
+            )}
           </div>
           <div className={styles.buttons}>
             <ButtonLabel

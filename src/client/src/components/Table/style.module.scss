@@ -40,3 +40,8 @@
     }
   }
 }
+
+.Table_Empty {
+  @include flex(center, center, column);
+  padding: $space-32 0;
+}

@@ -7,9 +7,14 @@ import { RoomRequestDto } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import styles from "./style.module.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { hasPermission } from "@/lib/utils";
+import { paths, PERMISSIONS } from "@/lib/constants";
 
 const Page = () => {
   const { toastSuccess, toastError } = useCustomToast();
+  const currentUser = useSelector((state: RootState) => state.user);
   const router = useRouter();
 
   const mutationAdd = useMutation({
@@ -25,6 +30,10 @@ const Page = () => {
       toastError((error as Error)?.message || "Create room failed");
     },
   });
+
+  if (!hasPermission(currentUser?.role.permissions, PERMISSIONS.CREATE_SONGS)) {
+    router.push(paths.ROOM);
+  }
 
   return (
     <div className={styles.PageCreateRoom}>

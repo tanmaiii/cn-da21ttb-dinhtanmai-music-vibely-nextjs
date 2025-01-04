@@ -46,16 +46,13 @@ const renderRow = (item: IRole) => {
 };
 
 const RolesPage = () => {
-
-
-  const {data} = useQuery({
+  const { data } = useQuery({
     queryKey: ["roles"],
     queryFn: async () => {
-      const res = await roleService.getAllRole()
-      return res.data
-    } 
-  })
-
+      const res = await roleService.getAllRole();
+      return res.data;
+    },
+  });
 
   return (
     <div className={styles.RolesPage}>
@@ -104,15 +101,17 @@ const RolesPage = () => {
               ]}
             />
           </div>
-         {data &&  <Table
-            className={styles.Table}
-            data={data}
-            columns={columns}
-            renderRow={renderRow}
-          />}
+          {data && (
+            <Table
+              className={styles.Table}
+              data={data}
+              columns={columns}
+              renderRow={renderRow}
+            />
+          )}
         </div>
         <div className={styles.footer}>
-          <Pagination />
+          <Pagination paginate={1} total={10} setPaginate={() => {}} />
         </div>
       </div>
     </div>

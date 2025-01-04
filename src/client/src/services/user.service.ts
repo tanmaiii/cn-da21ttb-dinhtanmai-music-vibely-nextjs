@@ -28,6 +28,16 @@ class UserService {
     const res = await this.client.post("/", data);
     return res.data;
   }
+
+  async update(id: string, data: UserRequestDto) {
+    const res = await this.client.put(`/${id}`, data);
+    return res.data;
+  }
+
+  async delete(id: string) {
+    const res = await this.client.delete(`/${id}`);
+    return res.data;
+  }
 }
 
 export default new UserService() as UserService;

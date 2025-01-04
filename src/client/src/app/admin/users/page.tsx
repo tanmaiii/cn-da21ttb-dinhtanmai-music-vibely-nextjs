@@ -12,7 +12,7 @@ import styles from "./style.module.scss";
 import { Dropdown } from "@/components/Form";
 import { useState } from "react";
 import roleService from "@/services/role.service";
-import Modal from "@/components/Modal";
+import Modal, { ModalConfirm } from "@/components/Modal";
 import FormUser from "./Form";
 import { useCustomToast } from "@/hooks/useToast";
 
@@ -26,31 +26,41 @@ const columns = [
   { header: "Actions", accessor: "actions" },
 ];
 
-const renderRow = (item: IUser) => {
+type IRow = {
+  item: IUser;
+  onEdit: (item: IUser) => void;
+  onDelete: (item: IUser) => void;
+};
+
+const renderRow = (props: IRow) => {
   return (
     <>
       <td className={styles.col_1}>
         <div>
           <Image
-            src={item.imagePath ? apiImage(item.imagePath) : IMAGES.AVATAR}
-            alt={item.name}
+            src={
+              props.item.imagePath
+                ? apiImage(props.item.imagePath)
+                : IMAGES.AVATAR
+            }
+            alt={props.item.name}
             width={50}
             height={50}
             className="rounded-full"
           />
         </div>
         <div>
-          <h6>{item.name}</h6>
-          <span>{item.slug}</span>
+          <h6>{props.item.name}</h6>
+          <span>{props.item.slug}</span>
         </div>
       </td>
-      <td>{item.email}</td>
-      <td>{formatNumber(item.followers)}</td>
-      <td>{formatNumber(item.songs)}</td>
-      <td>{formatNumber(item.playlists)}</td>
+      <td>{props.item.email}</td>
+      <td>{formatNumber(props.item.followers)}</td>
+      <td>{formatNumber(props.item.songs)}</td>
+      <td>{formatNumber(props.item.playlists)}</td>
       <td className={styles.col_6}>
         <div className={styles.role}>
-          <span>{item?.role?.name}</span>
+          <span>{props.item?.role?.name}</span>
         </div>
       </td>
       <td>
@@ -62,11 +72,13 @@ const renderRow = (item: IUser) => {
         <ButtonIconSquare
           className={`pl-2`}
           size="small"
+          onClick={() => props.onEdit(props.item)}
           icon={<i className="fa-light fa-pencil"></i>}
         />
         <ButtonIconSquare
           className={`pl-2`}
           size="small"
+          onClick={() => props.onDelete(props.item)}
           icon={<i className="fa-light fa-trash"></i>}
         />
       </td>
@@ -75,16 +87,22 @@ const renderRow = (item: IUser) => {
 };
 
 const UserPage = () => {
-  const { toastSuccess } = useCustomToast();
+  const { toastSuccess, toastError } = useCustomToast();
   const [openEdit, setOpenEdit] = useState<IUser | null>(null);
+  const [openDelete, setOpenDelete] = useState<IUser | null>(null);
   const [openAdd, setOpenAdd] = useState(false);
   const [paginate, setPaginate] = useState(1);
   const [total, setTotal] = useState(10);
+  const [keyword, setKeyword] = useState("");
   const queryClient = useQueryClient();
   const { data: users } = useQuery({
-    queryKey: ["users", paginate],
+    queryKey: ["users", paginate, keyword],
     queryFn: async () => {
-      const res = await userService.getAllUsers({ page: paginate, limit: 10 });
+      const res = await userService.getAllUsers({
+        page: paginate,
+        limit: 10,
+        keyword: keyword,
+      });
       setTotal(res.data.totalPages);
       return res.data.data;
     },
@@ -110,6 +128,39 @@ const UserPage = () => {
     },
   });
 
+  const mutationEdit = useMutation({
+    mutationFn: async (data: UserRequestDto) => {
+      if (openEdit) {
+        await userService.update(openEdit?.id, data);
+      }
+    },
+    onSuccess: () => {
+      setPaginate(1);
+      setOpenEdit(null);
+      toastSuccess("Update user successfully");
+      queryClient.invalidateQueries({ queryKey: ["users", paginate] });
+    },
+    onError: (err: unknown) => {
+      toastError((err as Error)?.message || "Update user failed");
+      // setError((error as Error)?.message || "Register failed");
+    },
+  });
+
+  const mutationDelete = useMutation({
+    mutationFn: async (id: string) => {
+      await userService.delete(id);
+    },
+    onSuccess: () => {
+      setPaginate(1);
+      setOpenDelete(null);
+      toastSuccess("Delete user successfully");
+      queryClient.invalidateQueries({ queryKey: ["users", paginate] });
+    },
+    onError: () => {
+      toastError("Delete user failed");
+    },
+  });
+
   return (
     <div className={styles.UserPage}>
       <div className={styles.swapper}>
@@ -127,8 +178,14 @@ const UserPage = () => {
                 <button>
                   <i className="fa-light fa-magnifying-glass"></i>
                 </button>
-                <Input placeholder="Search song" />
+                <Input
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="Search song"
+                />
               </div>
+            </div>
+            <div className={styles.right}>
               <ButtonLabel
                 onClick={() => setOpenAdd(true)}
                 className={styles.btn_add}
@@ -136,30 +193,35 @@ const UserPage = () => {
                 <i className="fa-solid fa-plus"></i>
                 <label htmlFor="">New</label>
               </ButtonLabel>
+              {roles && (
+                <Dropdown
+                  className={styles.dropdown}
+                  label="Filters"
+                  name="filters"
+                  onChange={(role) => console.log(role)}
+                  value="asd"
+                  options={roles.map((role) => {
+                    return {
+                      label: role.name,
+                      value: role.id,
+                    };
+                  })}
+                />
+              )}
             </div>
-
-            {roles && (
-              <Dropdown
-                className={styles.dropdown}
-                label="Filters"
-                name="filters"
-                onChange={(role) => console.log(role)}
-                value="asd"
-                options={roles.map((role) => {
-                  return {
-                    label: role.name,
-                    value: role.id,
-                  };
-                })}
-              />
-            )}
           </div>
           {users && (
             <Table
               className={styles.Table}
               data={users}
               columns={columns}
-              renderRow={renderRow}
+              renderRow={(item: IUser) =>
+                renderRow({
+                  item,
+                  onEdit: (item) => setOpenEdit(item),
+                  onDelete: (item) => setOpenDelete(item),
+                })
+              }
             />
           )}
         </div>
@@ -173,7 +235,7 @@ const UserPage = () => {
       </div>
       <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
         <FormUser
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) => mutationEdit.mutate(values)}
           onClose={() => setOpenEdit(null)}
           initialData={openEdit ? openEdit : undefined}
         />
@@ -184,6 +246,12 @@ const UserPage = () => {
           onClose={() => setOpenAdd(false)}
         />
       </Modal>
+      <ModalConfirm
+        title="Are you sure you want to delete this role?"
+        show={openDelete ? true : false}
+        onClose={() => setOpenDelete(null)}
+        onConfirm={() => openDelete && mutationDelete.mutate(openDelete?.id)}
+      />
     </div>
   );
 };

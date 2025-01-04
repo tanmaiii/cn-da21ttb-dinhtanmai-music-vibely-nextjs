@@ -168,7 +168,6 @@ const RolesPage = () => {
         onClose={() => setOpenDelete(null)}
         onConfirm={() => openDelete && mutationDelete.mutate(openDelete?.id)}
       />
-
       <ModalConfirm
         title="Are you sure you want to delete select this role?"
         show={openDeleteAll}

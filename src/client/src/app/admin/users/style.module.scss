@@ -61,10 +61,12 @@
               font-size: $size-16;
               font-weight: $font-light;
               color: var(--text-color-1);
-              width: 200px;
+              width: 300px;
             }
           }
+        }
 
+        & .right {
           & .btn_add {
             background-color: $color-blue;
             i,
@@ -72,10 +74,11 @@
               color: $color-white-1;
             }
           }
-        }
-
-        & .dropdown {
-          width: 200px;
+          @include flex(center, center, row);
+          gap: $space-8;
+          & .dropdown {
+            width: 150px;
+          }
         }
       }
       & .Table {

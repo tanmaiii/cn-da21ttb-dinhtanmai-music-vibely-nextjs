@@ -109,12 +109,7 @@ export const updateUserHandler = async (
 ) => {
   try {
     const { id } = req.params;
-    const { password, role, ...userUpdateInfo } = req.body;
-
-    let hashPassword: string | undefined;
-    if (password) {
-      hashPassword = await passwordUtil.hash(password);
-    }
+    const { password, role, email, ...userUpdateInfo } = req.body;
 
     const user = await UserService.getById(id);
 
@@ -122,18 +117,50 @@ export const updateUserHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
-    const data = {
+    const existEmail = await UserService.getByEmail(email);
+
+    if (existEmail && existEmail.id !== user.id) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Email already exists");
+    }
+
+    const updatedData = {
       ...userUpdateInfo,
-      ...(hashPassword && { password: hashPassword }),
+      email: email,
+      roleId: role,
     };
 
-    await UserService.update(id, data);
+    await UserService.update(id, updatedData);
 
-    const userNew = await UserService.getById(id);
+    if (email && password) {
+      const hashedPassword = await passwordUtil.hash(password);
+      const account = await AccountsService.getByUserId(user.id);
+
+      if (!account) {
+        await AccountsService.create({
+          userId: user.id,
+          email,
+          password: hashedPassword,
+        });
+        return;
+      } else {
+        if (password) {
+          await AccountsService.update(account.id, {
+            email: email,
+            password: hashedPassword,
+          });
+        } else {
+          await AccountsService.update(account.id, {
+            email: user.email,
+          });
+        }
+      }
+    }
+
+    const updatedUser = await UserService.getById(id);
 
     res
       .status(StatusCodes.OK)
-      .json({ data: userNew, message: "Update user successfully" });
+      .json({ data: updatedUser, message: "Update user successfully" });
   } catch (error) {
     next(error);
   }
