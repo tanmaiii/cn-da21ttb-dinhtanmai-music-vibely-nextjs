@@ -1,5 +1,20 @@
-import { object, string, TypeOf } from "zod";
-import { querySchema } from "./common.schema";
+import { object, string, TypeOf, enum as enum_ } from "zod";
+
+const querySchema = {
+  query: object({
+    limit: string().default("10").optional(),
+    page: string().default("1").optional(),
+    keyword: string().optional(),
+    role: string().optional(),
+    sort: enum_([
+      "newest",
+      "oldest",
+      "mostLikes",
+      "mostListens",
+      "mostFollows",
+    ]).optional(),
+  }),
+};
 
 const params = {
   params: object({
@@ -32,6 +47,13 @@ export const updateRoleUserSchema = object({
     }).nullable(),
   }),
 });
+export const forgotPasswordSchema = object({
+  body: object({
+    email: string({
+      required_error: "Email is required",
+    }).email("Not a valid email"),
+  }),
+});
 
 // Bỏ qua trường password_confirmation khi trả về
 export type CreateUserInput = Omit<
@@ -43,3 +65,9 @@ export type GetUserInput = TypeOf<typeof getUserSchema>;
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>;
 export type DeleteUserInput = TypeOf<typeof deleteUserSchema>;
 export type UpdateRoleUserInput = TypeOf<typeof updateRoleUserSchema>;
+export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>;
+import { z } from "zod";
+
+// function enum_(values: string[]) {
+//   return z.enum(values as [string, ...string[]]);
+// }

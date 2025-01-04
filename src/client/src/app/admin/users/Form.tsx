@@ -1,13 +1,12 @@
 import { DragDropFile, Dropdown, FormItem } from "@/components/Form";
-import { IUser, UserRequestDto } from "@/types/auth.type";
 import React, { useEffect, useState } from "react";
-
 import { ButtonLabel } from "@/components/ui";
 import { apiImage, checkEmail, validateFile } from "@/lib/utils";
 import roleService from "@/services/role.service";
 import uploadService from "@/services/upload.service";
 import { useQuery } from "@tanstack/react-query";
 import styles from "./style.module.scss";
+import { IUser, UserRequestDto } from "@/types/user.type";
 
 interface Props {
   initialData?: IUser;
@@ -35,6 +34,7 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
   });
 
   useEffect(() => {
+    clearForm();
     if (initialData) {
       setForm({
         name: initialData?.name,
@@ -109,7 +109,9 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
       email: "",
       password: "",
       role: "",
+      imagePath: "",
     });
+    setImageFile(null);
   };
 
   const handleSubmit = async (formValues: UserRequestDto) => {
@@ -125,6 +127,7 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
       }
 
       await onSubmit(formValues);
+      clearForm();
     } catch (error) {
       console.error("Error submitting form:", error);
     }

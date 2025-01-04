@@ -2,6 +2,7 @@
 import { Router } from "express";
 import {
   changePassword,
+  forgotPassword,
   login,
   loginGoogle,
   logout,
@@ -17,6 +18,7 @@ import {
   refreshTokenSchema,
   registerSchema,
 } from "../schema/auth.schema";
+import { forgotPasswordSchema } from "../schema/user.schema";
 const router = Router();
 
 router.get("/validate", authorize(), validate);
@@ -36,6 +38,12 @@ router.post(
   authorize(),
   validateData(changePasswordSchema),
   changePassword
+);
+
+router.post(
+  "/forgot-password",
+  validateData(forgotPasswordSchema),
+  forgotPassword
 );
 
 export default router;

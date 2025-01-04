@@ -1,6 +1,6 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { ListResponse, QueryParams, ResponseAPI } from "@/types";
-import { IUser, UserRequestDto } from "@/types/auth.type";
+import { ListResponse, ResponseAPI } from "@/types";
+import { IUser, QueryParamsUser, UserRequestDto } from "@/types/user.type";
 import { AxiosInstance } from "axios";
 
 class UserService {
@@ -11,7 +11,7 @@ class UserService {
   }
 
   async getAllUsers(
-    params: QueryParams
+    params: QueryParamsUser
   ): Promise<ResponseAPI<ListResponse<IUser>>> {
     const res = await this.client.get<ResponseAPI<ListResponse<IUser>>>("/", {
       params,

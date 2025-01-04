@@ -47,6 +47,10 @@ const Table = <T extends object>({
     }
   }, [selectedRows, data]);
 
+  useEffect(() => {
+    setSelectedRows(new Set());
+  }, [data]);
+
   return (
     <>
       <table className={`${styles.Table} ${className}`}>

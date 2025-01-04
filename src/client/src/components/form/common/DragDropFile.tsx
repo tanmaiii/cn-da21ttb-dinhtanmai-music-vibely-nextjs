@@ -45,6 +45,8 @@ const DragDropFile = (porps: Props) => {
   useEffect(() => {
     if (image_default) {
       setImageDefault(image_default);
+    } else {
+      setImageDefault(null);
     }
   }, [image_default, error]);
 

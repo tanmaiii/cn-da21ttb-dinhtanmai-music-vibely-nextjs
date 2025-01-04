@@ -7,3 +7,10 @@ export interface IGenre {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface GenreRequestDto {
+  title: string;
+  description?: string;
+  imagePath?: string;
+  color?: string;
+}

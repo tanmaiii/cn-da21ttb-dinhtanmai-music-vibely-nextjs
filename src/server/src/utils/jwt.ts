@@ -23,6 +23,14 @@ class TokenUtil {
     });
   }
 
+  // Tạo token
+  generateResetPasswordToken(user: any) {
+    return jwt.sign({ id: user.id }, this.secretKey, {
+      expiresIn: "15m", //15m
+      algorithm: "HS256",
+    });
+  }
+
   // Giải mã token
   decodeToken(token: string) {
     try {

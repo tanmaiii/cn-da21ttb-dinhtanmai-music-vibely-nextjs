@@ -1,20 +1,21 @@
 "use client";
+import { Dropdown } from "@/components/Form";
+import Modal, { ModalConfirm } from "@/components/Modal";
 import Table from "@/components/Table";
 import { Input, Pagination } from "@/components/ui";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
-import { IMAGES } from "@/lib/constants";
+import { useCustomToast } from "@/hooks/useToast";
+import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatNumber } from "@/lib/utils";
+import roleService from "@/services/role.service";
 import userService from "@/services/user.service";
-import { IUser, UserRequestDto } from "@/types/auth.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import styles from "./style.module.scss";
-import { Dropdown } from "@/components/Form";
 import { useState } from "react";
-import roleService from "@/services/role.service";
-import Modal, { ModalConfirm } from "@/components/Modal";
 import FormUser from "./Form";
-import { useCustomToast } from "@/hooks/useToast";
+import styles from "./style.module.scss";
+import { useRouter } from "next/navigation";
+import { IUser, UserRequestDto } from "@/types/user.type";
 
 const columns = [
   { header: "User", accessor: "song" },
@@ -30,6 +31,7 @@ type IRow = {
   item: IUser;
   onEdit: (item: IUser) => void;
   onDelete: (item: IUser) => void;
+  onView: (item: IUser) => void;
 };
 
 const renderRow = (props: IRow) => {
@@ -66,6 +68,7 @@ const renderRow = (props: IRow) => {
       <td>
         <ButtonIconSquare
           className={`pl-2`}
+          onClick={() => props.onView(props.item)}
           size="small"
           icon={<i className="fa-light fa-eye"></i>}
         />
@@ -93,15 +96,21 @@ const UserPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [paginate, setPaginate] = useState(1);
   const [total, setTotal] = useState(10);
+  const [openDeleteAll, setOpenDeleteAll] = useState<boolean>(false);
+  const [selected, setSelected] = useState<IUser[] | null>(null);
   const [keyword, setKeyword] = useState("");
+  const [role, setRole] = useState("");
   const queryClient = useQueryClient();
+  const router = useRouter();
+
   const { data: users } = useQuery({
-    queryKey: ["users", paginate, keyword],
+    queryKey: ["users", paginate, keyword, role],
     queryFn: async () => {
       const res = await userService.getAllUsers({
         page: paginate,
         limit: 10,
-        keyword: keyword,
+        keyword: keyword || undefined,
+        role: role || undefined,
       });
       setTotal(res.data.totalPages);
       return res.data.data;
@@ -142,7 +151,6 @@ const UserPage = () => {
     },
     onError: (err: unknown) => {
       toastError((err as Error)?.message || "Update user failed");
-      // setError((error as Error)?.message || "Register failed");
     },
   });
 
@@ -154,6 +162,7 @@ const UserPage = () => {
       setPaginate(1);
       setOpenDelete(null);
       toastSuccess("Delete user successfully");
+      setOpenDeleteAll(false);
       queryClient.invalidateQueries({ queryKey: ["users", paginate] });
     },
     onError: () => {
@@ -165,11 +174,8 @@ const UserPage = () => {
     <div className={styles.UserPage}>
       <div className={styles.swapper}>
         <div className={styles.header}>
-          <h2>Songs</h2>
-          <span>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi
-            deserunt vero ab
-          </span>
+          <h2>Users</h2>
+          <span></span>
         </div>
         <div className={styles.body}>
           <div className={styles.filters}>
@@ -180,12 +186,21 @@ const UserPage = () => {
                 </button>
                 <Input
                   value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
+                  onSubmit={(value) => setKeyword(value)}
                   placeholder="Search song"
                 />
               </div>
             </div>
             <div className={styles.right}>
+              {selected && selected?.length > 0 && (
+                <ButtonLabel
+                  onClick={() => setOpenDeleteAll(true)}
+                  className={styles.btn_delete}
+                >
+                  <i className="fa-light fa-trash"></i>
+                  <label htmlFor="">Delete</label>
+                </ButtonLabel>
+              )}
               <ButtonLabel
                 onClick={() => setOpenAdd(true)}
                 className={styles.btn_add}
@@ -198,14 +213,17 @@ const UserPage = () => {
                   className={styles.dropdown}
                   label="Filters"
                   name="filters"
-                  onChange={(role) => console.log(role)}
-                  value="asd"
-                  options={roles.map((role) => {
-                    return {
-                      label: role.name,
-                      value: role.id,
-                    };
-                  })}
+                  onChange={(role) => setRole(role.value)}
+                  value={role}
+                  options={[
+                    { label: "All", value: "" },
+                    ...roles.map((role) => {
+                      return {
+                        label: role.name,
+                        value: role.id,
+                      };
+                    }),
+                  ]}
                 />
               )}
             </div>
@@ -215,9 +233,12 @@ const UserPage = () => {
               className={styles.Table}
               data={users}
               columns={columns}
+              onSelectRow={(data) => setSelected(data)}
               renderRow={(item: IUser) =>
                 renderRow({
                   item,
+                  onView: (item) =>
+                    router.push(`${paths.ARTIST}/${item?.slug}`),
                   onEdit: (item) => setOpenEdit(item),
                   onDelete: (item) => setOpenDelete(item),
                 })
@@ -251,6 +272,14 @@ const UserPage = () => {
         show={openDelete ? true : false}
         onClose={() => setOpenDelete(null)}
         onConfirm={() => openDelete && mutationDelete.mutate(openDelete?.id)}
+      />
+      <ModalConfirm
+        title="Are you sure you want to delete select ?"
+        show={openDeleteAll}
+        onClose={() => setOpenDeleteAll(false)}
+        onConfirm={() =>
+          selected?.map((item) => mutationDelete.mutate(item.id))
+        }
       />
     </div>
   );

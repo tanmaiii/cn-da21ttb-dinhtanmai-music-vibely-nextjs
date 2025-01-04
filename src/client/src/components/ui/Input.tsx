@@ -35,8 +35,8 @@ const Input = (props: InputProps) => {
 
     typingTimeoutRef.current = setTimeout(() => {
       onSubmit(value);
-    }, 300);
-  }; 
+    }, 500);
+  };
 
   return (
     <input

@@ -14,6 +14,7 @@ interface GetAllOptions {
   userId?: string;
   sort?: SortOptions;
   keyword?: string;
+  // role?: string;
   where?: WhereOptions;
 }
 

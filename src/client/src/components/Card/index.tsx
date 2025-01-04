@@ -85,7 +85,9 @@ const Card = (props: Props) => {
       pause();
       return;
     }
-    isSong && play(data);
+    if (isSong) {
+      play(data);
+    }
   };
 
   return (

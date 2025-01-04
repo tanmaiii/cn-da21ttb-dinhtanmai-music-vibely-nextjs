@@ -1,7 +1,7 @@
 "use client";
 import { Dropdown } from "@/components/Form";
 import Table from "@/components/Table";
-import { Input, Pagination } from "@/components/ui";
+import { Input } from "@/components/ui";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
 import { IMAGES } from "@/lib/constants";
 import { songs } from "@/lib/data";
@@ -126,7 +126,7 @@ const SongPage = () => {
           />
         </div>
         <div className={styles.footer}>
-          <Pagination />
+          {/* <Pagination /> */}
         </div>
       </div>
     </div>

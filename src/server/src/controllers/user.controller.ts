@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { get } from "lodash";
 import {
   DeleteUserInput,
   GetAllUserInput,
   UpdateRoleUserInput,
   UpdateUserInput,
 } from "../schema/user.schema";
-import UserService from "../services/User.service";
-import ApiError from "../utils/ApiError";
-import { getFilePath, SortOptions } from "../utils/commonUtils";
-import passwordUtil from "../utils/passwordUtil";
 import AccountsService from "../services/Accounts.service";
 import RoleService from "../services/Role.service";
+import UserService from "../services/User.service";
+import ApiError from "../utils/ApiError";
+import { SortOptions } from "../utils/commonUtils";
+import passwordUtil from "../utils/passwordUtil";
 
 // Lấy danh sách tất cả người dùng
 export const getAllUsersHandler = async (
@@ -21,14 +20,20 @@ export const getAllUsersHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { limit = 10, page = 1, keyword, sort } = req.query;
+    const { limit = 10, page = 1, keyword, role, sort } = req.query;
+
+    const roleExist = await RoleService.getRoleById(role as string);
+
+    if (role && !roleExist) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Role not found");
+    }
 
     const users = await UserService.getSongsWithPagination({
       limit: parseInt(limit as string, 10),
       page: parseInt(page as string, 10),
-      sort: sort as SortOptions,
       keyword: keyword as string,
-      // where: { roleId: roleArtist.id },
+      sort: sort as SortOptions,
+      where: role ? { roleId: role } : undefined,
     });
 
     res

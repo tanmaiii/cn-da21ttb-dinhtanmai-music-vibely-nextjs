@@ -19,6 +19,8 @@ import RoleService from "../services/Role.service";
 import { ROLES } from "../utils/contants";
 import { OAuth2Client } from "google-auth-library";
 import { IIdentity } from "../middleware/auth.middleware";
+import { ForgotPasswordInput } from "../schema/user.schema";
+import MailService from "../services/Mail.service";
 
 const client = new OAuth2Client(process.env.GG_CLIENT_ID);
 
@@ -321,6 +323,34 @@ export async function loginGoogle(
         refreshToken,
       },
       message: "Register successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function forgotPassword(
+  req: Request<{}, {}, ForgotPasswordInput["body"]>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const email = req.body.email;
+
+    const user = await AccountsService.getByEmail(email);
+
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    // Gửi email reset password
+    const token = TokenUtil.generateResetPasswordToken(user.toJSON());
+
+    await MailService.sendForgotPasswordEmail(email, token);
+
+    res.status(StatusCodes.OK).json({
+      data: true,
+      message: "Reset password successfully",
     });
   } catch (error) {
     next(error);
