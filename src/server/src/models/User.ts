@@ -9,16 +9,15 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
+import { formatStringToSlug } from "../utils/commonUtils";
+import Follows from "./Follows";
 import Playlist from "./Playlist";
+import PlaylistLikes from "./PlaylistLikes";
 import Roles from "./Roles";
+import Room from "./Room";
+import RoomChat from "./RoomChat";
 import Song from "./Song";
 import SongPlays from "./SongPlay";
-import Follows from "./Follows";
-import { formatStringToSlug } from "../utils/commonUtils";
-import RoomChat from "./RoomChat";
-import Room from "./Room";
-import PlaylistSong from "./PlaylistSong";
-import PlaylistLikes from "./PlaylistLikes";
 
 @Table({
   timestamps: true,

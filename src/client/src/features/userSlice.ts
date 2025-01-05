@@ -1,18 +1,7 @@
 "use client";
-import { createSlice } from "@reduxjs/toolkit";
+import { IUser } from "@/types/user.type";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "@/types/auth.type";
-// export interface userState {
-//   id: string;
-//   name: string;
-//   email: string;
-//   role: {
-//     id: string;
-//     name: string;
-//   };
-//   imagePath: string;
-// }
-
+import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlide = createSlice({
   name: "user",

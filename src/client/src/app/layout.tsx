@@ -7,8 +7,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "./globals.scss";
 import StoreProvider from "./StoreProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import AuthProvider from "@/context/authContex";
 import { PlayerProvider } from "@/context/PlayerContext";
+import AuthProvider from "@/context/authContex";
 
 export const metadata: Metadata = {
   title: "Trang chủ | Vibely",
@@ -29,8 +29,8 @@ export default function RootLayout({
       </Head>
       <body suppressHydrationWarning={true}>
         <StoreProvider>
-            <PlayerProvider>
-          <UIProvider>
+          <PlayerProvider>
+            <UIProvider>
               <Toaster
                 position="top-center"
                 containerStyle={{ zIndex: 999999 }}
@@ -41,8 +41,8 @@ export default function RootLayout({
                   <div>{children}</div>
                 </GoogleOAuthProvider>
               </AuthProvider>
-          </UIProvider>
-            </PlayerProvider>
+            </UIProvider>
+          </PlayerProvider>
         </StoreProvider>
       </body>
     </html>
