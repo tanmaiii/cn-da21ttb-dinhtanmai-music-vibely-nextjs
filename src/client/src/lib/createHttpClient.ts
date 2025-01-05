@@ -3,9 +3,9 @@ import { RefreshTokenResponseDto } from "@/types/auth.type";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import queryString from "query-string";
-import { paths } from "./constants";
-import tokenService from "./tokenService";
 import apiConfig from "./api";
+import tokenService from "./tokenService";
+import { paths } from "./constants";
 
 const API = apiConfig.baseUrl;
 
@@ -28,12 +28,14 @@ const createHttpClient = (baseurl: string = "") => {
       !isRefreshToken
     ) {
       try {
-        const res = (await axios.post(`${API}/auth/refresh-token`, {
-          refreshToken: tokenService.refreshToken,
-        })) as ResponseAPI<RefreshTokenResponseDto>;
-
-        tokenService.accessToken = res.data.accessToken;
-        tokenService.refreshToken = res.data.refreshToken;
+        const res = await axios.post<ResponseAPI<RefreshTokenResponseDto>>(
+          `${API}/api/auth/refresh-token`,
+          {
+            refreshToken: tokenService.refreshToken,
+          }
+        );
+        tokenService.accessToken = res.data.data.accessToken;
+        tokenService.refreshToken = res.data.data.refreshToken;
       } catch (error) {
         console.error("Refresh token failed", error);
         window.location.href = paths.LOGOUT;
