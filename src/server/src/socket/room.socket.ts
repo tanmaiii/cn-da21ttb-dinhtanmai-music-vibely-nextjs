@@ -31,17 +31,17 @@ export const leaveRoomHandler = async (
   userId: string
 ) => {
   try {
-    // const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
+    const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
     
     socket.leave(roomId); // Xóa người dùng khỏi phòng chat
    
-    // if (!exitsUser) {
-    //   console.log(`User ${userId} not in room ${roomId}`);
-    //   return;
-    // }
+    if (!exitsUser) {
+      console.log(`User ${userId} not in room ${roomId}`);
+      return;
+    }
 
     console.log("User left room", roomId, userId);
-    // await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
+    await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
   } catch (error) {
     console.error("Error leave room:", error);
   }

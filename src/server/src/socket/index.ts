@@ -70,11 +70,7 @@ export const socketHandler = (io: Server) => {
 
     socket.on("disconnect", async () => {
       const { roomId, userId } = socket.data;
-      console.log("User disconnected", roomId, userId);
-      if (roomId && userId) {
-        leaveRoomHandler(socket, roomId, userId);
-        console.log("User disconnected", socket.id);
-      }
+      leaveRoomHandler(socket, roomId, userId);
     });
   });
 };

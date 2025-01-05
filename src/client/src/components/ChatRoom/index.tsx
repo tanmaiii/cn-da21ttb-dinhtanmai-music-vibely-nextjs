@@ -95,6 +95,7 @@ const ChatRoom = (props: IChatRoom) => {
         </div>
 
         <ButtonIcon
+          className={styles.RoomChat_header_hide}
           hide={true}
           icon={<i className="fa-sharp fa-solid fa-right-to-line"></i>}
         />
@@ -176,9 +177,14 @@ const ChatRoomRequest = ({}: { roomId: string }) => {
               placeholder="Search for singers, songs..."
               onSubmit={handleSearch}
             />
-            {keyword && <button className={`${styles.clear}`} onClick={() => setKeyword("")}>
-              <i className="fa-solid fa-xmark"></i>
-            </button>}
+            {keyword && (
+              <button
+                className={`${styles.clear}`}
+                onClick={() => setKeyword("")}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            )}
           </div>
         </div>
         <div className={`${styles.list}`}>
@@ -192,7 +198,9 @@ const ChatRoomRequest = ({}: { roomId: string }) => {
                   </div>
                   <div className={`${styles.item_img}`}>
                     <Image
-                      src={song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
+                      src={
+                        song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG
+                      }
                       alt="image.png"
                       width={50}
                       height={50}
@@ -201,7 +209,7 @@ const ChatRoomRequest = ({}: { roomId: string }) => {
                   </div>
                   <div className={`${styles.item_info}`}>
                     <h4>{song.title}</h4>
-                    <p>{song?.creator?.name|| "Author"}</p>
+                    <p>{song?.creator?.name || "Author"}</p>
                   </div>
                   <div className={`${styles.item_action}`}>
                     <ButtonIcon

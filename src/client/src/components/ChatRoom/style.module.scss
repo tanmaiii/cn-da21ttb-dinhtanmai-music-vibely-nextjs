@@ -45,6 +45,11 @@
         }
       }
     }
+
+    &_hide {
+      // opacity: 0;
+      visibility: hidden;
+    }
   }
 
   &_body {
