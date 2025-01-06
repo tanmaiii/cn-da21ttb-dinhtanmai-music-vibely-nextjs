@@ -1,12 +1,37 @@
 import path from "path";
 import Genre from "../models/Genre";
 import fs from "fs";
+import { Op } from "sequelize";
 
 export const attributesGenre = ["id", "title", "description"];
 
 export default class GenreService {
   static async getAll() {
     return Genre.findAll();
+  }
+
+  static async getGenresWithPagination(
+    page?: number,
+    limit?: number,
+    keyword?: string
+  ) {
+    const data = await Genre.findAndCountAll({
+      where: keyword && {
+        [Op.or]: [
+          { title: { [Op.substring]: keyword } },
+          { description: { [Op.substring]: keyword } },
+        ],
+      },
+      limit: limit ? limit : undefined,
+      offset: page ? (page - 1) * limit : undefined,
+    });
+
+    return {
+      data: data.rows,
+      totalItems: data.count,
+      currentPage: page || 0,
+      totalPages: Math.ceil(data.count / limit) || 0,
+    }
   }
 
   static async getById(id: string) {

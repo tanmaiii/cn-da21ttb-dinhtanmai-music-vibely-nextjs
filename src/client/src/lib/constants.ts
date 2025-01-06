@@ -50,6 +50,7 @@ export const paths = {
   UPLOAD: "/upload",
   FAVORITES: "/favorites",
   GENRE: "/genre",
+  MOOD: "/mood",
   SEARCH: "/search",
   SETTINGS: "/settings",
   NOT_FOUND: "/404",
@@ -129,6 +130,11 @@ export const sidebarAdminLinks = [
         title: "Genres",
         paths: [paths.ADMIN + paths.GENRE],
         icon: "fa-sharp fa-light fa-list-music",
+      },
+      {
+        title: "Moods",
+        paths: [paths.ADMIN + paths.MOOD],
+        icon: "fa-light fa-icons",
       },
       {
         title: "Users",

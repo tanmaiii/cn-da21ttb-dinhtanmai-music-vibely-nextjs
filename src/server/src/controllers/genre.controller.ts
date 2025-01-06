@@ -11,7 +11,14 @@ export const getGenresHandler = async (
   next: NextFunction
 ) => {
   try {
-    const genres = await GenreService.getAll();
+    // const genres = await GenreService.getAll();
+    const { page, limit, keyword } = req.query;
+    const genres = await GenreService.getGenresWithPagination(
+      Number(page),
+      Number(limit),
+      keyword as string
+    );
+    
     res
       .status(StatusCodes.OK)
       .json({ data: genres, message: "Get genres successfully" });
