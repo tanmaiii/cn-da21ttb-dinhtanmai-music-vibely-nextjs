@@ -1,29 +1,4 @@
-import { number, object, string, TypeOf } from "zod";
-
-/**
- * @openapi
- * components:
- *  schemas:
- *    LoginInput:
- *      type: object
- *      required:
- *        - email
- *        - password
- *      properties:
- *        email:
- *          type: string
- *          default: jane.doe@example.com
- *        password:
- *          type: string
- *          default: stringPassword123
- *    LoginResponse:
- *      type: object
- *      properties:
- *        email:
- *         type: string
- *        password:
- *          type: string
- */
+import { object, string, TypeOf } from "zod";
 
 export const loginSchema = object({
   body: object({

@@ -62,9 +62,6 @@ class User extends Model {
   @HasMany(() => Song)
   songs: Song[];
 
-  // @HasMany(() => Playlist)
-  // playlists: Playlist[];
-
   @BelongsToMany(() => Playlist, () => PlaylistLikes)
   likedPlaylists!: Playlist[];
 

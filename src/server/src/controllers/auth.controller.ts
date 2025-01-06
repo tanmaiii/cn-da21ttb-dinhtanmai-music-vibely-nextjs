@@ -1,9 +1,3 @@
-import { NextFunction, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { JwtPayload } from "jsonwebtoken";
-import { get } from "lodash";
-import UserService from "../services/User.service";
-
 import {
   ChangePasswordInput,
   LoginInput,
@@ -11,6 +5,11 @@ import {
   RefreshTokenInput,
   RegisterInput,
 } from "../schema/auth.schema";
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
+import { get } from "lodash";
+import UserService from "../services/User.service";
 import ApiError from "../utils/ApiError";
 import TokenUtil from "../utils/jwt";
 import PasswordUtil from "../utils/passwordUtil";
@@ -20,7 +19,7 @@ import { ROLES } from "../utils/contants";
 import { OAuth2Client } from "google-auth-library";
 import { IIdentity } from "../middleware/auth.middleware";
 import { ForgotPasswordInput } from "../schema/user.schema";
-import MailService from "../services/Mail.service";
+import MailUtil from "../utils/MailUtil";
 
 const client = new OAuth2Client(process.env.GG_CLIENT_ID);
 
@@ -346,7 +345,7 @@ export async function forgotPassword(
     // Gửi email reset password
     const token = TokenUtil.generateResetPasswordToken(user.toJSON());
 
-    await MailService.sendForgotPasswordEmail(email, token);
+    await MailUtil.sendForgotPasswordEmail(email, token);
 
     res.status(StatusCodes.OK).json({
       data: true,

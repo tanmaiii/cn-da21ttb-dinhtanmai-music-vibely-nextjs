@@ -1,4 +1,4 @@
-import { number, object, string, enum as enum_, ZodEnum } from "zod";
+import { enum as enum_, object, string } from "zod";
 
 export const querySchema = {
   query: object({
