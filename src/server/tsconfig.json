@@ -8,8 +8,15 @@
     "noImplicitAny": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "./dist"
   },
-  "include": ["src/**/*", "../client/src/services/socket.service.ts"],
+  "include": [
+    "src/**/*",
+    "../client/src/services/socket.service.ts",
+    "clean.js"
+  ],
   "files": ["src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }

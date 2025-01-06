@@ -187,7 +187,7 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
                 onChange={(e) => handleChange({ description: e.target.value })}
                 name="title"
                 error={errors.description}
-                max={500}
+                max={255}
               />
               <div>
                 <Radio

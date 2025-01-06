@@ -1,13 +1,12 @@
 "use client";
+import roomService from "@/services/room.service";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import styles from "./style.module.scss";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import SildeItem from "./ItemSlide";
-import banner1 from "@/public/images/banner1.jpg";
-import banner2 from "@/public/images/banner2.jpg";
-import banner3 from "@/public/images/banner3.jpg";
+import styles from "./style.module.scss";
 
 function SampleNextArrow(props: {
   className?: string;
@@ -65,12 +64,19 @@ const Slideshow = () => {
     // customPaging: () => <div className={`${styles.SlickDot}`}></div>,
   };
 
+  const { data: rooms } = useQuery({
+    queryKey: ["rooms-banner"],
+    queryFn: async () => {
+      const res = await roomService.getAll({ page: 1, limit: 4 });
+      return res.data.data;
+    },
+  });
+
   return (
     <div className={`${styles.Slideshow}`}>
       <Slider {...settings}>
-        <SildeItem title="1" img={banner1.src} />
-        <SildeItem title="2" img={banner2.src} />
-        <SildeItem title="3" img={banner3.src} />
+        {rooms &&
+          rooms.map((room, index) => <SildeItem key={index} data={room} />)}
       </Slider>
     </div>
   );

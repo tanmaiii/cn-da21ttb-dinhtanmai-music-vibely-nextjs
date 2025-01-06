@@ -1,5 +1,4 @@
 import multer from "multer";
-import log from "../utils/logger";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

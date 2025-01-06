@@ -6,7 +6,7 @@ import { default as SongPlay } from "../models/SongPlay";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
-import { attributesUser } from "./User.service";
+import UserService, { attributesUser } from "./User.service";
 import SongLikes from "../models/SongLikes";
 
 interface GetAllOptions {
@@ -175,9 +175,9 @@ export default class SongService {
     });
 
     // Sắp xếp kết quả trả về theo thứ tự trong orderedSongIds
-    const orderedSongs = orderedSongIds.map((id) =>
-      songs.find((song) => song.id === id)
-    ).filter(song => song !== null);
+    const orderedSongs = orderedSongIds
+      .map((id) => songs.find((song) => song.id === id))
+      .filter((song) => song !== null);
 
     return orderedSongs;
   };
@@ -191,6 +191,7 @@ export default class SongService {
 
   // Lấy bài hát theo id
   static getSongById = async (id: string, userId?: string) => {
+    
     const whereCondition: any = userId
       ? {
           [Op.or]: [{ public: true }, { userId }],
@@ -217,6 +218,12 @@ export default class SongService {
     } as any);
 
     return song;
+  };
+
+  static getSongNotChecked = (id: string) => {
+    return Song.findOne({
+      where: { id },
+    });
   };
 
   static getPathAudio = async (id: string) => {

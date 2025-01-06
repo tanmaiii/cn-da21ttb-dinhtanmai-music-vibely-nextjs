@@ -6,6 +6,8 @@ import song from "@/public/images/song.png";
 import logo from "@/public/images/logo.png";
 import google from "@/public/images/google.png";
 
+export const MAX_MEMBERS = 50;
+
 export const ROLES: { [key: string]: string } = {
   ADMIN: "Admin",
   ARTIST: "Artist",
@@ -109,6 +111,49 @@ export const sidebarLinks = [
   },
 ];
 
+export const sidebarAdminLinks = [
+  {
+    title: "",
+    items: [
+      {
+        title: "Home",
+        paths: [paths.ADMIN],
+        icon: "fa-light fa-house",
+      },
+      {
+        title: "Songs",
+        paths: [paths.ADMIN + paths.SONG],
+        icon: "fa-light fa-music",
+      },
+      {
+        title: "Genres",
+        paths: [paths.ADMIN + paths.GENRE],
+        icon: "fa-sharp fa-light fa-list-music",
+      },
+      {
+        title: "Users",
+        paths: [paths.ADMIN + paths.USERS],
+        icon: "fa-light fa-user",
+      },
+      {
+        title: "Playlists",
+        paths: [paths.ADMIN + paths.PLAYLIST],
+        icon: "fa-light fa-album",
+      },
+      {
+        title: "Rooms",
+        paths: [paths.ADMIN + paths.ROOM],
+        icon: "fa-light fa-users-medical",
+      },
+      {
+        title: "Roles",
+        paths: [paths.ADMIN + paths.ROLES],
+        icon: "fa-light fa-user-gear",
+      },
+    ],
+  },
+];
+
 export const navSongPage = [
   {
     id: 1,
@@ -150,49 +195,5 @@ export const navRoomPage = [
   {
     id: 3,
     name: "Members",
-  },
-];
-
-export const sidebarAdminLinks = [
-  {
-    title: "",
-    items: [
-      {
-        title: "Home",
-        paths: [paths.ADMIN],
-        icon: "fa-light fa-house",
-      },
-      {
-        title: "Songs",
-        paths: [paths.ADMIN + paths.SONG],
-        icon: "fa-light fa-music",
-      },
-      {
-        title: "Genres",
-        paths: [paths.ADMIN + paths.GENRE],
-        icon: "fa-sharp fa-light fa-list-music",
-      },
-      {
-        title: "Users",
-        paths: [paths.ADMIN + paths.USERS],
-        icon: "fa-light fa-user",
-      },
-      {
-        title: "Playlists",
-        paths: [paths.ADMIN + paths.PLAYLIST],
-        icon: "fa-light fa-album",
-      },
-      {
-        title: "Rooms",
-        paths: [paths.ADMIN + paths.ROOM],
-        icon: "fa-light fa-users-medical",
-      },
-      {
-        title: "Roles",
-        paths: [paths.ADMIN + paths.ROLES],
-        icon: "fa-light fa-user-gear",
-        // <i class="fa-light fa-user-gear"></i>
-      },
-    ],
   },
 ];

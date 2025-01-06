@@ -8,6 +8,8 @@ import SongService from "../services/Song.service";
 import UserService from "../services/User.service";
 import ApiError from "../utils/ApiError";
 import TokenUtil from "../utils/jwt";
+import { ROLES } from "../utils/contants";
+import RoomService from "../services/Room.service";
 
 export interface IIdentity {
   id: string;
@@ -105,20 +107,26 @@ export const isSongAuthor = async (
     const userInfo = get(req, "identity") as IIdentity;
 
     const { id } = req.params;
-    
+
     if (!id) {
       throw new ApiError(StatusCodes.BAD_REQUEST, "Missing songId");
     }
 
     // Tìm bài hát theo songId
-    const song = await SongService.getSongById(id);
+    const song = await SongService.getSongNotChecked(id);
 
     if (!song) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
     }
 
-    // Kiểm tra userId có phải là creatorId của bài hát không
+    if (userInfo.role.name === ROLES.ADMIN) {
+      // Nếu là admin, cho phép tiếp tục
+      next();
+      return;
+    }
+
     if (song.creator.id !== userInfo.id) {
+      // Kiểm tra userId có phải là creatorId của bài hát không
       throw new ApiError(
         StatusCodes.FORBIDDEN,
         "You are not the author of this song"
@@ -143,15 +151,62 @@ export const isPlaylistAuthor = async (
 
     const { id } = req.params;
     if (!id) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Missing songId");
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Missing playlist id");
     }
 
     const playlist = await PlaylistService.getById(id, userInfo.id);
+
+    if (!playlist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
+    }
+
+    if (userInfo.role.name === ROLES.ADMIN) {
+      // Nếu là admin, cho phép tiếp tục
+      next();
+      return;
+    }
 
     if (playlist.creator.id !== userInfo.id) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
         "You are not the author of this playlist"
+      );
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const isRoomAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+
+    const { id } = req.params;
+    if (!id) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Missing room id");
+    }
+
+    const room = await RoomService.getById(id);
+
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
+    }
+
+    if (userInfo.role.name === ROLES.ADMIN) {
+      next();
+      return;
+    }
+
+    if (room.creator.id !== userInfo.id) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        "You are not the author of this room"
       );
     }
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import styles from "./style.module.scss";
-import { useState } from "react";
 import { paths } from "@/lib/constants";
-import banner from "@/public/images/banner1.jpg";
+import { apiImage, formatImg } from "@/lib/utils";
+import { IRoom } from "@/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import styles from "./style.module.scss";
 
-const SildeItem = ({ title, img }: { title: string; img: string }) => {
+const SildeItem = ({ data }: { data: IRoom }) => {
   const router = useRouter();
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -43,7 +44,9 @@ const SildeItem = ({ title, img }: { title: string; img: string }) => {
     <div
       className={`heroSlideItem ${styles.SlideItem}`}
       style={{
-        backgroundImage: `url(${img || banner.src})`,
+        backgroundImage: `url(${
+          data?.imagePath ? formatImg(apiImage(data?.imagePath)) : ""
+        })`,
       }}
     >
       <div
@@ -55,25 +58,25 @@ const SildeItem = ({ title, img }: { title: string; img: string }) => {
       >
         {/* <Link href="/song/123" as="/song/123"> */}
         <span className={`${styles.SlideItem_content_genre}`}>
-          CREATE GENRES
+          {data.creator?.name || "Vibely"}
         </span>
         <div>
           <h4 className={`${styles.SlideItem_content_title}`}>
-            {title || "Title"}
+            {data?.title || "Title"}
           </h4>
           <p className={`${styles.SlideItem_content_desc}`}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            voluptates, quas, quod, doloremque
+            {data?.description || "Description"}
           </p>
         </div>
         <div className={`${styles.SlideItem_content_bottom}`}>
           <button>
             <i className="fa-solid fa-heart"></i>
           </button>
-          <span>123M Likes</span>
+          <span>{data?.membersCount || 0}</span>
         </div>
         {/* </Link> */}
       </div>
+      <div className={styles.overlay}></div>
     </div>
   );
 };

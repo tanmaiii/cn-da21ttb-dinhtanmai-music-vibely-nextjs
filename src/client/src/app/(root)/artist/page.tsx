@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
 
+
 const Artist = () => {
   const [isLoad, setIsLoad] = React.useState(true);
 

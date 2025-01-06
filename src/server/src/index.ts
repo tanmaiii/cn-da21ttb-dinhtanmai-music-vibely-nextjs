@@ -11,16 +11,20 @@ import router from "./routes";
 import { socketHandler } from "./socket";
 import "./config/sequelizeConfig";
 import socketConfig from "./config/socketConfig";
-import { setupSwagger } from "./config/swaggerConfig";
+// import { setupSwagger } from "./config/swaggerConfig";
+import "./config/swaggerConfig";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './config/swagger-output.json'; // Tải tài liệu Swagger từ file JSON đã tạo
+
 
 const PORT = process.env.PORT || 8000;
 const url = process.env.URL_FRONTEND || "http://localhost:3000";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {...socketConfig});
+const io = new Server(server, { ...socketConfig }); // Tạo socket server
 
-//http://localhost:8000/audio/...
+// Đăng ký các folder chứa file tĩnh
 app.use("/audio", express.static(path.join(__dirname, "../uploads/audio")));
 app.use("/image", express.static(path.join(__dirname, "../uploads/images")));
 app.use("/lyric", express.static(path.join(__dirname, "../uploads/lyrics")));
@@ -41,8 +45,10 @@ app.use(express.static("public"));
 app.use(globalAuthorize); // Middleware xử lý token
 app.use("/api/", router());
 app.get("/", (req, res) => {
-  res.json("Hello World");
+  res.send("Hello");
 });
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // Middleware xử lý lỗi
 app.use(errorMiddleware);
@@ -51,10 +57,7 @@ app.use(errorMiddleware);
 app.use(express.urlencoded({ extended: true }));
 
 // Tạo open api cho swagger
-setupSwagger(app);
-
+// setupSwagger(app);
 socketHandler(io);
 
-server.listen(PORT, () => {
-  console.log(`✅ Server is running on port: ${PORT}`);
-});
+server.listen(PORT, () => console.log(`✅ Server is running on port: ${PORT}`));

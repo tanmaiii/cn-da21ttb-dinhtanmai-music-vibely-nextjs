@@ -15,52 +15,25 @@ import MoodRouter from "./mood.routes";
 import RoomRouter from "./room.routes";
 import RoomChatRouter from "./room_chat.routes";
 import UploadRouter from "./upload.routes";
+import swaggerUi from 'swagger-ui-express';
+import swaggerFile from "../config/swagger-output.json";
 
 export default (): express.Router => {
-  // Define your routes here
-
-  /**
-   * @openapi
-   * tags:
-   *  - name: Auth
-   *    description: Authentication
-   *    externalDocs:
-   *      description: Find out more
-   *  - name: Users
-   *    description: User management
-   *    externalDocs:
-   *     description: Find out more
-   *  - name: Songs
-   *    description: Song management
-   *    externalDocs:
-   *      description: Find out more
-   */
-
+   // #swagger.tags = ['Xác thực nhà tuyển dụng']
   router.use("/auth", AuthRouter);
-
   router.use("/user", UserRouter);
-
   router.use("/song", SongRouter);
-
   router.use("/genre", GenreRouter);
-
   router.use("/playlist", PlaylistRouter);
-
   router.use("/role", RoleRouter);
-
   router.use("/permissions", PermissionsRouter);
-
   router.use("/artist", ArtistRouter);
-
   router.use("/song_play", SongPlayRouter);
-
   router.use("/mood", MoodRouter);
-
   router.use("/room", RoomRouter);
-
   router.use("/room-chat", RoomChatRouter);
-
   router.use("/upload", UploadRouter);
+  // router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
   return router;
 };

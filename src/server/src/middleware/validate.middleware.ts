@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
 
 import { StatusCodes } from "http-status-codes";
@@ -20,20 +20,8 @@ export function validateData(schema: z.ZodObject<any, any>) {
           .join(", ");
         const customErr = new ApiError(StatusCodes.NOT_FOUND, message);
         next(customErr);
-
-        // Kiểu error cũ
-        // const errorMessages = error.errors.map((issue: any) => ({
-        //   message: `${issue.path.join(".")} is ${issue.message}`,
-        // }));
-        // res
-        //   .status(StatusCodes.BAD_REQUEST)
-        //   .json({ error: "Invalid data", details: errorMessages });
       } else {
         throw new Error("Internal Server Error");
-
-        // res
-        //   .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        //   .json({ error: "Internal Server Error" });
       }
     }
   };

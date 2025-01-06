@@ -6,7 +6,8 @@
     "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "sequelize-cli db:migrate --config src/config/config.ts",
-    "db:seed": "sequelize-cli db:seed --config src/config/config.ts"
+    "db:seed": "sequelize-cli db:seed --config src/config/config.ts",
+    "clean": "del ./src/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/nodemailer": "^6.4.17",
     "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.6",
+    "@types/swagger-ui-express": "^4.1.7",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
@@ -55,6 +56,7 @@
     "sequelize-typescript": "^2.1.6",
     "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.23.8"

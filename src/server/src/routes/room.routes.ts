@@ -26,6 +26,7 @@ import {
 } from "../schema/room.schema";
 import { PERMISSIONS } from "../utils/contants";
 import { getAllMemberInRoomSchema } from "../schema/room.schema";
+import { isRoomAuthor } from "../middleware/auth.middleware";
 
 const router: Router = Router();
 
@@ -50,12 +51,14 @@ router.post(
 router.put(
   "/:id",
   authorize(PERMISSIONS.UPDATE_ROOM),
+  isRoomAuthor,
   validateData(updateRoomSchema),
   updateRoomHandler
 );
 router.delete(
   "/:id",
   authorize(PERMISSIONS.DELETE_ROOM),
+  isRoomAuthor,
   validateData(deleteRoomSchema),
   deleteRoomHandler
 );
@@ -63,6 +66,7 @@ router.delete(
 router.post(
   "/:id/song",
   authorize(PERMISSIONS.UPDATE_ROOM),
+  isRoomAuthor,
   validateData(addSongToRoomSchema),
   addSongToRoomHandler
 );
@@ -70,6 +74,7 @@ router.post(
 router.delete(
   "/:id/song",
   authorize(PERMISSIONS.DELETE_ROOM),
+  isRoomAuthor,
   validateData(removeSongToRoomSchema),
   removeSongToRoomHandler
 );

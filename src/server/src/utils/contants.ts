@@ -22,7 +22,7 @@ const PERMISSIONS = {
   UPDATE_ROOM: "UPDATE_ROOM",
   READ_ROOM: "READ_ROOM",
   CHAT_ROOM: "CHAT_ROOM",
-}
+};
 
 const SIZE = {
   TITLE: 255,
@@ -35,6 +35,7 @@ const SIZE = {
   UUID: 36,
 };
 
-export { ROLES, SIZE, PERMISSIONS };
+// Số lượng thành viên tối đa trong 1 nhóm (50)
+const MAX_MEMBERS = 50;
 
-
+export { ROLES, SIZE, PERMISSIONS, MAX_MEMBERS };
