@@ -3,14 +3,14 @@
     "module": "NodeNext",
     "target": "ES6",
     "moduleResolution": "NodeNext",
-    "baseUrl": "../src",
     "sourceMap": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": "./src",
   },
   "include": [
     "src/**/*",

@@ -2,24 +2,21 @@ import express from "express";
 
 const router = express.Router();
 
-import UserRouter from "./user.routes";
-import SongRouter from "./song.routes";
+import ArtistRouter from "./artists.routes";
 import AuthRouter from "./auth.routes";
 import GenreRouter from "./genre.routes";
+import MoodRouter from "./mood.routes";
+import PermissionsRouter from "./permissions.routes";
 import PlaylistRouter from "./playlist.routes";
 import RoleRouter from "./role.routes";
-import PermissionsRouter from "./permissions.routes";
-import ArtistRouter from "./artists.routes";
-import SongPlayRouter from "./song_play.routes";
-import MoodRouter from "./mood.routes";
 import RoomRouter from "./room.routes";
 import RoomChatRouter from "./room_chat.routes";
+import SongRouter from "./song.routes";
+import SongPlayRouter from "./song_play.routes";
 import UploadRouter from "./upload.routes";
-import swaggerUi from 'swagger-ui-express';
-import swaggerFile from "../config/swagger-output.json";
+import UserRouter from "./user.routes";
 
 export default (): express.Router => {
-   // #swagger.tags = ['Xác thực nhà tuyển dụng']
   router.use("/auth", AuthRouter);
   router.use("/user", UserRouter);
   router.use("/song", SongRouter);
@@ -33,7 +30,5 @@ export default (): express.Router => {
   router.use("/room", RoomRouter);
   router.use("/room-chat", RoomChatRouter);
   router.use("/upload", UploadRouter);
-  // router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
   return router;
 };

@@ -11,11 +11,8 @@ import router from "./routes";
 import { socketHandler } from "./socket";
 import "./config/sequelizeConfig";
 import socketConfig from "./config/socketConfig";
-// import { setupSwagger } from "./config/swaggerConfig";
-import "./config/swaggerConfig";
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './config/swagger-output.json'; // Tải tài liệu Swagger từ file JSON đã tạo
-
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./config/swagger-output.json";
 
 const PORT = process.env.PORT || 8000;
 const url = process.env.URL_FRONTEND || "http://localhost:3000";
@@ -43,12 +40,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use(globalAuthorize); // Middleware xử lý token
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/", router());
 app.get("/", (req, res) => {
   res.send("Hello");
 });
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 
 // Middleware xử lý lỗi
 app.use(errorMiddleware);
@@ -56,8 +52,6 @@ app.use(errorMiddleware);
 // Middleware xử lý form data
 app.use(express.urlencoded({ extended: true }));
 
-// Tạo open api cho swagger
-// setupSwagger(app);
 socketHandler(io);
 
 server.listen(PORT, () => console.log(`✅ Server is running on port: ${PORT}`));

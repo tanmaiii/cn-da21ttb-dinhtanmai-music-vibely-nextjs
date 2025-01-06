@@ -1,13 +1,11 @@
-import swaggerAutogen from 'swagger-autogen';
-import dotenv from "dotenv";
-dotenv.config();
+const swaggerAutogen = require("swagger-autogen")();
 
 const doc = {
   info: {
     title: "Hahaha",
     version: "1.0.0",
   },
-  host: "http://localhost:8000", // Thay đổi địa chỉ host của bạn
+  host: "http://localhost:8000",
   basePath: "/",
   schemes: ["https", "http"],
   consumes: ["application/json"],
@@ -15,8 +13,8 @@ const doc = {
 };
 
 const outputFile = "./swagger-output.json";
-const endpointsFiles = ['./routes/index.ts']; // Thay đổi đường dẫn của file routes của bạn
+const endpointsFiles = ["../routes/index.ts"];
 
-swaggerAutogen()(outputFile, endpointsFiles, doc);
+swaggerAutogen(outputFile, endpointsFiles, doc);
 
 // node src/config/swaggerConfig.ts
