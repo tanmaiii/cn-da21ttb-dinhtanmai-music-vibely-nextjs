@@ -1,18 +1,7 @@
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table} from "sequelize-typescript";
 import User from "./User";
 
-@Table({
-  tableName: "accounts",
-  modelName: "Account",
-  timestamps: true,
-})
+@Table({ tableName: "accounts", modelName: "Account",timestamps: true})
 export default class Account extends Model<Account> {
   @Column({
     primaryKey: true,

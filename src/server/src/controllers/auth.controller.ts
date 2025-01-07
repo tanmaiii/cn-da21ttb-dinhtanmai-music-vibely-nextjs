@@ -16,12 +16,21 @@ import PasswordUtil from "../utils/passwordUtil";
 import AccountsService from "../services/Accounts.service";
 import RoleService from "../services/Role.service";
 import { ROLES } from "../utils/contants";
-import { OAuth2Client } from "google-auth-library";
 import { IIdentity } from "../middleware/auth.middleware";
 import { ForgotPasswordInput } from "../schema/user.schema";
 import MailUtil from "../utils/MailUtil";
 
+import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client(process.env.GG_CLIENT_ID);
+
+// export async function login(req: Request,res: Response,next: NextFunction) {...}
+// export async function register(req: Request,res: Response,next: NextFunction) {....}
+// export async function validate(req: Request,res: Response,next: NextFunction) {...}
+// export async function refreshToken(req: Request,res: Response,next: NextFunction) {....}
+// export async function loginGoogle(req: Request,res: Response,next: NextFunction) {...}
+// export async function forgotPassword(req: Request,res: Response,next: NextFunction) {...}
+// export async function changePassword(req: Request,res: Response,next: NextFunction) {...}
+// export async function resetPassword(req: Request,res: Response,next: NextFunction) {...}
 
 export async function login(
   req: Request<{}, {}, LoginInput["body"]>,
