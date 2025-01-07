@@ -1,7 +1,7 @@
 "use client";
 
 import { setUser } from "@/features/userSlice";
-import { paths } from "@/lib/constants";
+import { paths, ROLES } from "@/lib/constants";
 import tokenService from "@/lib/tokenService";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
@@ -36,6 +36,10 @@ const Login = () => {
       tokenService.accessToken = data.accessToken;
       tokenService.refreshToken = data.refreshToken;
       dispatch(setUser(data));
+      if (data.role.name === ROLES.ADMIN) {
+        router.push(paths.ADMIN);
+        return;
+      }
       router.push(paths.HOME);
       toast.success("Login successfully");
     } catch (err: unknown) {

@@ -54,3 +54,57 @@
     }
   }
 }
+
+.Admin {
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
+  min-height: 120vh;
+
+  padding: $space-32 $space-32;
+
+  @include tablet {
+    padding: $space-24 $space-24;
+  }
+  @include mobile {
+    padding: $space-8 $space-8;
+  }
+
+  &_swapper {
+    & .top {
+      & > div {
+        &:nth-child(2) .card {
+          background-color: #fef5e5;
+          color: #ffae1f;
+        }
+        &:nth-child(3) .card {
+          background-color: #E8F7FF;
+          color: #49BEFF;
+        }
+        &:nth-child(4) .card {
+          background-color: #FDEDE8;
+          color: #FA896B;
+        }
+      }
+      & .card {
+        @include flex(center, center, column);
+        gap: $space-8;
+        border-radius: $radius-12;
+        padding: $space-20 $space-16;
+        margin-bottom: $space-16;
+        background-color: #ecf2ff;
+        color: #5d87ff;
+
+        i {
+          font-size: $size-40;
+          margin-bottom: $space-8;
+        }
+        h2 {
+          font-size: $size-24;
+        }
+        h4 {
+          font-size: $size-16;
+        }
+      }
+    }
+  }
+}

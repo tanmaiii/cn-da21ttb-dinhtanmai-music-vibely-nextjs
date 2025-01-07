@@ -5,7 +5,7 @@ import { Input } from "@/components/ui";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
 import { IMAGES } from "@/lib/constants";
 import { songs } from "@/lib/data";
-import { formatDateTime, formatNumber } from "@/lib/utils";
+import { apiImage, formatDateTime, formatNumber } from "@/lib/utils";
 import { ISong } from "@/types";
 import Image from "next/image";
 import styles from "./style.module.scss";
@@ -25,7 +25,7 @@ const renderRow = (item: ISong) => {
       <td className={styles.col_1}>
         <div>
           <Image
-            src={item.imagePath ? item.imagePath : IMAGES.SONG}
+            src={item.imagePath ? apiImage(item.imagePath) : IMAGES.SONG}
             alt={item.title}
             width={50}
             height={50}
@@ -34,7 +34,7 @@ const renderRow = (item: ISong) => {
         </div>
         <div>
           <h6>{item.title}</h6>
-          <span>{item.owner[0].name}</span>
+          <span>{item.creator.name}</span>
         </div>
       </td>
       <td>
@@ -90,7 +90,7 @@ const SongPage = () => {
                 </button>
                 <Input placeholder="Search song" />
               </div>
-              <ButtonLabel  className={styles.btn_add}>
+              <ButtonLabel className={styles.btn_add}>
                 <i className="fa-solid fa-plus"></i>
                 <label htmlFor="">New</label>
               </ButtonLabel>
@@ -125,9 +125,7 @@ const SongPage = () => {
             renderRow={renderRow}
           />
         </div>
-        <div className={styles.footer}>
-          {/* <Pagination /> */}
-        </div>
+        <div className={styles.footer}>{/* <Pagination /> */}</div>
       </div>
     </div>
   );
