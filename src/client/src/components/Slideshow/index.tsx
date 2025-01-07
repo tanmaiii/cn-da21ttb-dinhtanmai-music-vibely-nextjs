@@ -48,20 +48,11 @@ const Slideshow = () => {
     autoplay: true,
     speed: 2000,
     autoplaySpeed: 4000,
-    // cssEase: "linear",
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
-    // appendDots: (dots: string) => (
-    //   <div>
-    //     <ul className={styles.SlickDots} style={{ margin: "0px" }}>
-    //       {dots}
-    //     </ul>
-    //   </div>
-    // ),
-    // customPaging: () => <div className={`${styles.SlickDot}`}></div>,
   };
 
   const { data: rooms } = useQuery({

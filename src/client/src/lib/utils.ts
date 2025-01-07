@@ -150,6 +150,10 @@ export function apiImage(path: string) {
     return path;
   }
 
+  if(path.includes("http://") || path.includes("https://")) {
+    return path;
+  }
+
   return `${apiConfig.imageURL(path)}`;
 }
 

@@ -122,9 +122,9 @@ export const updateUserHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
-    const existEmail = await UserService.getByEmail(email);
+    const existEmail = await AccountsService.getByEmail(email);
 
-    if (existEmail && existEmail.id !== user.id) {
+    if (existEmail && existEmail.userId !== user.id) {
       throw new ApiError(StatusCodes.BAD_REQUEST, "Email already exists");
     }
 
@@ -155,7 +155,7 @@ export const updateUserHandler = async (
           });
         } else {
           await AccountsService.update(account.id, {
-            email: user.email,
+            email,
           });
         }
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import { paths } from "@/lib/constants";
-import { apiImage, formatImg } from "@/lib/utils";
+import { apiImage, formatImg, formatNumber } from "@/lib/utils";
 import { IRoom } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -70,9 +70,10 @@ const SildeItem = ({ data }: { data: IRoom }) => {
         </div>
         <div className={`${styles.SlideItem_content_bottom}`}>
           <button>
-            <i className="fa-solid fa-heart"></i>
+            <i className="fa-light fa-headphones"></i>
           </button>
-          <span>{data?.membersCount || 0}</span>
+          {/* <span>{formatNumber(data?.membersCount) || 0}</span> */}
+          <span>{formatNumber(234) || 0}</span>
         </div>
         {/* </Link> */}
       </div>

@@ -1,10 +1,12 @@
 "use client";
 
+import { usePlayer } from "@/context/PlayerContext";
 import { IMAGES, paths } from "@/lib/constants";
 import {
   apiImage,
   fadeIn,
   formatDateTime,
+  formatDuration,
   formatNumber,
   padNumber,
 } from "@/lib/utils";
@@ -16,10 +18,8 @@ import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { MotionDiv } from "../Motion";
 import { ButtonIcon, ButtonIconRound } from "../ui/Button";
-import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
-import { use } from "react";
 import IconPlay from "../ui/IconPlay";
+import styles from "./style.module.scss";
 
 interface Props {
   num?: number;
@@ -186,7 +186,13 @@ const Track = (props: ITrack) => {
 
           <div className={`${styles.item_default}`}>
             <span>
-              {isLoading ? <Skeleton width={50} /> : song.duration || 100}
+              {isLoading ? (
+                <Skeleton width={50} />
+              ) : song?.duration ? (
+                formatDuration(parseInt(song.duration))
+              ) : (
+                formatDuration(0)
+              )}
             </span>
           </div>
 
@@ -325,7 +331,11 @@ const TrackArtist = (props: ITrackArtist) => {
               <Skeleton height={"100%"} circle />
             ) : (
               <Image
-                src={artist?.imagePath ? artist.imagePath : IMAGES.AVATAR}
+                src={
+                  artist?.imagePath
+                    ? apiImage(artist?.imagePath)
+                    : IMAGES.AVATAR
+                }
                 alt="song"
                 quality={90}
                 width={50}

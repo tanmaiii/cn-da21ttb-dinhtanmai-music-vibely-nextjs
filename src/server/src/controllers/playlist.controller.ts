@@ -186,6 +186,29 @@ export const updatePlaylistHandler = async (
   }
 };
 
+export const deletePlaylistHandler = async (
+  req: Request<GetPlaylistInput["params"]>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+    const playlist = await PlaylistService.getById(req.params.id, userInfo.id);
+
+    if (!playlist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");
+    }
+
+    await PlaylistService.delete(playlist.id);
+
+    res.status(StatusCodes.OK).json({
+      message: "Delete playlist successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Thêm bài hát vào playlist
 export const addSongToPlaylistHandler = async (
   req: Request<

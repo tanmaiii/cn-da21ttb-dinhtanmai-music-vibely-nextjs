@@ -13,8 +13,8 @@ const SelectGenre = ({ error, value, handleChange }: Props) => {
   const { data: genres } = useQuery({
     queryKey: ["genre"],
     queryFn: async () => {
-      const res = await genreService.getAll();
-      return res.data;
+      const res = await genreService.getAll({});
+      return res.data.data;
     },
   });
 

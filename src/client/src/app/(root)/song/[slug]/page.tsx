@@ -2,15 +2,15 @@
 import { HeaderPage } from "@/components/HeaderPage";
 import { TrackArtist } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
+import { usePlayer } from "@/context/PlayerContext";
 import { navSongPage } from "@/lib/constants";
-import { artists, lyrics } from "@/lib/data";
+import { lyrics } from "@/lib/data";
 import songService from "@/services/song.service";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
 
 const SongPage = () => {
   const [nav, setNav] = useState("About");
@@ -79,11 +79,16 @@ const SongPage = () => {
               <div
                 className={`${styles.SongPage_content_body_about_author} row`}
               >
-                {artists.slice(0, 5).map((_, index) => (
+                {/* {artists.slice(0, 5).map((_, index) => (
                   <div key={index} className="col pc-3 t-4 m-6">
                     <TrackArtist artist={_} />
                   </div>
-                ))}
+                ))} */}
+                {data?.creator && (
+                  <div className="col pc-3 t-4 m-6">
+                    <TrackArtist artist={data?.creator} />{" "}
+                  </div>
+                )}
               </div>
 
               <div className={`${styles.SongPage_content_body_about_genre}`}>

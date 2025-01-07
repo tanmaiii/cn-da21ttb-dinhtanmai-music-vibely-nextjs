@@ -3,6 +3,7 @@ import {
   addSongToPlaylistHandler,
   checkLikePlaylistHandler,
   createPlaylistHandler,
+  deletePlaylistHandler,
   getAllPlaylistHandler,
   getAllPlaylistLikedHandler,
   getPlaylistBySlugHandler,
@@ -76,6 +77,13 @@ router.put(
   isPlaylistAuthor,
   validateData(updatePlaylistSchema),
   updatePlaylistHandler
+);
+
+router.delete(
+  "/:id",
+  authorize(PERMISSIONS.DELETE_PLAYLISTS),
+  isPlaylistAuthor,
+  deletePlaylistHandler
 );
 
 // Song

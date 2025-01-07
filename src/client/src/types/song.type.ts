@@ -9,7 +9,7 @@ export default interface ISong {
   songPath: string;
   lyricPath?: string;
   genre?: IGenre; // Thể loại
-  owner: IArtist[]; // Tác giả
+  // owner: IArtist[]; // Tác giả
   creator: IArtist; // Người tạo
   createdAt: string;
   duration: string; // 00:00

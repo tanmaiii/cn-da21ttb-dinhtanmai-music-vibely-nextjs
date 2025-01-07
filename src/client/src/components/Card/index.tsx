@@ -239,7 +239,9 @@ const CardArtist = (props: ICardArtist) => {
               <Skeleton circle height={"100%"} />
             ) : (
               <Image
-                src={artist?.imagePath || IMAGES.AVATAR}
+                src={
+                  artist?.imagePath ? apiImage(artist.imagePath) : IMAGES.AVATAR
+                }
                 alt="image.png"
                 width={200}
                 height={200}

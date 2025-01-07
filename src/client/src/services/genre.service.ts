@@ -1,6 +1,12 @@
 import createHttpClient from "@/lib/createHttpClient";
-import { IGenre, ResponseAPI } from "@/types";
+import { IGenre, ListResponse, ResponseAPI } from "@/types";
 import { GenreRequestDto } from "@/types/genre.type";
+
+interface QueryParamsGenre {
+  limit?: number;
+  page?: number;
+  keyword?: string;
+}
 
 class GenreService {
   private client;
@@ -9,8 +15,12 @@ class GenreService {
     this.client = createHttpClient("api/genre");
   }
 
-  async getAll(): Promise<ResponseAPI<IGenre[]>> {
-    const res = await this.client.get<ResponseAPI<IGenre[]>>("");
+  async getAll(
+    params: QueryParamsGenre
+  ): Promise<ResponseAPI<ListResponse<IGenre>>> {
+    const res = await this.client.get<ResponseAPI<ListResponse<IGenre>>>("", {
+      params,
+    });
     return res.data;
   }
 
@@ -19,7 +29,10 @@ class GenreService {
     return res.data;
   }
 
-  async update(id: string, data: GenreRequestDto): Promise<ResponseAPI<IGenre>> {
+  async update(
+    id: string,
+    data: GenreRequestDto
+  ): Promise<ResponseAPI<IGenre>> {
     const res = await this.client.put<ResponseAPI<IGenre>>(`/${id}`, data);
     return res.data;
   }

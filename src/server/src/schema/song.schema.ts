@@ -14,7 +14,7 @@ const payload = {
     public: boolean().optional(),
     duration: number().optional(),
     genreId: string().max(SIZE.UUID).optional(),
-    moodId: array(string()).optional(),
+    moodIds: array(string()).optional(),
     imagePath: string().optional().nullable(),
     songPath: string().optional().nullable(),
     lyricsPath: string().optional().nullable(),
@@ -30,7 +30,7 @@ const payloadUpdate = {
     public: boolean().optional(),
     duration: number().optional(),
     genreId: string().max(SIZE.UUID).optional(),
-    moodId: array(string()).optional(),
+    moodIds: array(string()).optional(),
   }),
 };
 

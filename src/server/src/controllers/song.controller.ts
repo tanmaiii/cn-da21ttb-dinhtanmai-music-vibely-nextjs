@@ -118,7 +118,7 @@ export const createSongHandler = async (
 
     if (!genreId) throw new ApiError(StatusCodes.NOT_FOUND, "Genre not found");
 
-    const moodIds = req.body.moodId;
+    const moodIds = req.body.moodIds;
 
     const data = {
       ...req.body,
@@ -154,7 +154,7 @@ export const updateSongHandler = async (
 
     if (!song) throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
 
-    const moodIds = req.body.moodId;
+    const moodIds = req.body.moodIds;
 
     const data = {
       ...req.body,

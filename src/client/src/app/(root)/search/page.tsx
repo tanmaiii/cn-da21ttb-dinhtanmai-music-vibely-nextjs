@@ -11,8 +11,8 @@ const Search = () => {
   const { data: genres } = useQuery({
     queryKey: ["genre"],
     queryFn: async () => {
-      const res = await genreService.getAll();
-      return res.data;
+      const res = await genreService.getAll({});
+      return res.data.data;
     },
   });
 
@@ -23,15 +23,15 @@ const Search = () => {
         <div className={`${styles.Search_history_list}`}>
           <div className={`${styles.Search_history_list_item}`}>
             <i className="fa-light fa-magnifying-glass"></i>
-            <span>History 1</span>
+            <span>We dont</span>
           </div>
           <div className={`${styles.Search_history_list_item}`}>
             <i className="fa-light fa-magnifying-glass"></i>
-            <span>History 1</span>
+            <span>EDM</span>
           </div>
           <div className={`${styles.Search_history_list_item}`}>
             <i className="fa-light fa-magnifying-glass"></i>
-            <span>History 1</span>
+            <span>Jack</span>
           </div>
         </div>
       </div>
