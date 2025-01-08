@@ -6,7 +6,7 @@ import { validateFile } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import ISong, { SongRequestDto } from "@/types/song.type";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import BoxAudio from "../BoxAudio";
 import Modal from "../Modal";
 import SelectGenre from "../SelectGenre";
@@ -35,6 +35,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
     imagePath: undefined,
     songPath: "",
     lyricPath: "",
+    duration: 0,
     public: true,
   });
 
@@ -98,7 +99,12 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
     setAudioFile(null);
     setErrors((prev) => ({ ...prev, songPath: "" })); // Reset error
 
-    const { file, error } = validateFile(e, 50 * 1024 * 1024, ["audio/mpeg"], false);
+    const { file, error } = validateFile(
+      e,
+      50 * 1024 * 1024,
+      ["audio/mpeg"],
+      false
+    );
 
     if (error) {
       setErrors((prev) => ({ ...prev, songPath: error }));
@@ -152,10 +158,19 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
     }
   };
 
+  const setDuration = useCallback((value: number) => {
+    handleChange({ duration: value });
+  }, []);
+
   return (
     <div className={`${styles.FormCreateSong}`}>
       <div className={`${styles.top}`}>
-        {audioFile && <BoxAudio file={audioFile} />}
+        {audioFile && (
+          <BoxAudio
+            file={audioFile}
+            setDuration={(value) => setDuration(value)}
+          />
+        )}
       </div>
 
       <div className={`${styles.body} `}>
@@ -262,8 +277,8 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
               />
 
               <SelectMood
-                value={form.moodIds}
                 error={errors.moodIds}
+                value={form.moodIds}
                 handleChange={(value) => handleChange({ moodIds: value })}
               />
             </div>

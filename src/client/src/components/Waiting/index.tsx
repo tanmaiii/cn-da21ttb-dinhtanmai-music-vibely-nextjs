@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ButtonIconRound } from "../ui/Button";
-import styles from "./style.module.scss";
+import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
+import { songs } from "@/lib/data";
+import { ISong } from "@/types";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { useEffect, useState } from "react";
 import { TrackShort } from "../Track";
-import { songs } from "@/lib/data";
-import { ISong } from "@/types";
-import { usePlayer } from "@/context/PlayerContext";
+import { ButtonIconRound } from "../ui/Button";
+import styles from "./style.module.scss";
 
 export const Waiting = () => {
   const { toggleWaiting, isWaitingOpen } = useUI();
-  const { isPlaying, queue } = usePlayer();
-  // const { isPlaying } = usePlayer();
+  const { queue } = usePlayer();
 
   const [ready, setReady] = useState(false);
   // const waitingRef = React.useRef<HTMLDivElement>(null);

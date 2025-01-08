@@ -1,15 +1,16 @@
+import { formatDuration } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import styles from "./style.module.scss";
 import { ControlPlayPause } from "../Playing/ControlsPlaying";
 import Slider from "../Slider";
-import { formatDuration } from "@/lib/utils";
 import { ButtonIcon } from "../ui";
+import styles from "./style.module.scss";
 
 interface Props {
   file: File | null;
+  setDuration?: (duration: number) => void;
 }
 
-const BoxAudio = ({ file: fileMp3 }: Props) => {
+const BoxAudio = ({ file: fileMp3, setDuration }: Props) => {
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [urlMp3, setUrlMp3] = useState<string | null>(() =>
     fileMp3 ? URL.createObjectURL(fileMp3) : null
@@ -27,6 +28,15 @@ const BoxAudio = ({ file: fileMp3 }: Props) => {
       setPercentage(0);
     }
   }, [fileMp3]);
+
+
+  useEffect(() => {
+    if (audioRef.current?.duration) {
+      if (setDuration && audioRef.current) {
+        setDuration(audioRef.current.duration);
+      }
+    }
+  }, [audioRef, setDuration]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
@@ -77,6 +87,7 @@ const BoxAudio = ({ file: fileMp3 }: Props) => {
         src={urlMp3 ? urlMp3 : ""}
         onTimeUpdate={onPlaying}
         onEnded={onEndedAuido}
+        autoPlay
       ></audio>
       <div className={styles.BoxAudio_button}>
         <ControlPlayPause isPlaying={isPlaying} onChange={() => handlePlay()} />

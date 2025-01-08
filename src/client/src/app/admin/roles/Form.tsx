@@ -1,11 +1,11 @@
 import { FormItem, MultipleSelect } from "@/components/Form";
 import roleService, { RoleRequestDto } from "@/services/role.service";
-import { IRole } from "@/types/auth.type";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 
 import { ButtonLabel } from "@/components/ui";
 import styles from "./style.module.scss";
+import { IRole } from "@/types/user.type";
 
 interface Props {
   initialData?: IRole;
@@ -48,12 +48,12 @@ const Form = ({ initialData, onClose, onSubmit }: Props) => {
   };
 
   const handleSubmit = (value: RoleRequestDto) => {
-    if(!value.name) {
+    if (!value.name) {
       setError({
         name: "Name is required",
       });
       return;
-    };
+    }
     onSubmit(value);
     clearForm();
   };

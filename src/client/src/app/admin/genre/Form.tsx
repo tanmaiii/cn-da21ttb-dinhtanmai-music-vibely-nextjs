@@ -143,13 +143,13 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
           />
           <div className={styles.FormGenre_content_info_color}>
             <label htmlFor="color">Color</label>
-            <input
+            {/* <input
               type="color"
               id="color"
               name="color"
               value={form?.color || ""}
               onChange={(e) => handleChange({ color: e.target.value })}
-            />
+            /> */}
           </div>
           <div className={styles.buttons}>
             <ButtonLabel

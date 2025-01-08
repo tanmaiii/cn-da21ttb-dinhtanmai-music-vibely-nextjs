@@ -3,17 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { MultipleSelect } from "../Form";
 
 interface Props {
-  error: any;
-  value: any;
+  error?: string | string[];
+
+  value: string[];
+
   handleChange: (value: string[]) => void;
+
 }
 
 const SelectMood = ({ error, value, handleChange }: Props) => {
   const { data: moods } = useQuery({
     queryKey: ["mood"],
     queryFn: async () => {
-      const res = await moodService.getAll();
-      return res.data;
+      const res = await moodService.getAll({});
+      return res.data.data;
     },
   });
 
@@ -23,7 +26,7 @@ const SelectMood = ({ error, value, handleChange }: Props) => {
         <MultipleSelect
           label="Mood"
           name="mood"
-          error={error}
+          error={Array.isArray(error) ? error.join(", ") : error}
           options={moods.map((g) => {
             return { label: g.title, value: g.id };
           })}

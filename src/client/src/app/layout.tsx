@@ -8,7 +8,7 @@ import "./globals.scss";
 import StoreProvider from "./StoreProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PlayerProvider } from "@/context/PlayerContext";
-import AuthProvider from "@/context/authContex";
+import AuthProvider from "@/context/AuthContex";
 
 export const metadata: Metadata = {
   title: "Trang chủ | Vibely",

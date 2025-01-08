@@ -3,3 +3,8 @@ export interface IMood {
   title: string;
   description?: string;
 }
+
+export interface MoodRequestDto {
+  title: string;
+  description?: string;
+}

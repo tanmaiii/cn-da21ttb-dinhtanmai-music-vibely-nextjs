@@ -63,6 +63,8 @@ const Slideshow = () => {
     },
   });
 
+  console.log(rooms);
+
   return (
     <div className={`${styles.Slideshow}`}>
       <Slider {...settings}>

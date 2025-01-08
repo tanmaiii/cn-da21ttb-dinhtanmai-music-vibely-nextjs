@@ -12,7 +12,7 @@ export default interface ISong {
   // owner: IArtist[]; // Tác giả
   creator: IArtist; // Người tạo
   createdAt: string;
-  duration: string; // 00:00
+  duration: number; // 00:00
   public: boolean; // Công khai
   number?: number; // Số thứ tự trong playlist
   listens: number; // Lượt nghe
@@ -27,7 +27,7 @@ export interface SongRequestDto {
   moodIds: string[];
   public: boolean;
   songPath: string;
-  duration?: string;
+  duration?: number;
   imagePath?: string;
   lyricPath?: string;
 }

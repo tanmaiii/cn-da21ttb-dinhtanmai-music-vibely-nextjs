@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import Mood from "../models/Mood";
 import PlaylistMood from "../models/PlaylistMood";
 import SongMood from "../models/SongMood";
@@ -9,6 +10,30 @@ export default class MoodService {
     Mood.findAll({
       attributes: attributesMood,
     });
+
+  static async getMoodsWithPagination(
+    page?: number,
+    limit?: number,
+    keyword?: string
+  ) {
+    const data = await Mood.findAndCountAll({
+      where: keyword && {
+        [Op.or]: [
+          { title: { [Op.substring]: keyword } },
+          { description: { [Op.substring]: keyword } },
+        ],
+      },
+      limit: limit ? limit : undefined,
+      offset: page ? (page - 1) * limit : undefined,
+    });
+
+    return {
+      data: data.rows,
+      totalItems: data.count,
+      currentPage: page || 0,
+      totalPages: Math.ceil(data.count / limit) || 0,
+    };
+  }
 
   static getMoodById = (id: string) => Mood.findByPk(id);
 

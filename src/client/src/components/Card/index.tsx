@@ -145,16 +145,16 @@ const Card = (props: Props) => {
             )}
           </div>
           <div className={`${styles.Card_swapper_container_desc}`}>
-            <Link href={link}>
+            <>
               {isLoading ? (
                 <Skeleton width={"90%"} height={20} />
               ) : (
-                <>
+                <Link href={link}>
                   {!data?.public && <i className="fa-light fa-lock"></i>}
                   <h4>{data?.title}</h4>
-                </>
+                </Link>
               )}
-            </Link>
+            </>
             {isLoading ? (
               <Skeleton
                 style={{ marginTop: "6px" }}

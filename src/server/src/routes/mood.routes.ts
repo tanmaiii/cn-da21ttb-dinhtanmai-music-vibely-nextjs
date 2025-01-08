@@ -1,21 +1,17 @@
 import { Router } from "express";
-import {
-  createHandler,
-  deleteHandler,
-  getAllHandler,
-  updateHandler,
-} from "../controllers/Mood.controller";
 import { authorize, validateData } from "../middleware";
 import {
   createMoodSchema,
   deleteMoodSchema,
+  getAllMoodSchema,
   updateMoodSchema,
 } from "../schema/mood.schema";
 import { PERMISSIONS } from "../utils/contants";
+import { createHandler, deleteHandler, getAllHandler, updateHandler } from "../controllers/mood.controller";
 
 const router: Router = Router();
 
-router.get("/", getAllHandler);
+router.get("/", validateData(getAllMoodSchema), getAllHandler);
 router.post(
   "/",
   authorize(PERMISSIONS.MANAGE_MOODS),

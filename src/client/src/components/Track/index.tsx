@@ -189,9 +189,9 @@ const Track = (props: ITrack) => {
               {isLoading ? (
                 <Skeleton width={50} />
               ) : song?.duration ? (
-                formatDuration(parseInt(song.duration))
+                formatDuration(parseInt(song?.duration.toString()))
               ) : (
-                formatDuration(0)
+                0
               )}
             </span>
           </div>

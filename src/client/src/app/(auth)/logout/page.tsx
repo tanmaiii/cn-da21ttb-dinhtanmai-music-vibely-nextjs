@@ -21,7 +21,7 @@ const Logout = () => {
       router.push(paths.LOGIN);
     };
     handleLogout();
-  }, [pathname]);
+  }, [pathname, dispatch, router]);
 
   return <div>Logout</div>;
 };

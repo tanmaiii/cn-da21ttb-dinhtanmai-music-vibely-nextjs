@@ -7,6 +7,9 @@ import { artists, playlists, songs } from "@/lib/data";
 import styles from "./root.module.scss";
 
 const Home = () => {
+
+  // return <Loading/>
+
   return (
     <div className={styles.Home}>
       <Slideshow />

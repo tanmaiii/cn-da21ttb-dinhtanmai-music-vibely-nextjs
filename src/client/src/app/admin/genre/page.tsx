@@ -1,22 +1,20 @@
 "use client";
-import { Dropdown } from "@/components/Form";
 import Modal, { ModalConfirm } from "@/components/Modal";
 import Table from "@/components/Table";
-import { Input } from "@/components/ui";
+import Loading from "@/components/Table/loading";
+import { Input, Pagination } from "@/components/ui";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
 import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES } from "@/lib/constants";
 import { apiImage } from "@/lib/utils";
 import genreService from "@/services/genre.service";
-import roleService from "@/services/role.service";
 import { IGenre } from "@/types";
 import { GenreRequestDto } from "@/types/genre.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import FormGenre from "./Form";
 import styles from "./style.module.scss";
-import Loading from "@/components/Table/loading";
 
 const columns = [
   { header: "Title", accessor: "title" },
@@ -55,14 +53,14 @@ const renderRow = (props: IRow) => {
       </td>
       <td>{props.item.description}</td>
       <td className={styles.col_3}>
-        <button
+        {/* <button
           onClick={() =>
             props.item.color && navigator.clipboard.writeText(props.item.color)
           }
           style={{
             backgroundColor: props.item.color,
           }}
-        ></button>
+        ></button> */}
       </td>
       <td>
         {props.onView && (
@@ -91,62 +89,65 @@ const renderRow = (props: IRow) => {
 };
 
 const GenrePage = () => {
-  const { toastSuccess, toastError } = useCustomToast();
+  const { toastError, toastSuccess } = useCustomToast();
   const [openEdit, setOpenEdit] = useState<IGenre | null>(null);
   const [openDelete, setOpenDelete] = useState<IGenre | null>(null);
   const [openAdd, setOpenAdd] = useState(false);
+  const [total, setTotal] = useState(10);
   const [paginate, setPaginate] = useState(1);
   const [openDeleteAll, setOpenDeleteAll] = useState<boolean>(false);
   const [selected, setSelected] = useState<IGenre[] | null>(null);
   const [keyword, setKeyword] = useState("");
-  const [role, setRole] = useState("");
   const queryClient = useQueryClient();
 
   const { data: genres, isLoading } = useQuery({
-    queryKey: ["users", paginate, keyword, role],
+    queryKey: ["genres", paginate, keyword],
     queryFn: async () => {
-      const res = await genreService.getAll();
-      return res.data;
+      console.log("Call API");
+      
+      const res = await genreService.getAll({
+        page: paginate,
+        limit: 10,
+        keyword: keyword,
+      });
+      setTotal(res.data.totalPages);
+      return res.data.data;
     },
   });
-
-  const { data: roles } = useQuery({
-    queryKey: ["roles"],
-    queryFn: async () => {
-      const res = await roleService.getAllRole();
-      return res.data;
-    },
-  });
-
-  const handleSuccess = (message: string) => {
-    setPaginate(1);
-    toastSuccess(message);
-    queryClient.invalidateQueries({ queryKey: ["users", paginate] });
-  };
 
   const handleError = (message: string) => {
     toastError(message);
   };
 
+  const handleSuccess = (message: string) => {
+    toastSuccess(message);
+    setPaginate(1);
+    queryClient.invalidateQueries({ queryKey: ["genres", paginate, keyword] });
+  };
+
   const mutationAdd = useMutation({
     mutationFn: async (data: GenreRequestDto) => {
+      console.log("Call API");
+
       await genreService.create(data);
     },
     onSuccess: () => {
       setOpenAdd(false);
-      handleSuccess("Create user successfully");
+      handleSuccess("Create genre success");
     },
   });
 
   const mutationEdit = useMutation({
     mutationFn: async (data: GenreRequestDto) => {
+      console.log("Call API");
+
       if (openEdit) {
         await genreService.update(openEdit.id, data);
       }
     },
     onSuccess: () => {
       setOpenEdit(null);
-      handleSuccess("Update user successfully");
+      handleSuccess("Update genre success");
     },
     onError: (err: unknown) => {
       handleError((err as Error)?.message || "Update user failed");
@@ -155,23 +156,29 @@ const GenrePage = () => {
 
   const mutationDelete = useMutation({
     mutationFn: async (id: string) => {
+      console.log("Call API");
+
       await genreService.delete(id);
     },
     onSuccess: () => {
       setOpenDelete(null);
       setOpenDeleteAll(false);
-      handleSuccess("Delete user successfully");
+      handleSuccess("Delete genre success");
     },
     onError: () => {
-      handleError("Delete user failed");
+      handleError("Delete genre failed");
     },
   });
+
+  const handleSelect = useCallback((data: IGenre[]) => {
+      setSelected(data);
+  }, []);
 
   return (
     <div className={styles.GenrePage}>
       <div className={styles.swapper}>
         <div className={styles.header}>
-          <h2>Users</h2>
+          <h2>Genres</h2>
           <span></span>
         </div>
         <div className={styles.body}>
@@ -205,24 +212,6 @@ const GenrePage = () => {
                 <i className="fa-solid fa-plus"></i>
                 <label htmlFor="">New</label>
               </ButtonLabel>
-              {roles && (
-                <Dropdown
-                  className={styles.dropdown}
-                  label="Filters"
-                  name="filters"
-                  onChange={(role) => setRole(role.value)}
-                  value={role}
-                  options={[
-                    { label: "All", value: "" },
-                    ...roles.map((role) => {
-                      return {
-                        label: role.name,
-                        value: role.id,
-                      };
-                    }),
-                  ]}
-                />
-              )}
             </div>
           </div>
           {!genres || isLoading ? (
@@ -232,7 +221,7 @@ const GenrePage = () => {
               className={styles.Table}
               data={genres}
               columns={columns}
-              onSelectRow={(data) => setSelected(data)}
+              onSelectRow={(data) => data && handleSelect(data)}
               renderRow={(item: IGenre) =>
                 renderRow({
                   item,
@@ -244,11 +233,11 @@ const GenrePage = () => {
           )}
         </div>
         <div className={styles.footer}>
-          {/* <Pagination
+          <Pagination
             paginate={paginate}
             total={total}
             setPaginate={setPaginate}
-          /> */}
+          />
         </div>
       </div>
       <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
@@ -265,7 +254,7 @@ const GenrePage = () => {
         />
       </Modal>
       <ModalConfirm
-        title="Are you sure you want to delete this role?"
+        title="Are you sure you want to delete this genre?"
         show={openDelete ? true : false}
         onClose={() => setOpenDelete(null)}
         onConfirm={() => openDelete && mutationDelete.mutate(openDelete?.id)}

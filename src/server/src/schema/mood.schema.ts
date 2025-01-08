@@ -2,6 +2,14 @@ import { object, string, TypeOf } from "zod";
 import { querySchema } from "./common.schema";
 import { SIZE } from "../utils/contants";
 
+const query = {
+  query: object({
+    limit: string().optional(),
+    page: string().optional(),
+    keyword: string().optional(),
+  }),
+}
+
 const payload = {
   body: object({
     title: string({
@@ -32,7 +40,7 @@ const params = {
   }),
 };
 
-export const getAllMoodSchema = object({ ...querySchema });
+export const getAllMoodSchema = object({ ...query });
 export const getMoodSchema = object({ ...params });
 export const createMoodSchema = object({ ...payload });
 export const updateMoodSchema = object({ ...payloadUpdate, ...params });

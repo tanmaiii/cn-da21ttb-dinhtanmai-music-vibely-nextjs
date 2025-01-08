@@ -37,15 +37,11 @@ const Table = <T extends object>({
         newSelectedRows.add(id);
       }
 
+      onSelectRow?.(Array.from(newSelectedRows).map((index) => data[index]).filter((item) => item !== undefined));
       return newSelectedRows;
     });
   };
 
-  useEffect(() => {
-    if (onSelectRow) {
-      onSelectRow(data.filter((_, index) => selectedRows.has(index)));
-    }
-  }, [selectedRows, data]);
 
   useEffect(() => {
     setSelectedRows(new Set());

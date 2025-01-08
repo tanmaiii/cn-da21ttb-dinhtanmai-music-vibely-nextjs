@@ -34,7 +34,7 @@ const SildeItem = ({ data }: { data: IRoom }) => {
   // Khi thả chuột
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!isDragging) {
-      router.push(paths.PLAYLIST + "/123");
+      router.push(paths.ROOM +'/' + data.id);
     } else {
       e.preventDefault();
     }

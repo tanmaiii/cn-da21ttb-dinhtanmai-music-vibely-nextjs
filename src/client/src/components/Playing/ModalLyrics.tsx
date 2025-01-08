@@ -203,7 +203,7 @@ const Waiting = () => {
         setActive(index);
       }
     });
-  }, [currentSong]);
+  }, [currentSong, queue]);
 
   const handleClickPlay = ({ index, song }: { index: number; song: ISong }) => {
     setActive(index);

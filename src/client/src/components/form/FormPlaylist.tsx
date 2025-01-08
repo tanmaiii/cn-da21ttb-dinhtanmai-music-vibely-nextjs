@@ -198,8 +198,8 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
                 handleChange={(value) => handleChange({ genreId: value })}
               />
               <SelectMood
-                value={values.moodIds}
                 error={errors.moodIds}
+                value={values.moodIds || []}
                 handleChange={(value) => handleChange({ moodIds: value })}
               />
             </div>

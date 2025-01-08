@@ -9,13 +9,14 @@ import { authorize, uploadFile, validateData } from "../middleware";
 import {
   createGenreSchema,
   deleteGenreSchema,
+  getAllGenreShema,
   updateGenreSchema,
 } from "../schema/genre.schema";
 import { PERMISSIONS } from "../utils/contants";
 
 const router = Router();
 
-router.get("/", getGenresHandler);
+router.get("/", validateData(getAllGenreShema), getGenresHandler);
 router.post(
   "/",
   authorize(PERMISSIONS.MANAGE_GENRE),

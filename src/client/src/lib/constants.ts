@@ -122,11 +122,6 @@ export const sidebarAdminLinks = [
         icon: "fa-light fa-house",
       },
       {
-        title: "Songs",
-        paths: [paths.ADMIN + paths.SONG],
-        icon: "fa-light fa-music",
-      },
-      {
         title: "Genres",
         paths: [paths.ADMIN + paths.GENRE],
         icon: "fa-sharp fa-light fa-list-music",
@@ -137,9 +132,9 @@ export const sidebarAdminLinks = [
         icon: "fa-light fa-icons",
       },
       {
-        title: "Users",
-        paths: [paths.ADMIN + paths.USERS],
-        icon: "fa-light fa-user",
+        title: "Songs",
+        paths: [paths.ADMIN + paths.SONG],
+        icon: "fa-light fa-music",
       },
       {
         title: "Playlists",
@@ -150,6 +145,11 @@ export const sidebarAdminLinks = [
         title: "Rooms",
         paths: [paths.ADMIN + paths.ROOM],
         icon: "fa-light fa-users-medical",
+      },
+      {
+        title: "Users",
+        paths: [paths.ADMIN + paths.USERS],
+        icon: "fa-light fa-user",
       },
       {
         title: "Roles",

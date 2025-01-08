@@ -4,12 +4,12 @@ import Table from "@/components/Table";
 import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
 import { formatNumber } from "@/lib/utils";
 import roleService, { RoleRequestDto } from "@/services/role.service";
-import { IRole } from "@/types/auth.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Form from "./Form";
 import styles from "./style.module.scss";
 import { useCustomToast } from "@/hooks/useToast";
+import { IRole } from "@/types/user.type";
 
 const columns = [
   { header: "Name", accessor: "name" },

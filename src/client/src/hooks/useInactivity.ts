@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 //Hoook kiểm tra xem người dùng có hoạt động không
 const useInactivity = (timeout: number = 5000) => {
   const [isInactive, setIsInactive] = useState(false);
-  let timer: NodeJS.Timeout | null = null;
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     setIsInactive(false);
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
       setIsInactive(true);
     }, timeout);
-  };
+  }, [timeout]);
 
   useEffect(() => {
     window.addEventListener("mousemove", resetTimer);
@@ -19,9 +19,9 @@ const useInactivity = (timeout: number = 5000) => {
 
     return () => {
       window.removeEventListener("mousemove", resetTimer);
-      if (timer) clearTimeout(timer);
+      if (timer.current) clearTimeout(timer.current);
     };
-  }, []);
+  }, [resetTimer, timer]);
 
   return isInactive;
 };

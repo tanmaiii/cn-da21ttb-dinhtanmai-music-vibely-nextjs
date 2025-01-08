@@ -77,12 +77,12 @@
           color: #ffae1f;
         }
         &:nth-child(3) .card {
-          background-color: #E8F7FF;
-          color: #49BEFF;
+          background-color: #e8f7ff;
+          color: #49beff;
         }
         &:nth-child(4) .card {
-          background-color: #FDEDE8;
-          color: #FA896B;
+          background-color: #fdede8;
+          color: #fa896b;
         }
       }
       & .card {
@@ -93,6 +93,7 @@
         margin-bottom: $space-16;
         background-color: #ecf2ff;
         color: #5d87ff;
+        border: 1px solid var(--border-color);
 
         i {
           font-size: $size-40;
@@ -104,6 +105,26 @@
         h4 {
           font-size: $size-16;
         }
+      }
+    }
+
+    & .chars {
+      height: 100%;
+      margin-bottom: $space-16;
+      & .char_card {
+        height: 100%;
+        @include flex(flex-start, center, column);
+      }
+    }
+
+    & .char_card {
+      background-color: var(--background-color-2);
+      border-radius: $radius-12;
+      padding: $space-16;
+      border: 1px solid var(--border-color);
+      & .title {
+        font-size: $size-24;
+        margin-bottom: $space-16;
       }
     }
   }

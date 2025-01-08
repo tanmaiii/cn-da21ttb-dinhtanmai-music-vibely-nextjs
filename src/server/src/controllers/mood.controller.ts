@@ -4,16 +4,23 @@ import { StatusCodes } from "http-status-codes";
 import {
   CreateMoodInput,
   DeleteMoodInput,
+  GetAllMoodInput,
   UpdateMoodInput,
 } from "../schema/mood.schema";
 
 export const getAllHandler = async (
-  req: Request<{}, {}, {}>,
+  req: Request<{}, GetAllMoodInput['query'], {}>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const moods = await MoodService.getMoods();
+    const { page, limit, keyword } = req.query
+    // const moods = await MoodService.getMoods();
+    const moods = await MoodService.getMoodsWithPagination(
+      Number(page),
+      Number(limit),
+      keyword as string
+    );
 
     res
       .status(StatusCodes.OK)

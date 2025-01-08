@@ -1,6 +1,6 @@
 import createHttpClient from "@/lib/createHttpClient";
 import { ResponseAPI } from "@/types";
-import { IPermission, IRole } from "@/types/auth.type";
+import { IPermission, IRole } from "@/types/user.type";
 
 export interface RoleRequestDto {
   name: string;

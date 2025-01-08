@@ -22,6 +22,7 @@ const SongPage = () => {
   const [active, setActive] = useState<string>("newest");
   const [nextPage, setNextPage] = useState(2);
   const queryClient = useQueryClient();
+  const [isLoad, setIsLoad] = useState(true);
 
   const { data, isLoading } = useQuery({
     queryKey: ["song", active],
@@ -39,6 +40,12 @@ const SongPage = () => {
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["song"] });
   }, [active, queryClient]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoad(false);
+    }, 2000);
+  }, []);
 
   return (
     <div className={`${styles.SongPage}`}>
@@ -58,7 +65,7 @@ const SongPage = () => {
           />
         </div>
       </div>
-      {isLoading ? (
+      {(isLoading || isLoad) ? (
         <Loading />
       ) : (
         <div className={`${styles.SongPage_body} row no-gutters`}>

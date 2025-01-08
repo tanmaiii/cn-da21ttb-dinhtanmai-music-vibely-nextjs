@@ -1,6 +1,14 @@
 import { object, string, TypeOf } from "zod";
 import { SIZE } from "../utils/contants";
 
+const query = {
+  query: object({
+    limit: string().optional(),
+    page: string().optional(),
+    keyword: string().optional(),
+  }),
+}
+
 const payload = {
   body: object({
     title: string({
@@ -29,11 +37,13 @@ const params = {
   }),
 };
 
+export const getAllGenreShema = object({...query});
 export const getGenreSchema = object({ ...params });
 export const createGenreSchema = object({ ...payload });
 export const updateGenreSchema = object({ ...payloadUpdate, ...params });
 export const deleteGenreSchema = object({ ...params });
 
+export type GetAllGenreInput = TypeOf<typeof getAllGenreShema>;
 export type GetGenreInput = TypeOf<typeof getGenreSchema>;
 export type CreateGenreInput = TypeOf<typeof createGenreSchema>;
 export type UpdateGenreInput = TypeOf<typeof updateGenreSchema>;
