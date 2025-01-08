@@ -13,8 +13,9 @@ import { IMAGES, paths, PERMISSIONS, ROLES } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import { apiImage, hasPermission } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
 
@@ -96,7 +97,7 @@ const Header = () => {
           ) && (
             <ButtonIconRound
               icon={<i className="fa-regular fa-upload"></i>}
-              onClick={() => router.push(paths.UPLOAD)}
+              onClick={() => router.push(paths.SONG + paths.CREATE)}
             />
           )}
           <ButtonIconRound
@@ -108,30 +109,31 @@ const Header = () => {
             onClick={() => setActiveModal(true)}
           />
           {currentUser ? (
-            <div className={`${styles.Header_right_user}`}>
-              <button
-                className={`${styles.Header_right_user_image} ${
-                  currentUser.role?.name === ROLES.ARTIST &&
-                  styles.Header_right_user_image_artist
-                }  ${
-                  currentUser.role?.name === ROLES.ADMIN &&
-                  styles.Header_right_user_image_admin
-                } 
-                  `}
-              >
-                <Image
-                  src={
-                    currentUser?.imagePath
-                      ? apiImage(currentUser.imagePath)
-                      : IMAGES.AVATAR
-                  }
-                  alt="avatar"
-                  width={40}
-                  height={40}
-                  quality={50}
-                />
-              </button>
-            </div>
+            // <div className={`${styles.Header_right_user}`}>
+            //   <button
+            //     className={`${styles.Header_right_user_image} ${
+            //       currentUser.role?.name === ROLES.ARTIST &&
+            //       styles.Header_right_user_image_artist
+            //     }  ${
+            //       currentUser.role?.name === ROLES.ADMIN &&
+            //       styles.Header_right_user_image_admin
+            //     }
+            //       `}
+            //   >
+            //     <Image
+            //       src={
+            //         currentUser?.imagePath
+            //           ? apiImage(currentUser.imagePath)
+            //           : IMAGES.AVATAR
+            //       }
+            //       alt="avatar"
+            //       width={40}
+            //       height={40}
+            //       quality={50}
+            //     />
+            //   </button>
+            // </div>
+            <UserDropDown />
           ) : (
             <ButtonLabel
               className={`${styles.Header_right_BtnLogout}`}
@@ -153,3 +155,106 @@ const Header = () => {
 };
 
 export default Header;
+
+const UserDropDown = () => {
+  const currentUser = useSelector((state: RootState) => state.user);
+  const router = useRouter();
+  const [active, setActive] = React.useState<boolean>(false);
+  const dropdownRef = useRef<HTMLInputElement>(null);
+
+  // const handleLogout = () => {
+  //   router.push(paths.HOME);
+  // };
+
+  useEffect(() => {
+    function handleMousedown(event: MouseEvent) {
+      const node = event.target as Node;
+      if (!dropdownRef.current?.contains(node)) {
+        setActive(false);
+      }
+    }
+    document.addEventListener("mousedown", (event) => handleMousedown(event));
+    return () =>
+      document.removeEventListener("mousedown", (event) =>
+        handleMousedown(event)
+      );
+  });
+
+  if (!currentUser) return null;
+
+  return (
+    <div ref={dropdownRef} className={`${styles.Header_right_user}`}>
+      <button
+        onClick={() => setActive(!active)}
+        className={`${styles.Header_right_user_image} ${
+          currentUser.role?.name === ROLES.ARTIST &&
+          styles.Header_right_user_image_artist
+        }  ${
+          currentUser.role?.name === ROLES.ADMIN &&
+          styles.Header_right_user_image_admin
+        } 
+                  `}
+      >
+        <Image
+          src={
+            currentUser?.imagePath
+              ? apiImage(currentUser.imagePath)
+              : IMAGES.AVATAR
+          }
+          alt="avatar"
+          width={40}
+          height={40}
+          quality={50}
+        />
+      </button>
+
+      {active && (
+        <div className={`${styles.Header_right_user_dropdown}`}>
+          <Link
+            href={paths.ARTIST + "/" + currentUser.slug}
+            className={`${styles.Header_right_user_dropdown_info}`}
+          >
+            <Image
+              src={
+                currentUser?.imagePath
+                  ? apiImage(currentUser.imagePath)
+                  : IMAGES.AVATAR
+              }
+              alt="avatar"
+              width={40}
+              height={40}
+              quality={50}
+            />
+            <div>
+              <h4>{currentUser.name}</h4>
+              <p>{currentUser?.role?.name.toUpperCase()}</p>
+            </div>
+          </Link>
+          <button
+            onClick={() => router.push(paths.SETTINGS)}
+            className={`${styles.Header_right_user_dropdown_item}`}
+          >
+            <i className="fa-light fa-gear"></i>
+            <span>Settings</span>
+          </button>
+          {currentUser?.role?.name === ROLES.ADMIN && (
+            <button
+              onClick={() => router.push(paths.ADMIN)}
+              className={`${styles.Header_right_user_dropdown_item}`}
+            >
+              <i className="fa-regular fa-chart-line"></i>
+              <span>Dashboard</span>
+            </button>
+          )}
+          <button
+            onClick={() => router.push(paths.LOGOUT)}
+            className={`${styles.Header_right_user_dropdown_item}`}
+          >
+            <i className="fa-light fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -6,6 +6,7 @@ import {
   destroySongHandler,
   getAllHandler,
   getAllLikeSongHandler,
+  getLyricHandler,
   getSongDetailBySlugHandler,
   getSongDetailHandler,
   likeSongHandler,
@@ -13,11 +14,7 @@ import {
   unLikeSongHandler,
   updateSongHandler,
 } from "../controllers/song.controller";
-import {
-  authorize,
-  isSongAuthor,
-  validateData,
-} from "../middleware";
+import { authorize, isSongAuthor, validateData } from "../middleware";
 import {
   createSongSchema,
   deleteSongSchema,
@@ -132,6 +129,13 @@ router.post(
   authorize(PERMISSIONS.PLAY_SONGS),
   validateData(playSongSchema),
   playSongHandler
+);
+
+router.get(
+  "/:id/lyric",
+  authorize(PERMISSIONS.READ_SONGS),
+  validateData(playSongSchema),
+  getLyricHandler
 );
 
 export default router;

@@ -7,10 +7,10 @@ import styles from "./style.module.scss";
 
 interface Props {
   file: File | null;
-  setDuration?: (duration: number) => void;
+  onChangeDuration: (duration: number) => void;
 }
 
-const BoxAudio = ({ file: fileMp3, setDuration }: Props) => {
+const BoxAudio = ({ file: fileMp3, onChangeDuration }: Props) => {
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [urlMp3, setUrlMp3] = useState<string | null>(() =>
     fileMp3 ? URL.createObjectURL(fileMp3) : null
@@ -28,15 +28,6 @@ const BoxAudio = ({ file: fileMp3, setDuration }: Props) => {
       setPercentage(0);
     }
   }, [fileMp3]);
-
-
-  useEffect(() => {
-    if (audioRef.current?.duration) {
-      if (setDuration && audioRef.current) {
-        setDuration(audioRef.current.duration);
-      }
-    }
-  }, [audioRef, setDuration]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
@@ -84,10 +75,10 @@ const BoxAudio = ({ file: fileMp3, setDuration }: Props) => {
       <audio
         ref={audioRef}
         id="audio"
+        onLoadedData={() => onChangeDuration(audioRef.current?.duration || 0)}
         src={urlMp3 ? urlMp3 : ""}
         onTimeUpdate={onPlaying}
         onEnded={onEndedAuido}
-        autoPlay
       ></audio>
       <div className={styles.BoxAudio_button}>
         <ControlPlayPause isPlaying={isPlaying} onChange={() => handlePlay()} />

@@ -6,6 +6,7 @@
   background-color: var(--background-color-1);
   color: var(--text-color-1);
   min-height: 120vh;
+  @include flex(start, center);
 
   padding: 0 $space-32 $space-32;
 
@@ -15,92 +16,237 @@
   @include mobile {
     padding: 0 $space-8 $space-8;
   }
-
-  &_history {
-    & > h4 {
-      font-size: $size-24;
-      color: var(--text-color-1);
-      font-weight: $font-bold;
-      margin-bottom: $space-12;
-    }
-    &_list {
-      @include flex(center, flex-start, row);
-      gap: $space-12;
-      margin-bottom: $space-12;
-      overflow: hidden;
-
-      &_item {
-        padding: $space-8 $space-16;
-        background-color: var(--background-color-2);
-        border-radius: $radius-20;
-        cursor: pointer;
-        width: max-content;
-
-        &:hover {
-          background-color: var(--background-color-3);
-          i,
-          span {
-            color: var(--text-color-1);
-          }
-        }
-        i {
-          font-size: $size-16;
-          color: var(--text-color-2);
-          margin-right: $space-6;
-        }
-        span {
-          font-size: $size-16;
-          color: var(--text-color-2);
-          font-weight: $font-medium;
-        }
+  &_content {
+    max-width: 700px;
+    flex: 1;
+    &_header {
+      h4 {
+        font-size: $size-24;
+        font-weight: 500;
+        margin-bottom: $space-16;
       }
     }
-  }
-  &_genre {
-    & > h4 {
-      font-size: $size-24;
-      color: var(--text-color-1);
-      font-weight: $font-bold;
-      margin-bottom: $space-12;
-    }
-    &_list {
-      &_item {
-        cursor: pointer;
-        height: 200px;
-        width: 100%;
-        padding: $space-24;
-        // background-color: var(--background-color-2);
-        border-radius: $radius-12;
-        margin-bottom: $space-24;
-        transition: all 0.3s;
-        overflow: hidden;
-        position: relative;
-        p {
-          font-size: $size-24;
-          color: $color-white;
-          font-weight: $font-bold;
-        }
 
-        img {
-          width: 45%;
-          height: auto;
-          right: 0;
-          bottom: 0;
-          position: absolute;
-          transform: rotate(25deg);
-          border-radius: 4px;
-          aspect-ratio: 1/1;
-          box-shadow: var(--box-shadow);
-          background-color: var(--background-color-1);
+    &_body {
+      @include flex(center, start, column);
+      width: 100%;
+
+      .Settings_avatar {
+        width: 100%;
+        @include flex(center, space-between, row);
+        gap: $space-12;
+        margin-bottom: $space-24;
+        background-color: var(--background-color-3);
+        border-radius: $radius-12;
+        padding: $space-16;
+        &_img {
+          img {
+            --size: 60px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--background-color-2);
+            // border: 1px solid themed("border");
+          }
         }
-        @include tablet {
-          margin-bottom: $space-24;
+        &_desc {
+          flex: 1;
+          h5 {
+            font-size: $size-16;
+            font-weight: $font-medium;
+            color: var(--text-color-1);
+          }
+          p {
+            font-size: $size-14;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+          }
         }
-        @include mobile {
-          margin-bottom: 8px;
+        & > button {
+          @include flex(center, center);
+          padding: $space-8 $space-12;
+          border-radius: $radius-4;
+          font-size: $size-14;
+          font-weight: $font-medium;
+          color: $color-white;
+          background-color: $color-primary;
+          transition: all 0.3s;
+          cursor: pointer;
+          &:hover {
+            transform: scale(0.98);
+          }
         }
-        &:hover {
-          scale: 0.98;
+      }
+
+      & .Settings_account {
+        width: 100%;
+        .Account_item {
+          width: 100%;
+          & > .title {
+            font-size: $size-16;
+            font-weight: $font-medium;
+            color: var(--text-color-1);
+            margin-bottom: $space-8;
+          }
+          & > .desc {
+            font-size: $size-14;
+            font-weight: $font-light;
+            color: var(--text-color-2);
+            margin-bottom: $space-8;
+          }
+          &_body {
+            border-radius: $radius-8;
+            padding: $space-12;
+            border: 1px solid var(--border-color);
+            margin-bottom: $space-12;
+            @include flex(center, start, row);
+            gap: $space-8;
+            &.focus {
+              border: 1px solid var(--text-color-1);
+            }
+
+            &.error {
+              border: 1px solid $color-red;
+            }
+
+            &_desc {
+              flex: 1;
+              &.edit {
+                & > span {
+                  display: none;
+                }
+                & > input,
+                & > .Account__radio {
+                  display: flex;
+                }
+              }
+              & > span {
+                font-size: $size-16;
+                font-weight: $font-light;
+                color: var(--text-color-1);
+                display: block;
+              }
+              & > input {
+                font-size: $size-16;
+                font-weight: $font-light;
+                color: var(--text-color-1);
+                width: 100%;
+                display: none;
+              }
+
+              & > .Account_radio {
+                @include flex(center, start, row);
+                display: none;
+
+                & > label {
+                  font-size: $size-16;
+                  font-weight: $font-light;
+                  color: var(--text-color-1);
+                  margin-right: $space-12;
+                  @include flex(center, start, row);
+                  gap: $space-8;
+                }
+                input[type="radio"] {
+                  appearance: none;
+                  --webkit-appearance: none;
+                  height: $space-20;
+                  width: $space-20;
+                  border: 2px solid var(--border-color);
+                  border-radius: 50%;
+                  cursor: pointer;
+                  position: relative;
+                  @include flex(center, center);
+                  transition: all 0.3s ease-in-out;
+                  &:hover {
+                    border-color: $color-primary;
+                  }
+                  &::after {
+                    content: "";
+                    font-weight: 999;
+                    display: none;
+                    width: 10px;
+                    height: 10px;
+                    background-color: var(--background-color-2);
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 50%;
+                    right: 50%;
+                    transform: translate(50%, -50%);
+                  }
+                  &:checked {
+                    border-color: $color-primary;
+                    background-color: $color-primary;
+                    &::after {
+                      display: block;
+                    }
+                  }
+                }
+              }
+            }
+            &_buttons {
+              .btnEdit {
+                transition: all 0.3s;
+                cursor: pointer;
+                i {
+                  --size: 32px;
+                  width: var(--size);
+                  height: var(--size);
+                  background-color: var(--background-color-3);
+                  font-size: $size-14;
+                  @include flex(center, center);
+                  color: var(--text-color-2);
+                  border-radius: 50%;
+                }
+                &:hover {
+                  transform: scale(0.96);
+                  i {
+                    color: var(--text-color-1);
+                  }
+                }
+              }
+
+              .btn-clear {
+                i {
+                  --size: 22px;
+                  width: var(--size);
+                  height: var(--size);
+                  background-color: var(--background-color-2);
+                  font-size: $size-16;
+                  @include flex(center, center);
+                  color: var(--text-color-2);
+                  border-radius: 50%;
+                  cursor: pointer;
+                  &:hover {
+                    background-color: var(--background-color-3);
+                  }
+                }
+              }
+            }
+          }
+
+          &_bottom {
+            &_buttons {
+              @include flex(center, end, row);
+              gap: $space-8;
+              button {
+                transition: all 0.3s;
+                cursor: pointer;
+                font-size: $size-14;
+                color: $color-white;
+                background-color: $color-primary;
+                padding: $space-8 $space-16;
+                border-radius: $radius-4;
+                &:hover {
+                  transform: scale(0.96);
+                }
+                &:first-child {
+                  color: var(--text-color-1);
+                  background-color: var(--background-color-3);
+                }
+              }
+            }
+          }
         }
       }
     }

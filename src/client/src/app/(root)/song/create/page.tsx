@@ -5,7 +5,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useCustomToast } from "@/hooks/useToast";
 import { paths, PERMISSIONS } from "@/lib/constants";
 import { RootState } from "@/lib/store";
-import { hasPermission } from "@/lib/utils";
+import { hasPermission, validateFile } from "@/lib/utils";
 import songService from "@/services/song.service";
 import { SongRequestDto } from "@/types/song.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +26,6 @@ const UploadPage = () => {
 
   const onDragEnter = () => {
     setOpenDrop(true);
-    console.log(file);
   };
 
   const onDragLeave = () => {
@@ -34,16 +33,15 @@ const UploadPage = () => {
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const { file, error } = validateFile(e, 12 * 1024 * 1024, ["audio/mpeg"]);
     setOpenDrop(false);
-    setError("");
 
-    if (file && file?.type !== "audio/mpeg") {
-      return setError("Please upload a valid audio file");
+    if(!file){
+      setError("Please upload a valid audio file");
     }
 
-    if (file && file?.size > 11 * 1024 * 1024) {
-      setError("File size is too big");
+    if (error) {
+      setError(error);
       return;
     }
 

@@ -11,6 +11,7 @@ interface PlayerState {
   volume: number;
   queue: ISong[]; // Danh sách bài hát chờ
   playMode: PlayMode;
+  currentTime: number;
   play: (song?: ISong) => void;
   pause: () => void;
   stop: () => void;
@@ -22,6 +23,7 @@ interface PlayerState {
   playNext: () => void;
   playPrevious: () => void;
   handleSongEnd: () => void;
+  onChangeCurrentTime: (time: number) => void;
 }
 
 const PlayerContext = createContext<PlayerState | undefined>(undefined);
@@ -30,6 +32,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentSong, setCurrentSong] = useState<ISong | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
   const [queue, setQueue] = useState<ISong[]>([]);
@@ -162,6 +165,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setQueue([]);
   }
 
+  const onChangeCurrentTime = (time: number) => {
+    setCurrentTime(time);
+  }
+
   return (
     <PlayerContext.Provider
       value={{
@@ -170,6 +177,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         volume,
         queue,
         playMode,
+        currentTime,  
         play,
         pause,
         stop,
@@ -181,6 +189,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         playPrevious,
         playPlaylist,
         handleSongEnd,
+        onChangeCurrentTime,
       }}
     >
       {children}

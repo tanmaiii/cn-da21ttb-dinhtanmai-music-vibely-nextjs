@@ -67,6 +67,7 @@
       @include flex(center, center);
       gap: $space-8;
       cursor: pointer;
+      position: relative;
       &_image {
         cursor: pointer;
         --size: 40px;
@@ -84,6 +85,72 @@
 
         &_admin img {
           border: 2px solid $color-red;
+        }
+      }
+
+      &_dropdown {
+        background-color: var(--background-color-2);
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: 260px;
+        padding: $space-8;
+        border-radius: $radius-8;
+        box-shadow: var(--box-shadow);
+        // border: 1px solid var(--border-color);
+
+        &_info {
+          @include flex(center, flex-start, row);
+          padding: $space-8 $space-4;
+          gap: $space-8;
+          border-bottom: 1px solid var(--border-color);
+          margin-bottom: $space-8;
+
+          img {
+            --size: 60px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            // border: 2px solid $color-white;
+          }
+          h4 {
+            color: var(--text-color-1);
+            font-weight: $font-medium;
+            font-size: $size-20;
+            @include text(1);
+            margin-bottom: $space-4;
+          }
+          p {
+            background-color: $color-primary;
+            color: $color-white;
+            padding: $space-2 $space-4;
+            border-radius: $radius-4;
+            font-weight: $font-bold;
+            font-size: $size-14;
+            width: max-content;
+          }
+        }
+
+        &_item {
+          @include flex(center, flex-start, row);
+          gap: $space-8;
+          padding: $space-12;
+          cursor: pointer;
+          transition: 0.3s;
+          border-radius: $radius-4;
+          width: 100%;
+          &:hover {
+            background-color: var(--background-color-3);
+          }
+          & i {
+            font-size: $size-20;
+            color: var(--text-color-1);
+          }
+          & span {
+            color: var(--text-color-1);
+            font-size: $size-16;
+            font-weight: $font-light;
+          }
         }
       }
     }

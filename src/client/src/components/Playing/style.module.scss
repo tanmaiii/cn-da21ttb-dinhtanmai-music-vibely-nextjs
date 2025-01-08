@@ -321,7 +321,7 @@
             color: rgba($color: $color-white, $alpha: 0.6);
           }
         }
-        &.active {
+        &.is_active {
           p {
             color: $color-white;
           }

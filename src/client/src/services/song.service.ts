@@ -1,6 +1,6 @@
 import createHttpClient from "@/lib/createHttpClient";
 import { ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
-import { SongRequestDto } from "@/types/song.type";
+import { ILyric, SongRequestDto } from "@/types/song.type";
 import { AxiosInstance } from "axios";
 
 class SongService {
@@ -46,6 +46,11 @@ class SongService {
 
   async unLikeSong(songId: string): Promise<ResponseAPI<null>> {
     const res = await this.client.delete<ResponseAPI<null>>(songId + "/like");
+    return res.data;
+  }
+
+  async getLyic(songId: string): Promise<ResponseAPI<ILyric[]>> {
+    const res = await this.client.get<ResponseAPI<ILyric[]>>(songId + "/lyric");
     return res.data;
   }
 }

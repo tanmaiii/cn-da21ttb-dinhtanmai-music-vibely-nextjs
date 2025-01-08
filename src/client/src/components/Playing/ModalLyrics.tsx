@@ -3,16 +3,17 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
 import { IMAGES } from "@/lib/constants";
-import { lyrics } from "@/lib/data";
 import {
   apiImage,
   formatDuration,
   formatImg,
   toggleFullScreen,
 } from "@/lib/utils";
+import songService from "@/services/song.service";
 import { ISong } from "@/types";
+import { ILyric } from "@/types/song.type";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "../Slider";
 import { ButtonIconRound } from "../ui/Button";
 import ControlsPlaying from "./ControlsPlaying";
@@ -133,7 +134,64 @@ const ModalLyrics = () => {
 };
 
 const Lyrics = () => {
-  const { currentSong, isPlaying } = usePlayer();
+  const [lyrics, setLyrics] = useState<ILyric[] | null>([]);
+  const { currentTime, isPlaying, currentSong } = usePlayer();
+  const itemRef = createRef<HTMLLIElement>();
+  const listRef = createRef<HTMLUListElement>();
+  const [active, setActive] = useState(0);
+
+  const fetchLyrics = useCallback(async () => {
+    if (currentSong?.lyricPath) {
+      const res = await songService.getLyic(currentSong.id);
+      if (res?.data) {
+        setLyrics(res.data);
+      }
+    } else {
+      setLyrics(null); // Tránh cập nhật lại cùng giá trị cũ
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
+    fetchLyrics();
+  }, [fetchLyrics]);
+
+  useEffect(() => {
+    if (!lyrics) return;
+
+    lyrics.forEach((lyric, index) => {
+      if (!lyric.time) return;
+      if (lyric.time <= currentTime && currentTime < lyric.time + 1) {
+        if (itemRef.current && listRef.current) {
+          setActive(index);
+        }
+      }
+    });
+  }, [currentTime, itemRef, listRef, lyrics]);
+
+  // useEffect(() => {
+  //   if (isPlaying) {
+  //     fetchLyrics();
+  //   }
+  //   setActive(-1);
+  //   if (listRef.current) {
+  //     listRef.current.scrollIntoView({
+  //       behavior: "smooth", // Cuộn mượt
+  //       block: "start", // Cuộn tới giữa của phần tử
+  //       inline: "start", // Cuộn tới phần tử gần nhất
+  //     });
+  //   }
+  // }, [currentSong, listRef, isPlaying]);
+
+  useEffect(() => {
+    // Sử dụng scrollIntoView nếu itemRef hiện tại không null
+    if (itemRef.current) {
+      itemRef.current.scrollIntoView({
+        behavior: "smooth", // Cuộn mượt
+        block: "center", // Cuộn tới giữa của phần tử
+        inline: "nearest", // Cuộn tới phần tử gần nhất
+      });
+    }
+  }, [active, itemRef]);
 
   return (
     <div className={styles.Lyrics}>
@@ -154,12 +212,18 @@ const Lyrics = () => {
         />
       </div>
       <div className={styles.Lyrics_list}>
-        <ul>
-          {lyrics.map((lyric, index) => (
-            <li key={index} className={`${styles.is_over}`}>
-              <p>{lyric.text}</p>
-            </li>
-          ))}
+        <ul ref={listRef}>
+          {lyrics &&
+            lyrics.map((lyric, index) => (
+              <li
+                ref={index === active ? itemRef : null}
+                key={index}
+                className={`${index === active ? styles.is_active : ""} 
+                  ${index < active ? styles.is_over : ""}`}
+              >
+                <p>{lyric.text}</p>
+              </li>
+            ))}
         </ul>
       </div>
     </div>

@@ -31,3 +31,8 @@ export interface SongRequestDto {
   imagePath?: string;
   lyricPath?: string;
 }
+
+export interface ILyric {
+  time: number;
+  text: string;
+}

@@ -14,14 +14,15 @@ import {
   LikeSongInput,
   PlaySongInput,
   UnLikeSongInput,
-  UpdateSongInput
+  UpdateSongInput,
 } from "../schema/song.schema";
 import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
 import MoodService from "../services/Mood.service";
 import SongService from "../services/Song.service";
 import ApiError from "../utils/ApiError";
-import { getFilePath, SortOptions } from "../utils/commonUtils";
+import { SortOptions } from "../utils/commonUtils";
+import readLrcFile from "../utils/lyricUtils";
 
 // Lấy danh sách bài hát
 export const getAllHandler = async (
@@ -326,14 +327,14 @@ export const getAllLikeSongHandler = async (
 };
 
 // Phát nhạc
-export async function playSongHandler(
+export const playSongHandler = async (
   req: Request<PlaySongInput["params"]>,
   res: Response,
   next: NextFunction
-): Promise<void> {
+): Promise<void> => {
   try {
-    const userId = get(req, "identity.id") as string;
-    const existSong = await SongService.getSongById(req.params.id, userId);
+    const userInfo = get(req, "identity") as IIdentity;
+    const existSong = await SongService.getSongById(req.params.id, userInfo.id);
 
     if (!existSong) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
@@ -345,8 +346,8 @@ export async function playSongHandler(
       throw new ApiError(StatusCodes.NOT_FOUND, "Path audio not found");
     }
 
-    // await SongService.playSong(req.params.id, userId);
-    await SongService.playSong(req.params.id, userId);
+    // await SongService.playSong(req.params.id, userInfo.id);
+    await SongService.playSong(req.params.id, userInfo.id);
 
     const data = fs.existsSync(`./uploads/audio/${pathAudio.songPath}`);
 
@@ -360,4 +361,36 @@ export async function playSongHandler(
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const getLyricHandler = async (
+  req: Request<PlaySongInput["params"]>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+    const existSong = await SongService.getSongById(req.params.id, userInfo.id);
+
+    if (!existSong) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
+    }
+
+    if(!existSong.lyricPath) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Lyric not found");
+    }
+    
+    const lyrics = await readLrcFile(`./uploads/lyrics/${existSong.lyricPath}`);
+
+    if(!lyrics) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Lyric not found");
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: lyrics, message: "Get lyric successfully" });
+
+  } catch (error) {
+    next(error);
+  }
+};

@@ -173,6 +173,9 @@ export const validateFile = (
     return { file: null, error: "Please select an file." };
   }
 
+  console.log(file.size, maxSize);
+  
+
   if (file.size > maxSize) {
     return {
       file: null,

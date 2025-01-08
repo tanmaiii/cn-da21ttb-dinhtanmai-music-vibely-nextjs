@@ -31,8 +31,6 @@ export const Waiting = () => {
 
   const handleOnDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-    console.log(result);
-
     // Nếu không có điểm đến (người dùng thả ngoài vùng droppable)
     if (!destination) return;
 

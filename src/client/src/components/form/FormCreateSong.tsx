@@ -43,7 +43,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
   const [lyricFile, setLyricFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(fileMp3);
 
-  const handleChange = (value: Partial<SongRequestDto>) => {
+  const handleChange = (value: Partial<SongRequestDto>): void => {
     setForm((prev) => ({ ...prev, ...value }));
   };
 
@@ -99,12 +99,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
     setAudioFile(null);
     setErrors((prev) => ({ ...prev, songPath: "" })); // Reset error
 
-    const { file, error } = validateFile(
-      e,
-      50 * 1024 * 1024,
-      ["audio/mpeg"],
-      false
-    );
+    const { file, error } = validateFile(e, 12 * 1024 * 1024, ["audio/mpeg"]);
 
     if (error) {
       setErrors((prev) => ({ ...prev, songPath: error }));
@@ -168,7 +163,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
         {audioFile && (
           <BoxAudio
             file={audioFile}
-            setDuration={(value) => setDuration(value)}
+            onChangeDuration={(value) => setDuration(value)}
           />
         )}
       </div>

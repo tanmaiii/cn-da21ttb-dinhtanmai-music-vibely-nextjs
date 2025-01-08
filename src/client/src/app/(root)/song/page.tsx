@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import Loading from "./loading";
 import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
+import { useRouter } from "next/navigation";
+import { paths } from "@/lib/constants";
 
 const DataSort: { id: number; name: string; value: string }[] = [
   { id: 1, name: "Newest", value: "newest" },
@@ -23,6 +25,7 @@ const SongPage = () => {
   const [nextPage, setNextPage] = useState(2);
   const queryClient = useQueryClient();
   const [isLoad, setIsLoad] = useState(true);
+  const router = useRouter();
 
   const { data, isLoading } = useQuery({
     queryKey: ["song", active],
@@ -53,6 +56,7 @@ const SongPage = () => {
         <div className={styles.header}>
           <h1>Song</h1>
           <ButtonIcon
+            onClick={() => router.push(paths.SONG + "/create")}
             dataTooltip="Create playlist"
             icon={<i className="fa-solid fa-plus"></i>}
           />
@@ -65,7 +69,7 @@ const SongPage = () => {
           />
         </div>
       </div>
-      {(isLoading || isLoad) ? (
+      {isLoading || isLoad ? (
         <Loading />
       ) : (
         <div className={`${styles.SongPage_body} row no-gutters`}>

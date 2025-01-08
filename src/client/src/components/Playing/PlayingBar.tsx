@@ -72,6 +72,7 @@ const CenterPlayingBar = () => {
     handleSongEnd,
     queue,
     volume,
+    onChangeCurrentTime 
   } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +96,7 @@ const CenterPlayingBar = () => {
     const audio = audioRef.current;
     // Lấy thời gian hiên tại của bài hát
     if (audio && audio.currentTime) {
+      onChangeCurrentTime(audio.currentTime);
       const percent = ((audio?.currentTime / audio?.duration) * 100).toFixed(2);
       setPercentage(+percent);
     }
