@@ -1,10 +1,9 @@
 import { DragDropFile, FormItem } from "@/components/Form";
-import React, { useEffect, useState } from "react";
-
 import { ButtonLabel } from "@/components/ui";
 import { apiImage, validateFile } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import { GenreRequestDto, IGenre } from "@/types/genre.type";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 interface Props {
@@ -18,7 +17,7 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
     title: "",
     description: "",
     imagePath: "",
-    color: "",
+    color: "#000000",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Partial<GenreRequestDto>>({});
@@ -45,7 +44,7 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
     }
 
     if (!values?.title) {
-      errors.title = "title is required";
+      errors.title = "Title is required";
       hasError = true;
     }
 
@@ -75,9 +74,9 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
   const clearForm = () => {
     setForm({
       title: "",
-      description: "",
       imagePath: "",
-      color: "",
+      description: "",
+      color: "#000000",
     });
     setImageFile(null);
   };
@@ -103,14 +102,14 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
 
   return (
     <div className={styles.FormGenre}>
-      <h4>{"Genre"}</h4>
+      <h4>{initialData ? "Update genre" : "Create user"}</h4>
       <div className={styles.FormGenre_content}>
         <div className={`${styles.FormGenre_content_image} `}>
           <p className={`${styles.title}`}>Thumbnail</p>
 
           <DragDropFile
             label="Drag and drop your image here"
-            name="image"
+            name={initialData ? "image-genre-edit" : "image-genre-create"}
             className={styles.left_image}
             file={imageFile}
             image_default={(form?.imagePath && apiImage(form?.imagePath)) || ""}
@@ -127,15 +126,15 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
         </div>
         <div className={styles.FormGenre_content_info}>
           <FormItem
-            label="Title"
-            name="title"
+            label="Name"
+            name="name"
             value={form?.title || ""}
             onChange={(e) => handleChange({ title: e.target.value })}
             error={errors.title}
           />
           <FormItem
-            label="Description"
-            name="description"
+            label="Email"
+            name="email"
             type="textarea"
             value={form?.description || ""}
             onChange={(e) => handleChange({ description: e.target.value })}
@@ -143,34 +142,32 @@ const FormGenre = ({ initialData, onClose, onSubmit }: Props) => {
           />
           <div className={styles.FormGenre_content_info_color}>
             <label htmlFor="color">Color</label>
-            {/* <input
+            <input
               type="color"
-              id="color"
-              name="color"
-              value={form?.color || ""}
+              value={form.color}
               onChange={(e) => handleChange({ color: e.target.value })}
-            /> */}
-          </div>
-          <div className={styles.buttons}>
-            <ButtonLabel
-              onClick={() => {
-                clearForm();
-                onClose();
-              }}
-              line={true}
-              className={styles.buttons_button}
-            >
-              <label htmlFor="">Cancel</label>
-            </ButtonLabel>
-            <ButtonLabel
-              onClick={() => handleSubmit(form)}
-              type="submit"
-              className={`${styles.buttons_btnCreate}`}
-            >
-              <label htmlFor="">Save</label>
-            </ButtonLabel>
+            />
           </div>
         </div>
+      </div>
+      <div className={styles.buttons}>
+        <ButtonLabel
+          onClick={() => {
+            clearForm();
+            onClose();
+          }}
+          line={true}
+          className={styles.buttons_button}
+        >
+          <label htmlFor="">Cancel</label>
+        </ButtonLabel>
+        <ButtonLabel
+          onClick={() => handleSubmit(form)}
+          type="submit"
+          className={`${styles.buttons_btnCreate}`}
+        >
+          <label htmlFor="">Save</label>
+        </ButtonLabel>
       </div>
     </div>
   );

@@ -31,11 +31,17 @@ export interface QueryParamsUser {
   role?: string;
 }
 
-export interface UserRequestDto{
-    name: string,
-    email: string,
-    password: string,
-    role?: string,
-    imagePath?: string,
-  }
-  
+export interface UserRequestDto {
+  name: string;
+  email: string;
+  password: string;
+  role?: string;
+  imagePath?: string;
+}
+
+export interface UserResponseUpdateDto {
+  name?: string;
+  email?: string;
+  role?: string;
+  imagePath?: string;
+}

@@ -18,6 +18,8 @@ class RoomSong extends Model {
   @Column({
     type: DataType.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
   roomId!: string;
 
@@ -25,6 +27,8 @@ class RoomSong extends Model {
   @Column({
     type: DataType.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
   songId!: string;
 

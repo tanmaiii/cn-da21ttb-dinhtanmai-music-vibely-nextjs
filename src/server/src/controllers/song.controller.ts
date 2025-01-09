@@ -39,7 +39,7 @@ export const getAllHandler = async (
       page: parseInt(page as string, 10),
       limit: parseInt(limit as string, 10),
       sort: sort as SortOptions,
-      userId: userInfo.id || "",
+      userId: userInfo.id || undefined,
       keyword: keyword as string,
     });
 

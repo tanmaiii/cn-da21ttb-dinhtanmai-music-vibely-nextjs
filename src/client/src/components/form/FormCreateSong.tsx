@@ -1,14 +1,12 @@
 "use client";
 import { DragDropFile } from "@/components/Form";
-import { paths } from "@/lib/constants";
 import { privacy } from "@/lib/data";
-import { validateFile } from "@/lib/utils";
+import { apiImage, validateFile } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import ISong, { SongRequestDto } from "@/types/song.type";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BoxAudio from "../BoxAudio";
-import Modal from "../Modal";
 import SelectGenre from "../SelectGenre";
 import SelectMood from "../SelectMood";
 import { ButtonLabel } from "../ui/Button";
@@ -21,11 +19,16 @@ interface Props {
   file: File | null;
   initialData?: ISong;
   open?: boolean;
+  onClose?: () => void;
 }
 
-const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
+const FormCreateSong = ({
+  file: fileMp3,
+  onSubmit,
+  initialData,
+  onClose,
+}: Props) => {
   const [errors, setErrors] = React.useState<Partial<SongRequestDto>>({});
-  const [isExit, setIsExit] = React.useState<boolean>(false);
   const router = useRouter();
   const [form, setForm] = React.useState<SongRequestDto>({
     title: "",
@@ -42,6 +45,31 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [lyricFile, setLyricFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(fileMp3);
+
+  const initializeForm = React.useCallback((initialData?: ISong) => {
+    if (initialData) {
+      setForm({
+        title: initialData.title,
+        description: initialData.description,
+        genreId: initialData.genre?.id || "",
+        moodIds: initialData?.moods?.map((mood) => mood.id) || [],
+        imagePath: initialData.imagePath,
+        songPath: initialData.songPath,
+        lyricPath: initialData.lyricPath,
+        duration: initialData.duration,
+        public: initialData.public,
+      });
+    } else {
+      clearForm();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (fileMp3) {
+      setAudioFile(fileMp3);
+      console.log(fileMp3);
+    }
+  }, [fileMp3]);
 
   const handleChange = (value: Partial<SongRequestDto>): void => {
     setForm((prev) => ({ ...prev, ...value }));
@@ -153,9 +181,31 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
     }
   };
 
+  const clearForm = () => {
+    setForm({
+      title: "",
+      description: "",
+      genreId: "",
+      moodIds: [],
+      imagePath: undefined,
+      songPath: "",
+      lyricPath: "",
+      duration: 0,
+      public: true,
+    });
+    setImageFile(null);
+    setAudioFile(null);
+    setLyricFile(null);
+  };
+
   const setDuration = useCallback((value: number) => {
     handleChange({ duration: value });
   }, []);
+
+  useEffect(() => {
+    initializeForm(initialData);
+    if (!open) clearForm();
+  }, [initialData, open, initializeForm]);
 
   return (
     <div className={`${styles.FormCreateSong}`}>
@@ -234,6 +284,9 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
                   file={imageFile}
                   label="Drop image here to upload"
                   name="thumbnail"
+                  image_default={
+                    form?.songPath ? apiImage(form?.imagePath || "") : ""
+                  }
                   onChange={(file) => onChangeImage(file)}
                   image={true}
                   error={errors.imagePath}
@@ -283,7 +336,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
 
       <div className={styles.buttons}>
         <ButtonLabel
-          onClick={() => setIsExit(true)}
+          onClick={() => onClose && onClose()}
           className={`${styles.buttons_btnCancel}`}
         >
           <label>Cancel</label>
@@ -297,7 +350,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
         </ButtonLabel>
       </div>
 
-      <Modal show={isExit} onClose={() => setIsExit(false)}>
+      {/* <Modal show={isExit} onClose={() => setIsExit(false)}>
         <div className={styles.modal_exit}>
           <h4>Are you sure you want to exit?</h4>
           <div className={styles.modal_exit_buttons}>
@@ -313,7 +366,7 @@ const FormCreateSong = ({ file: fileMp3, onSubmit }: Props) => {
             </ButtonLabel>
           </div>
         </div>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

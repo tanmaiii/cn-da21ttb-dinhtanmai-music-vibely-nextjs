@@ -37,11 +37,14 @@ const Table = <T extends object>({
         newSelectedRows.add(id);
       }
 
-      onSelectRow?.(Array.from(newSelectedRows).map((index) => data[index]).filter((item) => item !== undefined));
+      onSelectRow?.(
+        Array.from(newSelectedRows)
+          .map((index) => data[index])
+          .filter((item) => item !== undefined)
+      );
       return newSelectedRows;
     });
   };
-
 
   useEffect(() => {
     setSelectedRows(new Set());
@@ -59,7 +62,9 @@ const Table = <T extends object>({
                 onChange={(e) => {
                   if (e.target.checked) {
                     setSelectedRows(new Set(data.map((_, index) => index)));
+                    onSelectRow?.(data);
                   } else {
+                    onSelectRow?.([]);
                     setSelectedRows(new Set());
                   }
                 }}

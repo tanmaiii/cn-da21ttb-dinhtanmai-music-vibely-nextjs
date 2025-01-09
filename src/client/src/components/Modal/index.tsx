@@ -8,6 +8,7 @@ interface ModalProps {
   title?: string;
   onClose: () => void;
   children?: React.ReactNode;
+  className?: string;
 }
 
 const Modal = (props: ModalProps) => {
@@ -24,8 +25,13 @@ const Modal = (props: ModalProps) => {
   });
 
   return (
-    <div className={`${styles.Modal} ${props.show ? styles.Modal_active : ""}`}>
-      <div ref={modalBodyRef} className={`${styles.Modal_swapper}`}>
+    <div
+      className={`${styles.Modal} ${props.show ? styles.Modal_active : ""} `}
+    >
+      <div
+        ref={modalBodyRef}
+        className={`${props.className} ${styles.Modal_swapper} `}
+      >
         <div className={`${styles.Modal_swapper_button}`}>
           <ButtonIconRound
             className={`${styles.Modal_swapper_header_close}`}
@@ -43,6 +49,7 @@ export default Modal;
 
 interface ModalConfirmProps extends ModalProps {
   onConfirm: () => void;
+  content?: string;
 }
 
 export const ModalConfirm = (props: ModalConfirmProps) => {
@@ -50,6 +57,7 @@ export const ModalConfirm = (props: ModalConfirmProps) => {
     <Modal {...props}>
       <div className={`${styles.Modal_confirm}`}>
         <h4>{props.title}</h4>
+        <span>{props.content}</span>
         <div className={styles.buttons}>
           <ButtonLabel
             onClick={() => {

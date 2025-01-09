@@ -15,11 +15,13 @@ import FormItem from "./common/FormItem";
 import styles from "./style.module.scss";
 
 interface Props {
+  onClose?: () => void;
+  open: boolean;
   onSubmit: (values: RoomRequestDto) => void;
   initialData?: IRoom;
 }
 
-const FormRoom = ({ onSubmit, initialData }: Props) => {
+const FormRoom = ({ onClose,  onSubmit, initialData }: Props) => {
   const [values, setValues] = React.useState<RoomRequestDto>({
     title: "",
     description: "",
@@ -212,7 +214,7 @@ const FormRoom = ({ onSubmit, initialData }: Props) => {
                 />
               )}
               <div className={styles.buttons}>
-                <ButtonLabel line className={`${styles.buttons_btnCancel}`}>
+                <ButtonLabel onClick={() => onClose && onClose()} line className={`${styles.buttons_btnCancel}`}>
                   <label>Cancel</label>
                 </ButtonLabel>
 

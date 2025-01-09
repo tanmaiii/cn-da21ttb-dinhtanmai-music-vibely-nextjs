@@ -56,7 +56,6 @@ const FormMood = ({ initialData, onClose, onSubmit }: Props) => {
     const { errors, hasError } = validateForm(form);
     setErrors(errors);
     if (hasError) return;
-
     onSubmit(formValues);
     clearForm();
   };

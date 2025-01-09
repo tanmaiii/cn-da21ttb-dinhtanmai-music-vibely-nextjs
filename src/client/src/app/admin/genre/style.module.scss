@@ -82,20 +82,24 @@
         }
       }
       & .Table {
-        // border: 1px solid var(--border-color);
-        // border-radius: $radius-8;
         & .col_1 {
           @include flex(center, flex-start);
           gap: $space-16;
           text-align: left;
-          img {
+          .image {
             --size: 56px;
+            width: var(--size);
+            height: var(--size);
+            object-fit: cover;
             border-radius: $radius-4;
             background-color: var(--background-color-2);
             border: 1px solid var(--border-color);
-            min-width: var(--size);
-            min-height: var(--size);
-            object-fit: cover;
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              border-radius: $radius-4;
+            }
           }
           h6 {
             font-size: $size-16;
@@ -136,6 +140,9 @@
   &_content {
     @include flex(flex-start, center, row);
     gap: $space-12;
+    @include mobile {
+      @include flex(unset, flex-start, column);
+    }
     &_image {
       width: 240px;
       & > .title {
@@ -144,10 +151,21 @@
         color: var(--text-color-1);
         margin-bottom: $space-8;
       }
-      .image_swapper {
+      & .left_image {
         --size: 100%;
         width: var(--size);
         height: var(--size);
+        margin-bottom: $space-12;
+
+        @include mobile {
+          --size: 240px;
+        }
+      }
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: $radius-8;
       }
       & > .desc {
         margin-top: $space-8;
@@ -160,6 +178,10 @@
       width: 360px;
       @include flex(unset, flex-end, column);
       gap: $space-8;
+
+      @include mobile {
+        width: 100%;
+      }
       &_color {
         @include flex(center, flex-start, row);
         gap: $space-8;
@@ -179,16 +201,16 @@
           color: var(--text-color-1);
         }
       }
-      & .buttons {
-        @include flex(center, flex-end, row);
-        gap: $space-8;
-        margin-top: $space-16;
-        &_btnCreate {
-          background-color: $color-primary;
-          label {
-            color: $color-white-1;
-          }
-        }
+    }
+  }
+  & .buttons {
+    @include flex(center, flex-end, row);
+    gap: $space-8;
+    margin-top: $space-16;
+    &_btnCreate {
+      background-color: $color-primary;
+      label {
+        color: $color-white-1;
       }
     }
   }

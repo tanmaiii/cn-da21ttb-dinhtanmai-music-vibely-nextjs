@@ -76,7 +76,11 @@ const MoodPage = () => {
   const { data: moods, isLoading } = useQuery({
     queryKey: ["moods", paginate, keyword],
     queryFn: async () => {
-      const res = await moodService.getAll({ page: paginate, limit: 10, keyword: keyword });
+      const res = await moodService.getAll({
+        page: paginate,
+        limit: 10,
+        keyword: keyword,
+      });
       setTotal(res.data.totalPages);
       return res.data.data;
     },
@@ -89,8 +93,8 @@ const MoodPage = () => {
   const handleSuccess = (message: string) => {
     toastSuccess(message);
     setPaginate(1);
-    queryClient.invalidateQueries({queryKey: ["genres", paginate, keyword]});
-  }
+    queryClient.invalidateQueries({ queryKey: ["moods", paginate, keyword] });
+  };
 
   const mutationAdd = useMutation({
     mutationFn: async (data: GenreRequestDto) => {
@@ -197,19 +201,23 @@ const MoodPage = () => {
           />
         </div>
       </div>
-      <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
-        <FormGenre
-          onSubmit={(values) => mutationEdit.mutate(values)}
-          onClose={() => setOpenEdit(null)}
-          initialData={openEdit ? openEdit : undefined}
-        />
-      </Modal>
-      <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
-        <FormGenre
-          onSubmit={(values) => mutationAdd.mutate(values)}
-          onClose={() => setOpenAdd(false)}
-        />
-      </Modal>
+      {openEdit && (
+        <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
+          <FormGenre
+            onSubmit={(values) => mutationEdit.mutate(values)}
+            onClose={() => setOpenEdit(null)}
+            initialData={openEdit ? openEdit : undefined}
+          />
+        </Modal>
+      )}
+      {openAdd && (
+        <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
+          <FormGenre
+            onSubmit={(values) => mutationAdd.mutate(values)}
+            onClose={() => setOpenAdd(false)}
+          />
+        </Modal>
+      )}
       <ModalConfirm
         title="Are you sure you want to delete this mood?"
         show={openDelete ? true : false}

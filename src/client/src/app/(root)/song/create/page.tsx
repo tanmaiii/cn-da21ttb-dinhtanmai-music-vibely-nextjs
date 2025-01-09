@@ -13,12 +13,14 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
+import Modal, { ModalConfirm } from "@/components/Modal";
 
 const UploadPage = () => {
   const { toastSuccess, toastError } = useCustomToast();
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openDrop, setOpenDrop] = useState<boolean>(false);
+  const [isExit, setIsExit] = useState<boolean>(false);
   const currentUser = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -36,7 +38,7 @@ const UploadPage = () => {
     const { file, error } = validateFile(e, 12 * 1024 * 1024, ["audio/mpeg"]);
     setOpenDrop(false);
 
-    if(!file){
+    if (!file) {
       setError("Please upload a valid audio file");
     }
 
@@ -119,11 +121,23 @@ const UploadPage = () => {
           </>
         ) : (
           <FormCreateSong
+            onClose={() => setIsExit(true)}
             file={file}
             onSubmit={(data) => mutationAdd.mutate(data)}
           />
         )}
       </div>
+
+      <ModalConfirm
+        show={isExit ? true : false}
+        onClose={() => setIsExit(false)}
+        title="Are you sure you want to leave?"
+        content="If you leave this page, your upload will be canceled."
+        onConfirm={() => {
+          setFile(null);
+          setIsExit(false);
+        }}
+      />
     </div>
   );
 };

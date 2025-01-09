@@ -122,10 +122,12 @@ export const updateUserHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
-    const existEmail = await AccountsService.getByEmail(email);
-
-    if (existEmail && existEmail.userId !== user.id) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Email already exists");
+    if(email){
+      const existEmail = await AccountsService.getByEmail(email);
+      
+      if (existEmail && existEmail.userId !== user.id) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Email already exists");
+      }
     }
 
     const updatedData = {

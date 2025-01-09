@@ -1,6 +1,6 @@
 @use "@/scss/index.module.scss" as *;
 
-.SongPage {
+.RoomPage {
   min-height: 100vh;
   padding: $space-16 $space-24;
   background-color: var(--background-color-2);
@@ -129,6 +129,6 @@
   }
 }
 
-.modalSong {
+.modalRoom {
   background-color: var(--background-color-2) !important;
 }

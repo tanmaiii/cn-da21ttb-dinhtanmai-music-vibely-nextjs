@@ -1,9 +1,8 @@
-import { Op, Sequelize, where, WhereOptions } from "sequelize";
+import { Op, Sequelize, WhereOptions } from "sequelize";
+import Permissions from "../models/Permissions";
 import Roles from "../models/Roles";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
-import Song from "../models/Song";
-import Permissions from "../models/Permissions";
 
 export const attributesUser = ["id", "name", "email", "slug", "imagePath"];
 export const attributesRole = ["id", "name"];

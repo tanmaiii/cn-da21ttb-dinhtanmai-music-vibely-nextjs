@@ -1,5 +1,56 @@
 @use "@/scss/index.module.scss" as *;
 
+.Settings_layout {
+  padding: 0 $space-12;
+  &_nav {
+    background-color: var(--background-color-2);
+    height: calc(100vh - $height-header - 20px);
+    border-radius: $radius-8;
+    padding: $space-24 $space-12;
+    max-width: max-content;
+    & .group {
+      &_title {
+        font-size: $size-14;
+        font-weight: $font-medium;
+        color: var(--text-color-2);
+        margin-bottom: $space-8;
+      }
+      &_items {
+        & .item {
+          width: 100%;
+          @include flex(center, start, row);
+          gap: $space-8;
+          padding: $space-14 $space-12;
+          color: var(--text-color-1);
+          border-radius: $radius-4;
+          transition: $transition;
+          cursor: pointer;
+          @include text(1);
+          flex-wrap: nowrap;
+          &:hover {
+            background-color: var(--background-color-3);
+          }
+          &.active {
+            background-color: var(--background-color-3);
+            color: var(--text-color-1);
+          }
+          i {
+            font-size: $size-20;
+          }
+          span {
+            font-size: $size-16;
+            display: flex;
+            flex-wrap: nowrap;
+            @include text(1);
+          }
+        }
+      }
+    }
+  }
+  &_content {
+  }
+}
+
 .Settings {
   min-height: 100vh;
   width: 100%;
@@ -63,7 +114,7 @@
             color: var(--text-color-2);
           }
         }
-        & > button {
+        & > button label {
           @include flex(center, center);
           padding: $space-8 $space-12;
           border-radius: $radius-4;
@@ -117,7 +168,7 @@
                   display: none;
                 }
                 & > input,
-                & > .Account__radio {
+                & > .Account_radio {
                   display: flex;
                 }
               }
@@ -137,6 +188,7 @@
 
               & > .Account_radio {
                 @include flex(center, start, row);
+                gap: $space-8;
                 display: none;
 
                 & > label {
@@ -184,6 +236,7 @@
                 }
               }
             }
+
             &_buttons {
               .btnEdit {
                 transition: all 0.3s;

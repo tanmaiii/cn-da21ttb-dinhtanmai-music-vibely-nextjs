@@ -40,6 +40,16 @@ class RoomService {
     return res.data;
   }
 
+  async update(id: string, data: RoomRequestDto): Promise<ResponseAPI<IRoom>> {
+    const res = await this.client.put<ResponseAPI<IRoom>>(`/${id}`, data);
+    return res.data;
+  }
+
+  async delete(id: string): Promise<ResponseAPI<null>> {
+    const res = await this.client.delete<ResponseAPI<null>>(`/${id}`);
+    return res.data;
+  }
+
   async getMembers(
     id: string,
     params: QueryParams

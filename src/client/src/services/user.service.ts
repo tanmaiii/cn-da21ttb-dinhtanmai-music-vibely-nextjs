@@ -1,6 +1,6 @@
 import createHttpClient from "@/lib/createHttpClient";
 import { ListResponse, ResponseAPI } from "@/types";
-import { IUser, QueryParamsUser, UserRequestDto } from "@/types/user.type";
+import { IUser, QueryParamsUser, UserRequestDto, UserResponseUpdateDto } from "@/types/user.type";
 import { AxiosInstance } from "axios";
 
 class UserService {
@@ -29,7 +29,7 @@ class UserService {
     return res.data;
   }
 
-  async update(id: string, data: UserRequestDto) {
+  async update(id: string, data: UserResponseUpdateDto) {
     const res = await this.client.put(`/${id}`, data);
     return res.data;
   }

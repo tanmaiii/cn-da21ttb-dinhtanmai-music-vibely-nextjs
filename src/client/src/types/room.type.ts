@@ -7,9 +7,9 @@ export interface IRoom {
   imagePath?: string;
   creator: IArtist;
   membersCount: number;
-  songCount: number;
+  songsCount: number;
   public: boolean;
-  createAt: string;
+  createdAt: string;
 }
 
 export interface RoomRequestDto {
@@ -28,7 +28,7 @@ export interface IMessageChat {
   content: string;
   room: IRoom;
   user: IArtist;
-  createAt: Date;
+  createdAt: Date;
 }
 
 export interface ChatRequestDto {

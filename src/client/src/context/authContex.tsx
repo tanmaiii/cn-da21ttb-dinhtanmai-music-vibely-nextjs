@@ -4,6 +4,7 @@ import { setUser } from "@/features/userSlice";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import tokenService from "@/lib/tokenService";
 import authService from "@/services/auth.service";
+import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 
 export default function AuthProvider({
@@ -25,6 +26,19 @@ export default function AuthProvider({
       })();
     }
   });
+
+  const {} = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      const { data } = await authService.identify();
+      if(data) {
+        dispatch(setUser(data));
+      }else{
+        tokenService.clear();
+      }
+      return data
+    },
+  })
 
   return <>{children}</>;
 }

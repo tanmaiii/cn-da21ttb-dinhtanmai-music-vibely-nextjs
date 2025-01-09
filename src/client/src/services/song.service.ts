@@ -2,6 +2,7 @@ import createHttpClient from "@/lib/createHttpClient";
 import { ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
 import { ILyric, SongRequestDto } from "@/types/song.type";
 import { AxiosInstance } from "axios";
+import { playSong } from './socket.service';
 
 class SongService {
   private client: AxiosInstance;
@@ -12,6 +13,16 @@ class SongService {
 
   async create(data: SongRequestDto): Promise<ResponseAPI<ISong>> {
     const res = await this.client.post<ResponseAPI<ISong>>("", data);
+    return res.data;
+  }
+
+  async update(id: string, data: SongRequestDto): Promise<ResponseAPI<ISong>> {
+    const res = await this.client.put<ResponseAPI<ISong>>(`/${id}`, data);
+    return res.data;
+  }
+
+  async delete(id: string): Promise<ResponseAPI<null>> {
+    const res = await this.client.delete<ResponseAPI<null>>(`/${id}`);
     return res.data;
   }
 
@@ -51,6 +62,11 @@ class SongService {
 
   async getLyic(songId: string): Promise<ResponseAPI<ILyric[]>> {
     const res = await this.client.get<ResponseAPI<ILyric[]>>(songId + "/lyric");
+    return res.data;
+  }
+
+  async playSong(songId: string): Promise<ResponseAPI<null>> {
+    const res = await this.client.post<ResponseAPI<null>>(songId + "/play");
     return res.data;
   }
 }

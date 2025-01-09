@@ -40,6 +40,7 @@ const DragDropFile = (porps: Props) => {
     } else {
       setFileDefault(null);
     }
+    if (file) console.log(URL.createObjectURL(file));
   }, [file]);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const DragDropFile = (porps: Props) => {
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
     setOpenDrop(false);
+    console.log(e.target.files);
   };
 
   const onRemove = () => {

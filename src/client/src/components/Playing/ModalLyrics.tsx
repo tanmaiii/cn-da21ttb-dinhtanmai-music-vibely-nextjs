@@ -212,7 +212,7 @@ const Lyrics = () => {
         />
       </div>
       <div className={styles.Lyrics_list}>
-        <ul ref={listRef}>
+        {/* <ul ref={listRef}>
           {lyrics &&
             lyrics.map((lyric, index) => (
               <li
@@ -224,7 +224,26 @@ const Lyrics = () => {
                 <p>{lyric.text}</p>
               </li>
             ))}
-        </ul>
+        </ul> */}
+        {lyrics ? (
+          <ul ref={listRef}>
+            {lyrics.map((lyric, index) => (
+              <li
+                ref={index === active ? itemRef : null}
+                key={index}
+                className={`${index === active ? styles.is_active : ""} 
+                    ${index < active ? styles.is_over : ""}`}
+              >
+                <p>{lyric.text}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className={styles.Lyrics_empty}>
+            <h4>{currentSong?.title}</h4>
+            <p>{currentSong?.creator?.name}</p>
+          </div>
+        )}
       </div>
     </div>
   );

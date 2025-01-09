@@ -328,6 +328,23 @@
         }
       }
     }
+
+    & .Lyrics_empty {
+      @include flex(flex-start, center, column);
+      height: 100%;
+
+      h4 {
+        color: var(--text-color-1);
+        font-size: 50px;
+        font-weight: $font-bold;
+        @include text(1);
+      }
+      p {
+        color: var(--text-color-1);
+        font-size: $size-16;
+        font-weight: $font-light;
+      }
+    }
   }
 }
 

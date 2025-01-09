@@ -1,7 +1,7 @@
 "use client";
 import songService from "@/services/song.service";
 import styles from "./admin.module.scss";
-import { TrackShort } from "@/components/Track";
+import { Track, TrackShort } from "@/components/Track";
 import { useQuery } from "@tanstack/react-query";
 import LineChart from "@/components/chart/LineChart";
 import BarChart from "@/components/chart/BarChart";
@@ -71,7 +71,7 @@ const Page = () => {
               {songs &&
                 songs
                   .slice(0, 4)
-                  .map((_, index) => <TrackShort key={index} song={_} />)}
+                  .map((_, index) => <Track key={index} song={_} />)}
             </div>
           </div>
         </div>

@@ -1,17 +1,59 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import styles from "./style.module.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { apiImage } from "@/lib/utils";
+import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES } from "@/lib/constants";
+import { RootState } from "@/lib/store";
+import { apiImage, validateFile } from "@/lib/utils";
+import userService from "@/services/user.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import styles from "./style.module.scss";
+import uploadService from "@/services/upload.service";
 
 const SettingsPage = () => {
   const currentUser = useSelector((state: RootState) => state.user);
+  const { toastError, toastSuccess } = useCustomToast();
+  const queryClient = useQueryClient();
+
+  const mutationSave = useMutation({
+    mutationFn: async ({ name, value }: { name: string; value: string }) => {
+      return (
+        currentUser &&
+        (await userService.update(currentUser.id, { [name]: value }))
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      toastSuccess("Update user successfully");
+    },
+    onError: (error: unknown) => {
+      toastError((error as Error).message);
+    },
+  });
 
   if (!currentUser) return null;
+
+  const handleChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // const file = e.target.files?.[0];
+    const { error, file } = validateFile(e, 5 * 1024 * 1024, [
+      "image/jpeg",
+      "image/png",
+    ]);
+
+    if (error) return toastError(error);
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await uploadService.upload(formData);
+      if (res) {
+        mutationSave.mutate({ name: "imagePath", value: res.data.path });
+      }
+    }
+  };
 
   return (
     <div className={styles.Settings}>
@@ -37,29 +79,48 @@ const SettingsPage = () => {
               <h5>{currentUser?.name}</h5>
               <p>{currentUser?.email}</p>
             </div>
-            <button>Change Image</button>
+
+            <button>
+              <label htmlFor="image_avatar">Change Image </label>
+            </button>
+
+            <input
+              type="file"
+              onChange={handleChangeImage}
+              id="image_avatar"
+              hidden
+              accept="image/*"
+            />
           </div>
           <div className={styles.Settings_account}>
             <ItemAccount
               title="Name"
               name="name"
-              value="John Doe"
-              description="Your name"
-              onSave={(name, value) => console.log(name, value)}
+              value={currentUser?.name || ""}
+              description="Your name will be displayed on your profile"
+              onSave={(name, value) => mutationSave.mutate({ name, value })}
             />
             <ItemAccount
-              title="Name"
-              name="name"
-              value="John Doe"
-              description="Your name"
-              onSave={(name, value) => console.log(name, value)}
+              title="Email"
+              name="email"
+              value={currentUser?.email || ""}
+              description="Your email address will be used to log in"
+              onSave={(name, value) => mutationSave.mutate({ name, value })}
             />
             <ItemAccount
-              title="Name"
-              name="name"
-              value="John Doe"
-              description="Your name"
-              onSave={(name, value) => console.log(name, value)}
+              title={"Gender"}
+              description={""}
+              name="gender"
+              radio={true}
+              value={"Female"}
+              onSave={(name: string, value: string) =>
+                mutationSave.mutate({ name, value })
+              }
+              option={[
+                { id: "1", title: "Female" },
+                { id: "2", title: "Male" },
+                { id: "3", title: "No disclosure" },
+              ]}
             />
           </div>
         </div>
@@ -136,7 +197,9 @@ const ItemAccount = ({
         }`}
       >
         <div
-          className={`${styles.Account_item_body_desc} ${isEdit ? "edit" : ""}`}
+          className={`${styles.Account_item_body_desc} ${
+            isEdit ? styles.edit : ""
+          }`}
         >
           <span>{valueDefault}</span>
           {!radio ? (
@@ -151,7 +214,7 @@ const ItemAccount = ({
               placeholder="Enter your name..."
             />
           ) : (
-            <div className="Account__radio">
+            <div className={styles.Account_radio}>
               {option.map((item, index) => (
                 <label key={index}>
                   <input

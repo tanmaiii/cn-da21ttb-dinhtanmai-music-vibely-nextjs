@@ -125,7 +125,7 @@ export const isSongAuthor = async (
       return;
     }
 
-    if (song.creator.id !== userInfo.id) {
+    if (song.userId !== userInfo.id) {
       // Kiểm tra userId có phải là creatorId của bài hát không
       throw new ApiError(
         StatusCodes.FORBIDDEN,
@@ -166,7 +166,7 @@ export const isPlaylistAuthor = async (
       return;
     }
 
-    if (playlist.creator.id !== userInfo.id) {
+    if (playlist.userId !== userInfo.id) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
         "You are not the author of this playlist"
@@ -203,7 +203,7 @@ export const isRoomAuthor = async (
       return;
     }
 
-    if (room.creator.id !== userInfo.id) {
+    if (room.userId !== userInfo.id) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
         "You are not the author of this room"

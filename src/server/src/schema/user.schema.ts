@@ -66,8 +66,3 @@ export type UpdateUserInput = TypeOf<typeof updateUserSchema>;
 export type DeleteUserInput = TypeOf<typeof deleteUserSchema>;
 export type UpdateRoleUserInput = TypeOf<typeof updateRoleUserSchema>;
 export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>;
-import { z } from "zod";
-
-// function enum_(values: string[]) {
-//   return z.enum(values as [string, ...string[]]);
-// }

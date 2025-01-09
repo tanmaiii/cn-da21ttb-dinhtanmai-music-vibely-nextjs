@@ -34,7 +34,7 @@ const renderRow = (props: IRow) => {
   return (
     <>
       <td className={styles.col_1}>
-        <div>
+        <div className={styles.image}>
           <Image
             src={
               props.item.imagePath
@@ -53,24 +53,13 @@ const renderRow = (props: IRow) => {
       </td>
       <td>{props.item.description}</td>
       <td className={styles.col_3}>
-        {/* <button
-          onClick={() =>
-            props.item.color && navigator.clipboard.writeText(props.item.color)
-          }
+        <button
           style={{
             backgroundColor: props.item.color,
           }}
-        ></button> */}
+        ></button>
       </td>
       <td>
-        {props.onView && (
-          <ButtonIconSquare
-            className={`pl-2`}
-            onClick={() => props.onView && props.onView(props.item)}
-            size="small"
-            icon={<i className="fa-light fa-eye"></i>}
-          />
-        )}
         <ButtonIconSquare
           className={`pl-2`}
           size="small"
@@ -104,7 +93,7 @@ const GenrePage = () => {
     queryKey: ["genres", paginate, keyword],
     queryFn: async () => {
       console.log("Call API");
-      
+
       const res = await genreService.getAll({
         page: paginate,
         limit: 10,
@@ -127,8 +116,6 @@ const GenrePage = () => {
 
   const mutationAdd = useMutation({
     mutationFn: async (data: GenreRequestDto) => {
-      console.log("Call API");
-
       await genreService.create(data);
     },
     onSuccess: () => {
@@ -139,8 +126,6 @@ const GenrePage = () => {
 
   const mutationEdit = useMutation({
     mutationFn: async (data: GenreRequestDto) => {
-      console.log("Call API");
-
       if (openEdit) {
         await genreService.update(openEdit.id, data);
       }
@@ -156,8 +141,6 @@ const GenrePage = () => {
 
   const mutationDelete = useMutation({
     mutationFn: async (id: string) => {
-      console.log("Call API");
-
       await genreService.delete(id);
     },
     onSuccess: () => {
@@ -171,7 +154,7 @@ const GenrePage = () => {
   });
 
   const handleSelect = useCallback((data: IGenre[]) => {
-      setSelected(data);
+    setSelected(data);
   }, []);
 
   return (
@@ -240,19 +223,23 @@ const GenrePage = () => {
           />
         </div>
       </div>
-      <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
-        <FormGenre
-          onSubmit={(values) => mutationEdit.mutate(values)}
-          onClose={() => setOpenEdit(null)}
-          initialData={openEdit ? openEdit : undefined}
-        />
-      </Modal>
-      <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
-        <FormGenre
-          onSubmit={(values) => mutationAdd.mutate(values)}
-          onClose={() => setOpenAdd(false)}
-        />
-      </Modal>
+      {openEdit && (
+        <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
+          <FormGenre
+            onSubmit={(values) => mutationEdit.mutate(values)}
+            onClose={() => setOpenEdit(null)}
+            initialData={openEdit ? openEdit : undefined}
+          />
+        </Modal>
+      )}
+      {openAdd && (
+        <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
+          <FormGenre
+            onSubmit={(values) => mutationAdd.mutate(values)}
+            onClose={() => setOpenAdd(false)}
+          />
+        </Modal>
+      )}
       <ModalConfirm
         title="Are you sure you want to delete this genre?"
         show={openDelete ? true : false}

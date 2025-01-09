@@ -1,7 +1,10 @@
 "use client";
 
+import songService from "@/services/song.service";
 import { ISong } from "@/types";
+import { fa } from "@faker-js/faker";
 import React, { createContext, useContext, useState } from "react";
+import toast from "react-hot-toast";
 
 type PlayMode = "normal" | "random";
 
@@ -39,11 +42,22 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [playMode, setPlayMode] = useState<PlayMode>("normal");
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const play = (song?: ISong) => {
-    if (song) {
-      setCurrentSong(song);
+  const play = async (song?: ISong) => {
+    if (!song) {
+      setIsPlaying(true);
+      return;
     }
-    setIsPlaying(true);
+    try {
+      setCurrentSong(song);
+      const res = await songService.playSong(song.id);
+      if (res) {
+        setIsPlaying(true);
+      }
+    } catch (error: unknown) {
+      console.error((error as Error).message);
+      toast.error("Audio not found");
+      setIsPlaying(false);
+    }
   };
 
   const pause = () => {
@@ -163,11 +177,11 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setCurrentSong(null);
     setIsPlaying(false);
     setQueue([]);
-  }
+  };
 
   const onChangeCurrentTime = (time: number) => {
     setCurrentTime(time);
-  }
+  };
 
   return (
     <PlayerContext.Provider
@@ -177,7 +191,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         volume,
         queue,
         playMode,
-        currentTime,  
+        currentTime,
         play,
         pause,
         stop,

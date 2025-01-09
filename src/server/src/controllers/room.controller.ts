@@ -122,19 +122,11 @@ export const updateRoomHandler = async (
   next: NextFunction
 ) => {
   try {
-    const userInfo = get(req, "identity") as IIdentity;
     const room = await RoomService.getById(req.params.id);
     const songIds = req.body.songIds;
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
-    }
-
-    if (userInfo.id !== room.userId) {
-      throw new ApiError(
-        StatusCodes.FORBIDDEN,
-        "You are not authorized to update this room"
-      );
     }
 
     const data = {
@@ -165,17 +157,9 @@ export const deleteRoomHandler = async (
 ) => {
   try {
     const room = await RoomService.getById(req.params.id);
-    const userInfo = get(req, "identity") as { id: string };
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
-    }
-
-    if (userInfo.id !== room.userId) {
-      throw new ApiError(
-        StatusCodes.FORBIDDEN,
-        "You are not authorized to delete this room"
-      );
     }
 
     await RoomService.delete(req.params.id);

@@ -8,7 +8,7 @@ import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
 import UserService, { attributesUser } from "./User.service";
 import SongLikes from "../models/SongLikes";
-import fs from 'fs';
+import { ROLES } from "../utils/contants";
 
 interface GetAllOptions {
   page: number;
@@ -81,11 +81,16 @@ export default class SongService {
   }: GetAllOptions) => {
     const offset = (page - 1) * limit;
 
-    const whereCondition: any = userId
-      ? {
-          [Op.or]: [{ public: true }, { userId }],
-        }
-      : { public: true };
+    const User = userId && (await UserService.getById(userId));
+
+    const whereCondition: any =
+      User.role.name === ROLES.ADMIN
+        ? {}
+        : userId
+        ? {
+            [Op.or]: [{ public: true }, { userId }],
+          }
+        : {};
 
     if (keyword) {
       whereCondition[Op.and] = whereCondition[Op.and] || [];
@@ -192,7 +197,6 @@ export default class SongService {
 
   // Lấy bài hát theo id
   static getSongById = async (id: string, userId?: string) => {
-    
     const whereCondition: any = userId
       ? {
           [Op.or]: [{ public: true }, { userId }],

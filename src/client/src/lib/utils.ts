@@ -18,6 +18,7 @@ export const formatDateTime = (dateString: Date) => {
 };
 
 export function formatNumber(num: number): string {
+  if(!num) return "0";
   if (num >= 1_000_000_000) {
     const formatted = (num / 1_000_000_000).toFixed(1);
     return `${parseFloat(formatted)}B`; // Billion

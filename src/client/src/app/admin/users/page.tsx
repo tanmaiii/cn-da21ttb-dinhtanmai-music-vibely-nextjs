@@ -254,19 +254,19 @@ const UserPage = () => {
           />
         </div>
       </div>
-      <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
+      {openEdit && <Modal show={openEdit ? true : false} onClose={() => setOpenEdit(null)}>
         <FormUser
           onSubmit={(values) => mutationEdit.mutate(values)}
           onClose={() => setOpenEdit(null)}
           initialData={openEdit ? openEdit : undefined}
         />
-      </Modal>
-      <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
+      </Modal>}
+     {openAdd && <Modal show={openAdd} onClose={() => setOpenAdd(false)}>
         <FormUser
           onSubmit={(values) => mutationAdd.mutate(values)}
           onClose={() => setOpenAdd(false)}
         />
-      </Modal>
+      </Modal>}
       <ModalConfirm
         title="Are you sure you want to delete this role?"
         show={openDelete ? true : false}

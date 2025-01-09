@@ -31,13 +31,13 @@ export default function RootLayout({
         <StoreProvider>
           <PlayerProvider>
             <UIProvider>
-              <Toaster
-                position="top-center"
-                containerStyle={{ zIndex: 999999 }}
-                reverseOrder={false}
-              />
               <AuthProvider>
                 <GoogleOAuthProvider clientId={CLIENT_ID}>
+                  <Toaster
+                    position="top-center"
+                    containerStyle={{ zIndex: 999999 }}
+                    reverseOrder={false}
+                  />
                   <div>{children}</div>
                 </GoogleOAuthProvider>
               </AuthProvider>

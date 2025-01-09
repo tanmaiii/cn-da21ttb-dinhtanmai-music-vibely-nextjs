@@ -17,25 +17,25 @@ class PlaylistService {
   async getAll(
     params: QueryParams
   ): Promise<ResponseAPI<ListResponse<IPlaylist>>> {
-    const res = await (
-      await this.client
-    ).get<ResponseAPI<ListResponse<IPlaylist>>>("", { params });
+    const res = await this.client.get<ResponseAPI<ListResponse<IPlaylist>>>(
+      "",
+      { params }
+    );
     return res.data;
   }
 
   async getMe(
     params: PlaylistLikeQueryParamsDto
   ): Promise<ResponseAPI<ListResponse<IPlaylist>>> {
-    const res = await (
-      await this.client
-    ).get<ResponseAPI<ListResponse<IPlaylist>>>("/like", { params });
+    const res = await this.client.get<ResponseAPI<ListResponse<IPlaylist>>>(
+      "/like",
+      { params }
+    );
     return res.data;
   }
 
   async getBySlug(slug: string): Promise<ResponseAPI<IPlaylist>> {
-    const res = await (
-      await this.client
-    ).get<ResponseAPI<IPlaylist>>(`/${slug}/slug`);
+    const res = await this.client.get<ResponseAPI<IPlaylist>>(`/${slug}/slug`);
     return res.data;
   }
 
@@ -49,7 +49,12 @@ class PlaylistService {
   }
 
   async update(id: string, data: Partial<PlaylistRequestUpdateDto>) {
-    const res = await (await this.client).put(`/${id}`, data);
+    const res = await this.client.put(`/${id}`, data);
+    return res.data;
+  }
+
+  async delete(id: string) {
+    const res = await this.client.delete(`/${id}`);
     return res.data;
   }
 
@@ -61,7 +66,7 @@ class PlaylistService {
   }
 
   async updateSongs(id: string, songIds: string[]) {
-    await (await this.client).put(id, { songIds });
+    await this.client.put(id, { songIds });
   }
 }
 

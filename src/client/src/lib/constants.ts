@@ -58,6 +58,8 @@ export const paths = {
   USERS: "/users",
   ROLES: "/roles",
   CREATE: "/create",
+  ACCOUNT: '/account',
+  PASSWORD: '/password',
 };
 
 export const sidebarLinks = [
