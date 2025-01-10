@@ -63,7 +63,7 @@ const Home = () => {
     <div className={styles.Home}>
       <Slideshow />
 
-      <SectionOneRow title="Song new" path={paths.SONG}>
+      <SectionOneRow title="Song new" path={paths.SONG + "?sort=newest"}>
         {songsNew && songsNew.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
@@ -93,7 +93,7 @@ const Home = () => {
         </div>
       </div>
 
-      <SectionOneRow title="Song popular" path={paths.SONG}>
+      <SectionOneRow title="Song popular" path={paths.SONG + "?sort=mostLikes"}>
         {songsLikes && songsLikes.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}

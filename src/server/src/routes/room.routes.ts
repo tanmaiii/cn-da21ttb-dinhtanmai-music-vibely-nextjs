@@ -8,6 +8,7 @@ import {
   getAllRoomsHandler,
   getDetailRoomHandler,
   getMembersInRoomHandler,
+  getSongPlayingInRoomHandler,
   getSongsInRoomHandler,
   removeMemberToRoomHandler,
   removeSongToRoomHandler,
@@ -83,6 +84,12 @@ router.get(
   authorize(PERMISSIONS.READ_ROOM),
   validateData(getRoomSchema),
   getSongsInRoomHandler
+);
+router.get(
+  "/:id/song-playing",
+  authorize(PERMISSIONS.READ_ROOM),
+  validateData(getRoomSchema),
+  getSongPlayingInRoomHandler
 );
 router.get(
   "/:id/member",

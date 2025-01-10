@@ -6,20 +6,24 @@ import { SectionOneRow } from "@/components/Section";
 import { TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { paths } from "@/lib/constants";
-import { artists, exArtist, playlists, songs } from "@/lib/data";
+import { artists, playlists, songs } from "@/lib/data";
 import artistService from "@/services/artist.service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import React from "react";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import { notFound } from "next/navigation";
 
 const ArtistPage = () => {
   // const [isLoad, setIsLoad] = React.useState(true);
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
-  const { isLoading } = useQuery({
+  const {
+    data: artist,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["artist", slug],
     queryFn: async () => {
       const res = await artistService.getBySlug(slug);
@@ -29,11 +33,12 @@ const ArtistPage = () => {
 
   if (isLoading) return <Loading />;
 
+  if (error) return notFound();
+
   return (
     <div className={`${styles.ArtistPage}`}>
       <div className={`${styles.ArtistPage_header}`}>
-        {/* {data && <HeaderPageArtist artist={data} />} */}
-        {exArtist && <HeaderPageArtist artist={exArtist} />}
+        {artist && <HeaderPageArtist artist={artist} />}
       </div>
       <div className={`${styles.ArtistPage_content}`}>
         <div className={`${styles.ArtistPage_content_header}`}>

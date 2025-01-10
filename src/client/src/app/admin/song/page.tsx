@@ -265,6 +265,7 @@ const SongPage = () => {
         >
           <FormCreateSong
             file={null}
+            open={openEdit ? true : false}
             onClose={() => setOpenEdit(null)}
             initialData={openEdit}
             onSubmit={(data) => mutationEdit.mutate(data)}

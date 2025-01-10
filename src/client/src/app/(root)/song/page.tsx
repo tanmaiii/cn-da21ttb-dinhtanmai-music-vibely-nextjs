@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import Loading from "./loading";
 import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { paths } from "@/lib/constants";
 
 const DataSort: { id: number; name: string; value: string }[] = [
@@ -26,6 +26,8 @@ const SongPage = () => {
   const queryClient = useQueryClient();
   const [isLoad, setIsLoad] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = Object.fromEntries(searchParams.entries());
 
   const { data, isLoading } = useQuery({
     queryKey: ["song", active],
@@ -45,10 +47,21 @@ const SongPage = () => {
   }, [active, queryClient]);
 
   useEffect(() => {
+    if (query.sort) {
+      setActive(query.sort as string);
+    }
+  }, [query]);
+
+  useEffect(() => {
     setTimeout(() => {
       setIsLoad(false);
     }, 2000);
   }, []);
+
+  const onChangeSort = (value: string) => {
+    setActive(value);
+    router.push(paths.SONG + `?sort=${value}`);
+  };
 
   return (
     <div className={`${styles.SongPage}`}>
@@ -65,7 +78,7 @@ const SongPage = () => {
           <SliderNav
             active={active}
             listNav={DataSort}
-            setActive={(value: string) => setActive(value)}
+            setActive={(value: string) => onChangeSort(value)}
           />
         </div>
       </div>

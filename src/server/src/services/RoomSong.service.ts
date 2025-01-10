@@ -1,10 +1,10 @@
 import { Sequelize } from "sequelize";
-import Room from "../models/Room";
 import RoomSong from "../models/RoomSong";
 import Song from "../models/Song";
 import RoomService from "./Room.service";
 import SongService, { songQueryOptions } from "./Song.service";
 import { Op } from "sequelize";
+import RoomCurrentPlaying from "../models/RoomCurrentPlaying";
 
 export default class RoomSongService {
   static getSongInRoom = async (roomId: string) => {
@@ -27,9 +27,9 @@ export default class RoomSongService {
       include: songQueryOptions.include,
     });
 
-    const orderedSongs = orderedSongIds.map((id) =>
-      songs.find((song) => song.id === id)
-    );
+    const orderedSongs = orderedSongIds
+      .map((id) => songs.find((song) => song.id === id))
+      .filter((song) => song !== null && song !== undefined);
 
     return orderedSongs;
   };
@@ -79,5 +79,33 @@ export default class RoomSongService {
     return songIds.map(async (songId) => {
       await RoomSong.destroy({ where: { roomId, songId } });
     });
+  };
+
+  static addCurrentSongToRoom = async (roomId: string, songId: string) => {
+    const currentSong = await RoomCurrentPlaying.findOne({ where: { roomId } });
+
+    if (currentSong) {
+      await RoomCurrentPlaying.destroy({ where: { roomId } });
+    }
+
+    await RoomCurrentPlaying.create({
+      roomId,
+      songId,
+      startedAt: new Date(),
+    });
+  };
+
+  static getCurrentSongInRoom = async (roomId: string) => {
+    const currentSong = await RoomCurrentPlaying.findOne({
+      where: { roomId },
+    });
+
+    if (!currentSong) {
+      return null;
+    }
+
+    const song = await SongService.getSongById(currentSong.songId);
+
+    return { startedAt: currentSong.startedAt, song };
   };
 }

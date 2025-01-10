@@ -17,9 +17,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "Phổ biến", value: "mostListens" },
-  { id: 2, name: "Mới nhất", value: "newest" },
-  { id: 3, name: "Cũ nhất", value: "oldest" },
+  { id: 1, name: "Popular", value: "mostListens" },
+  { id: 2, name: "Newest", value: "newest" },
+  { id: 3, name: "Oldest", value: "oldest" },
 ];
 
 const Room = () => {
@@ -77,13 +77,6 @@ const Room = () => {
           </Section>
         </div>
       )}
-      {/* <Modal show={showAdd} onClose={() => setShowAdd(false)}>
-        <FormRoom
-          onClose={() => setShowAdd(false)}
-          open={showAdd}
-          onSubmit={(data) => mutationAdd.mutate(data)}
-        />
-      </Modal> */}
     </div>
   );
 };

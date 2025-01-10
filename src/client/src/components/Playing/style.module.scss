@@ -148,9 +148,9 @@
         background-repeat: no-repeat;
         background-position: 50% center;
         background-size: cover;
-        filter: blur(30px);
+        filter: blur(50px);
         position: absolute;
-        inset: -50px;
+        inset: -100px;
         display: block;
         background-color: $color-primary;
       }
@@ -160,8 +160,9 @@
         position: absolute;
         height: 100%;
         width: 100%;
-        background-color: rgba($color: $color-primary, $alpha: 0.3);
-        // opacity: 0;
+        background-color: rgba($color: $color-primary, $alpha: 0.4);
+        // background-color: var(--background-color-3);
+        opacity: 0.8;
         position: absolute;
       }
     }
@@ -272,6 +273,7 @@
       object-fit: cover;
     }
   }
+
   &_list {
     height: var(--size);
     overflow: hidden auto;
@@ -281,11 +283,11 @@
       display: none; /* Ẩn thanh cuộn */
     }
 
-    -webkit-mask-image: linear-gradient(
+    mask-image: linear-gradient(
       180deg,
       hsla(0, 0%, 100%, 0),
-      hsla(0, 0%, 100%, 0.8) 10%,
-      #fff 25%,
+      hsla(0, 0%, 100%, 0.8) 40%,
+      #fff 45%,
       #fff 75%,
       hsla(0, 0%, 100%, 0.8) 90%,
       hsla(0, 0%, 100%, 0)
@@ -300,12 +302,13 @@
           }
         }
         p {
-          font-size: $size-34;
+          font-size: $size-36;
           color: rgba($color: $color-black, $alpha: 0.6);
           text-align: left;
           font-weight: $font-bold;
           margin: $space-4 0;
           transition: all 0.3s;
+          padding: $space-12 0;
           @include mobile {
             font-size: $size-24;
           }
@@ -320,6 +323,7 @@
         &.is_active {
           p {
             color: $color-white;
+            // font-size: 36px;
           }
         }
       }

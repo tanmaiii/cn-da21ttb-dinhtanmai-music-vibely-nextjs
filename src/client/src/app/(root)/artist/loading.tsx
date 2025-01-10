@@ -8,7 +8,7 @@ const Loading = () => {
     <LoadingTheme>
       <Section>
         {Array.from({ length: 20 }).map((_, index) => (
-          <CardArtist key={index} artist={exArtist} />
+          <CardArtist key={index} artist={exArtist} isLoading />
         ))}
       </Section>
     </LoadingTheme>

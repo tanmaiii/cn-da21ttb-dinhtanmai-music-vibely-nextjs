@@ -308,7 +308,9 @@ const TrackShort = (props: ITrack) => {
             ) : (
               <>
                 <h4>
-                  <Link href={paths.SONG + song?.slug}>{song?.title}</Link>
+                  <Link href={paths.SONG + "/" + song?.slug}>
+                    {song?.title}
+                  </Link>
                 </h4>
                 <p>
                   {/* {song?.owner.map((owner, index) => (

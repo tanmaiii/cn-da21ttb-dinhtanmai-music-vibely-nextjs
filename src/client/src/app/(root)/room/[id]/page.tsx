@@ -8,9 +8,11 @@ import Slider from "@/components/Slider";
 import TablePlaylist from "@/components/TablePlaylist";
 import { Track, TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconRound } from "@/components/ui/Button";
+import IconPlay from "@/components/ui/IconPlay";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
 import { useCustomToast } from "@/hooks/useToast";
+import apiConfig from "@/lib/api";
 import { IMAGES, paths } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import {
@@ -24,13 +26,16 @@ import {
   default as roomSerive,
   default as roomService,
 } from "@/services/room.service";
+import { socket } from "@/services/socket.service";
+import { ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { use, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const RoomPage = () => {
@@ -68,6 +73,7 @@ const RoomPage = () => {
     togglePlayingBar(false);
   }, [isWaitingOpen, toggleWaiting, togglePlayingBar]);
 
+  // Lấy thông tin phòng
   const { data: room } = useQuery({
     queryKey: ["room", roomId, isMember],
     queryFn: async () => {
@@ -78,7 +84,12 @@ const RoomPage = () => {
     },
   });
 
-  const { data: songs } = useQuery({
+  // Lấy danh sách bài hát trong phòng
+  const {
+    data: songs,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: ["room", roomId, "songs"],
     queryFn: async () => {
       const res = await roomSerive.getAllSong(roomId);
@@ -86,6 +97,7 @@ const RoomPage = () => {
     },
   });
 
+  // Thêm người dùng vào phòng
   const mutionAddMember = useMutation({
     mutationFn: async (password?: string) => {
       return (
@@ -107,9 +119,14 @@ const RoomPage = () => {
     },
   });
 
-  // if (isLoading) return <Loading />;
+  // Phát bài hát
+  const handlePlaySong = (songId: string) => {
+    currentUser && socket.emit("playSong", roomId, currentUser.id, songId);
+  };
 
-  // if (isError) return notFound();
+  if (isLoading) return <Loading />;
+
+  if (isError) return notFound();
 
   return (
     <div className={`${styles.RoomPage}`}>
@@ -141,11 +158,11 @@ const RoomPage = () => {
                 >
                   <div className={`${styles.content}`}>
                     <h4>SONG IS PLAYING:</h4>
-                    <div className={`${styles.item}`}>
-                      {songs && songs?.length > 0 && (
-                        <TrackShort song={songs[0]} dontShowPlay />
-                      )}
-                    </div>
+                    {/* <div className={`${styles.item}`}> */}
+                    {roomId && songs && (
+                      <SongPlaying songs={songs} roomId={roomId} />
+                    )}
+                    {/* </div> */}
                     <div className={styles.overlay}></div>
                   </div>
 
@@ -267,6 +284,11 @@ const RoomPage = () => {
                     </div>
                   </div>
                   <div>
+                    <ButtonIconRound
+                      onClick={() => songs && handlePlaySong(songs[0].id)}
+                      dataTooltip="Close"
+                      icon={<i className="fa-solid fa-play"></i>}
+                    />
                     <div className={`${styles.quantity}`}>
                       <i className="fa-solid fa-user-vneck"></i>
                       <span>{formatNumber(room?.membersCount ?? 0)}</span>
@@ -295,7 +317,9 @@ const RoomPage = () => {
             {openChat && (
               //  col pc-4 t-5 m-12
               <div className={`${styles.chat}`}>
-                <ChatRoom roomId={roomId} onClose={() => setOpenChat(false)} />
+                {room && (
+                  <ChatRoom room={room} onClose={() => setOpenChat(false)} />
+                )}
               </div>
             )}
           </div>
@@ -317,3 +341,111 @@ const RoomPage = () => {
 };
 
 export default RoomPage;
+
+const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
+  const [songPlaying, setSongPlaying] = useState<ISong | null>(null);
+  const currentUser = useSelector((state: RootState) => state.user);
+  const { toastSuccess } = useCustomToast();
+  const [startTimer, setStartTimer] = useState<string>();
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [userInteracted, setUserInteracted] = useState(true);
+
+  const handlePlaySong = (songId: string) => {
+    currentUser && socket.emit("playSong", roomId, currentUser.id, songId);
+  };
+
+  const {} = useQuery({
+    queryKey: ["room", roomId, "currentSong"],
+    queryFn: async () => {
+      const res = await roomSerive.getSongPlaying(roomId);
+      console.log(res.data);
+
+      setSongPlaying(res.data.song);
+      setStartTimer(res.data.startedAt);
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
+  });
+
+  useEffect(() => {
+    if (!songPlaying) {
+      songs.length > 0 && handlePlaySong(songs[0]?.id);
+    }
+  }, [songPlaying]);
+
+  // Đảm bảo người dùng đã tương tác với trang
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      setUserInteracted(true);
+    };
+    document.addEventListener("click", handleUserInteraction);
+    return () => {
+      document.removeEventListener("click", handleUserInteraction);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Người dùng tham gia phòng chat
+    socket.emit("joinRoom", roomId, currentUser?.id);
+
+    socket.on("playReceived", (song: ISong) => {
+      toastSuccess("Playing song");
+      setSongPlaying(song);
+    });
+
+    return () => {
+      socket.off("playReceived");
+    };
+  }, [roomId, currentUser]);
+
+  useEffect(() => {
+    if (audioRef.current && songPlaying && userInteracted) {
+      audioRef.current.src = apiConfig.audioURL(songPlaying.songPath || "");
+      audioRef.current.play().catch((error) => {
+        console.error("Playback failed:", error);
+      });
+    }
+  }, [songPlaying, userInteracted]);
+
+  const onPlaying = () => {
+    const audio = audioRef.current;
+    if (audio && audio.currentTime) {
+      setDuration(audioRef.current.duration);
+      setCurrentTime(audio.currentTime);
+    }
+  };
+
+  const onEnd = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+    }
+  };
+
+  if (!songPlaying) return null;
+
+  return (
+    <div
+      className={`${styles.songPlaying}`}
+      onClick={() => audioRef.current?.play()}
+    >
+      <div className={`${styles.songInfo}`}>
+        <TrackShort song={songPlaying} dontShowPlay />
+        <div className={`${styles.timer}`}>
+          <div
+            style={{ width: (currentTime / duration) * 100 + "%" }}
+            className={`${styles.timerPlay}`}
+          ></div>
+        </div>
+      </div>
+      <IconPlay playing />
+      <audio
+        ref={audioRef}
+        onTimeUpdate={onPlaying}
+        onEnded={onEnd}
+        src={songPlaying ? apiConfig.audioURL(songPlaying.songPath) : ""}
+      ></audio>
+    </div>
+  );
+};

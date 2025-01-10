@@ -127,7 +127,7 @@ const FormUser = ({ initialData, onClose, onSubmit }: Props) => {
       }
 
       await onSubmit(formValues);
-      clearForm();
+      // clearForm();
     } catch (error) {
       console.error("Error submitting form:", error);
     }

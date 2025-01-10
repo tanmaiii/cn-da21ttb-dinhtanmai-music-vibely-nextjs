@@ -265,6 +265,34 @@ export const getSongsInRoomHandler = async (
   }
 };
 
+export const getSongPlayingInRoomHandler = async (
+  req: Request<GetRoomInput["params"], {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const room = await RoomService.getById(req.params.id);
+
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
+    }
+
+    const song = await RoomSongService.getCurrentSongInRoom(req.params.id);
+
+    if (!song) {
+      // throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
+      res.status(StatusCodes.OK).json({ message: "Song not found" });
+      return;
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ data: song, message: "Get song playing in room successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Lấy danh sách thành viên trong phòng
 export const getMembersInRoomHandler = async (
   req: Request<

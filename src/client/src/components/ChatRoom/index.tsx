@@ -5,11 +5,10 @@ import { RootState } from "@/lib/store";
 import { apiImage } from "@/lib/utils";
 import chatSerive from "@/services/chat.service";
 import roomSerive from "@/services/room.service";
-import { listenForMessages, sendMessage } from "@/services/socket.service";
 import songService from "@/services/song.service";
 import { IArtist, ISong } from "@/types";
-import { IMessageChat } from "@/types/room.type";
-import { useQuery } from "@tanstack/react-query";
+import { IMessageChat, IRoom } from "@/types/room.type";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,14 +17,15 @@ import Message from "../Chat/Message";
 import { ButtonIcon } from "../ui/Button";
 import Input from "../ui/Input";
 import styles from "./style.module.scss";
+import { socket } from "@/lib/socket";
 
 interface IChatRoom {
   onClose: () => void;
-  roomId: string;
+  room: IRoom;
 }
 
 const ChatRoom = (props: IChatRoom) => {
-  const { onClose, roomId } = props;
+  const { onClose, room } = props;
   const [nav, setNav] = useState("Chat");
   const listMessagesRef = useRef<HTMLDivElement | null>(null);
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
@@ -34,35 +34,34 @@ const ChatRoom = (props: IChatRoom) => {
   const [message, setMessage] = useState<IMessageChat[] | []>([]);
 
   const handleSubmit = (message: string) => {
-    sendMessage(roomId, currentUser?.id || "", message);
+    currentUser && socket.emit("newMessage", room.id, currentUser.id, message);
   };
 
-  // useEffect để cuộn xuống cuối khi có tin nhắn mới
   useEffect(() => {
     if (listMessagesRef.current) {
       listMessagesRef.current.scrollTop = listMessagesRef.current.scrollHeight;
     }
   }, [message]);
 
-  // Lắng nghe tin nhắn mới
   useEffect(() => {
-    if (currentUser?.id) {
-      const unsubscribe = () =>
-        listenForMessages(roomId, currentUser.id, (message: IMessageChat) => {
-          setMessage((prevMessages) => [message, ...prevMessages]);
-        });
+    // Người dùng tham gia phòng chat
+    socket.emit("joinRoom", room.id, currentUser?.id);
 
-      // Cleanup function để hủy listener cũ
-      return () => {
-        unsubscribe(); // Hủy lắng nghe
-      };
-    }
-  }, [roomId, currentUser]);
+    // Lắng nghe sự kiện "messageReceived" để nhận tin nhắn mới
+    socket.on("messageReceived", (message: IMessageChat) => {
+      console.log("messageReceived", message);
+      setMessage((prevMessages) => [message, ...prevMessages]);
+    });
+
+    return () => {
+      socket.off("messageReceived");
+    };
+  }, [room.id, currentUser]);
 
   const {} = useQuery({
-    queryKey: ["room-chat", roomId],
+    queryKey: ["room-chat", room.id],
     queryFn: async () => {
-      const res = await chatSerive.getAll(roomId, { page: 1, limit: 50 });
+      const res = await chatSerive.getAll(room.id, { page: 1, limit: 50 });
       if (res.data.data) {
         setMessage(res.data.data);
         console.log("res", res);
@@ -81,17 +80,24 @@ const ChatRoom = (props: IChatRoom) => {
         />
 
         <div className={`${styles.RoomChat_header_nav}`}>
-          {navRoomPage.map((item, index) => (
-            <div
-              key={index}
-              className={`${styles.RoomChat_header_nav_item} ${
-                nav === item.name && styles.active
-              }`}
-              onClick={() => setNav(item.name)}
-            >
-              <h4>{item.name}</h4>
-            </div>
-          ))}
+          {navRoomPage.map((item, index) => {
+            if (
+              room?.creator?.id !== currentUser?.id &&
+              item.name === "Request"
+            )
+              return null;
+            return (
+              <div
+                key={index}
+                className={`${styles.RoomChat_header_nav_item} ${
+                  nav === item.name && styles.active
+                }`}
+                onClick={() => setNav(item.name)}
+              >
+                <h4>{item.name}</h4>
+              </div>
+            );
+          })}
         </div>
 
         <ButtonIcon
@@ -118,12 +124,12 @@ const ChatRoom = (props: IChatRoom) => {
         )}
         {nav === navRoomPage[1].name && (
           <div className={`${styles.RoomChat_body_request} `}>
-            <ChatRoomRequest roomId={roomId} />
+            <ChatRoomRequest roomId={room.id} />
           </div>
         )}
         {nav === navRoomPage[2].name && (
           <div className={`${styles.RoomChat_body_member} `}>
-            <ChatRoomMember roomId={roomId} />
+            <ChatRoomMember roomId={room.id} />
           </div>
         )}
       </div>
@@ -133,24 +139,24 @@ const ChatRoom = (props: IChatRoom) => {
 
 export default ChatRoom;
 
-const ChatRoomRequest = ({}: { roomId: string }) => {
+const ChatRoomRequest = ({ roomId }: { roomId: string }) => {
   const [keyword, setKeyword] = React.useState("");
   const [songs, setSongs] = React.useState<ISong[]>([]);
   const [page, setPage] = React.useState(1);
-  const debouncedSearchTerm = useDebounce({ value: keyword, delay: 500 });
+  const queryClient = useQueryClient();
 
   const handleSearch = (value: string) => {
     setKeyword(value);
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["songs-recomment", page, debouncedSearchTerm],
+    queryKey: ["songs-recomment", page, keyword],
     queryFn: async () => {
-      console.log("debouncedSearchTerm", debouncedSearchTerm);
+      console.log("keyword", keyword);
       const res = await songService.getAllSong({
         page: page,
         limit: 10,
-        keyword: debouncedSearchTerm,
+        keyword: keyword,
       });
       if (res.data.data) {
         setSongs((prev: ISong[]) =>
@@ -158,6 +164,25 @@ const ChatRoomRequest = ({}: { roomId: string }) => {
         );
       }
       return res.data;
+    },
+  });
+
+  const { data: songsIsExist } = useQuery({
+    queryKey: ["room", roomId, "songs"],
+    queryFn: async () => {
+      const res = await roomSerive.getAllSong(roomId);
+      return res.data;
+    },
+  });
+
+  const mutionAdd = useMutation({
+    mutationFn: async (songId: string) => {
+      const res = await roomSerive.addSong(roomId, [songId]);
+      return res.data;
+    },
+    onSuccess: () => {
+      console.log("Add song success");
+      queryClient.invalidateQueries({ queryKey: ["room", roomId, "songs"] });
     },
   });
 
@@ -189,40 +214,52 @@ const ChatRoomRequest = ({}: { roomId: string }) => {
         </div>
         <div className={`${styles.list}`}>
           <ul>
-            {songs.map((song, index) => (
-              <li key={index}>
-                <div className={`${styles.item}`}>
-                  <div className={`${styles.item_quantity}`}>
+            {songs.map((song, index) => {
+              if (
+                songsIsExist &&
+                songsIsExist?.findIndex(
+                  (item: ISong) => item.id === song.id
+                ) !== -1
+              )
+                return null;
+              return (
+                <li key={index}>
+                  <div className={`${styles.item}`}>
+                    {/* <div className={`${styles.item_quantity}`}>
                     <span>123</span>
                     <p>Request</p>
+                  </div> */}
+                    <div className={`${styles.item_img}`}>
+                      <Image
+                        src={
+                          song?.imagePath
+                            ? apiImage(song.imagePath)
+                            : IMAGES.SONG
+                        }
+                        alt="image.png"
+                        width={50}
+                        height={50}
+                        quality={90}
+                      />
+                    </div>
+                    <div className={`${styles.item_info}`}>
+                      <h4>{song.title}</h4>
+                      <p>{song?.creator?.name || "Author"}</p>
+                    </div>
+                    <div className={`${styles.item_action}`}>
+                      <ButtonIcon
+                        onClick={() => mutionAdd.mutate(song.id)}
+                        dataTooltip="Add"
+                        className={`${styles.item_action_add}`}
+                        icon={
+                          <i className="fa-solid fa-rectangle-history-circle-plus"></i>
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className={`${styles.item_img}`}>
-                    <Image
-                      src={
-                        song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG
-                      }
-                      alt="image.png"
-                      width={50}
-                      height={50}
-                      quality={90}
-                    />
-                  </div>
-                  <div className={`${styles.item_info}`}>
-                    <h4>{song.title}</h4>
-                    <p>{song?.creator?.name || "Author"}</p>
-                  </div>
-                  <div className={`${styles.item_action}`}>
-                    <ButtonIcon
-                      dataTooltip="Add"
-                      className={`${styles.item_action_add}`}
-                      icon={
-                        <i className="fa-solid fa-rectangle-history-circle-plus"></i>
-                      }
-                    />
-                  </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
           {page < totalPages && !isLoading && (
             <button

@@ -22,6 +22,7 @@ import User from "./User";
 import SongPlay from "./SongPlay";
 import Room from "./Room";
 import RoomSong from "./RoomSong";
+import RoomCurrentPlaying from "./RoomCurrentPlaying";
 
 //declare :// Khai báo thuộc tính mà không cần gán giá trị ngay lập tức
 // "!" : thuộc tính không bao giờ là null
@@ -110,6 +111,9 @@ class Song extends Model {
 
   @BelongsToMany(() => Room, () => RoomSong)
   rooms!: Room[];
+ 
+  @BelongsToMany(() => Room, () => RoomCurrentPlaying)
+  roomsPlaying!: Room[];
 
   @HasMany(() => SongPlay)
   plays!: SongPlay[];

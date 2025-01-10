@@ -1,7 +1,23 @@
 import { array, boolean, number, object, string, TypeOf } from "zod";
 import { SIZE } from "../utils/contants";
-import { querySchema } from './common.schema';
+// import { querySchema } from './common.schema';
+import { enum as enum_ } from "zod";
 
+export const querySchema = {
+  query: object({
+    limit: string().default("10").optional(),
+    page: string().default("1").optional(),
+    keyword: string().optional(),
+    sort: enum_([
+      "newest",
+      "oldest",
+      "mostLikes",
+      "mostListens",
+      "mostFollows",
+    ]).optional(),
+    genreId: string().optional(),
+  }),
+};
 
 const payload = {
   body: object({

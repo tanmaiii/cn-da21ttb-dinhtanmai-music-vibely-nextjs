@@ -1,18 +1,20 @@
 "use client";
 import { HeaderPage } from "@/components/HeaderPage";
-import { TrackArtist } from "@/components/Track";
+import { Track, TrackArtist } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { usePlayer } from "@/context/PlayerContext";
 import { navSongPage } from "@/lib/constants";
-import { lyrics } from "@/lib/data";
 import songService from "@/services/song.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, notFound } from "next/navigation";
 import { useState } from "react";
 import styles from "./style.module.scss";
 import Loading from "./loading";
+import TablePlaylist from "@/components/TablePlaylist";
+import { useCustomToast } from "@/hooks/useToast";
 
 const SongPage = () => {
+  const { toastSuccess } = useCustomToast();
   const [nav, setNav] = useState("About");
   const { play } = usePlayer();
   const [seeMore, setSeeMore] = useState(false);
@@ -63,8 +65,33 @@ const SongPage = () => {
     },
     onSuccess: () => {
       if (song) {
+        toastSuccess(liked ? "Remove from favorite" : "Add to favorite");
         queryClient.invalidateQueries({ queryKey: ["song", song.id] });
         queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
+      }
+    },
+  });
+
+  const { data: lyrics } = useQuery({
+    queryKey: ["lyrics", song],
+    queryFn: async () => {
+      if (song) {
+        const res = await songService.getLyic(song.id);
+        return res.data;
+      }
+    },
+  });
+
+  const { data: songs } = useQuery({
+    queryKey: ["songs", song],
+    queryFn: async () => {
+      if (song) {
+        const res = await songService.getAllSong({
+          page: 1,
+          limit: 10,
+          genreId: song.genre?.id,
+        });
+        return res.data.data.filter((item) => item.id !== song.id);
       }
     },
   });
@@ -168,18 +195,24 @@ const SongPage = () => {
 
           {nav == "Lyrics" && (
             <div className={`${styles.SongPage_content_body_lyrics}`}>
-              <div className={`${styles.SongPage_content_body_lyrics_list}`}>
-                {lyrics.slice(0, 10).map((item, index) => (
-                  <p key={index}> {item.text}</p>
-                ))}
-                {seeMore &&
-                  lyrics
-                    .slice(10, lyrics.length)
-                    .map((item, index) => <p key={index}> {item.text}</p>)}
-                <button onClick={() => setSeeMore(!seeMore)}>
-                  <span>{seeMore ? "Ẩn bớt" : "...Xem thêm"}</span>
-                </button>
-              </div>
+              {lyrics ? (
+                <div className={`${styles.SongPage_content_body_lyrics_list}`}>
+                  {lyrics.slice(0, 10).map((item, index) => (
+                    <p key={index}> {item.text}</p>
+                  ))}
+                  {seeMore &&
+                    lyrics
+                      .slice(10, lyrics.length)
+                      .map((item, index) => <p key={index}> {item.text}</p>)}
+                  <button onClick={() => setSeeMore(!seeMore)}>
+                    <span>{seeMore ? "Hide" : "...See more"}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.SongPage_content_body_lyrics_list}>
+                  <p>No lyrics </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -193,7 +226,12 @@ const SongPage = () => {
 
           {nav == "Similar Songs" && (
             <div className={`${styles.SongPage_content_body_similar}`}>
-              {/* <Table songs={songs} /> */}
+              {songs && (
+                <TablePlaylist
+                  data={songs}
+                  renderItem={(item) => <Track song={item} />}
+                />
+              )}
             </div>
           )}
         </div>

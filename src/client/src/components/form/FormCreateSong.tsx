@@ -58,17 +58,12 @@ const FormCreateSong = ({
         duration: initialData.duration,
         public: initialData.public,
       });
+    console.log(initialData);
+
     } else {
       clearForm();
     }
   }, []);
-
-  useEffect(() => {
-    if (fileMp3) {
-      setAudioFile(fileMp3);
-      console.log(fileMp3);
-    }
-  }, [fileMp3]);
 
   const handleChange = (value: Partial<SongRequestDto>): void => {
     setForm((prev) => ({ ...prev, ...value }));

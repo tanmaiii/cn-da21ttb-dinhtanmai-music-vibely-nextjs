@@ -9,13 +9,13 @@ import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatNumber } from "@/lib/utils";
 import roleService from "@/services/role.service";
 import userService from "@/services/user.service";
+import { IUser, UserRequestDto } from "@/types/user.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FormUser from "./Form";
 import styles from "./style.module.scss";
-import { useRouter } from "next/navigation";
-import { IUser, UserRequestDto } from "@/types/user.type";
 
 const columns = [
   { header: "User", accessor: "song" },
@@ -135,6 +135,9 @@ const UserPage = () => {
       toastSuccess("Create user successfully");
       queryClient.invalidateQueries({ queryKey: ["users", paginate] });
     },
+    onError: (error) => {
+      toastError((error as Error)?.message || "Create user failed");
+    }
   });
 
   const mutationEdit = useMutation({

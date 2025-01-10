@@ -35,12 +35,14 @@ export const getAllHandler = async (
 
     const userInfo = get(req, "identity") as IIdentity;
 
+    const whereClause = req.query.genreId ? { genreId: req.query.genreId } : {};
     const songs = await SongService.getSongsWithPagination({
       page: parseInt(page as string, 10),
       limit: parseInt(limit as string, 10),
       sort: sort as SortOptions,
       userId: userInfo.id || undefined,
       keyword: keyword as string,
+      where: whereClause
     });
 
     res.json({ data: songs, message: "Get songs successfully" });

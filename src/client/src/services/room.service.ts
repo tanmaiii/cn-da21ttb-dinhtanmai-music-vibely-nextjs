@@ -78,6 +78,22 @@ class RoomService {
     const res = await this.client.get<ResponseAPI<null>>(`/${id}/member/check`);
     return res.data;
   }
+
+  async addSong(id: string, songId: string[]): Promise<ResponseAPI<null>> {
+    const res = await this.client.post<ResponseAPI<null>>(`/${id}/song`, {
+      songId,
+    });
+    return res.data;
+  }
+
+  async getSongPlaying(
+    id: string
+  ): Promise<ResponseAPI<{ startedAt: string; song: ISong }>> {
+    const res = await this.client.get<
+      ResponseAPI<{ startedAt: string; song: ISong }>
+    >(`/${id}/song-playing`);
+    return res.data;
+  }
 }
 
 export default new RoomService() as RoomService;

@@ -1,4 +1,12 @@
-import { IArtist, IGenre, IMood } from ".";
+import { IArtist, IGenre, IMood, ISort } from ".";
+
+export interface QuerySongParams {
+  page?: number;
+  limit?: number;
+  sort?: ISort;
+  keyword?: string;
+  genreId?: string;
+}
 
 export default interface ISong {
   id: string;

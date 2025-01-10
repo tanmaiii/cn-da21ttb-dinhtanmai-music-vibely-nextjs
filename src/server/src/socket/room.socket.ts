@@ -9,10 +9,10 @@ export const joinRoomHandler = async (
 ) => {
   try {
     const existsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
-    
+
     if (existsUser) {
       socket.join(roomId); // Người dùng vào phòng chat
-    }else{
+    } else {
       console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
@@ -32,16 +32,14 @@ export const leaveRoomHandler = async (
 ) => {
   try {
     const exitsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
-    
+
     socket.leave(roomId); // Xóa người dùng khỏi phòng chat
-   
+
     if (!exitsUser) {
       console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
-
-    console.log("User left room", roomId, userId);
-    await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
+    // await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
   } catch (error) {
     console.error("Error leave room:", error);
   }

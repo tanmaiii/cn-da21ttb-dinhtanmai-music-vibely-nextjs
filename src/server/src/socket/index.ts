@@ -1,13 +1,11 @@
-import { Server, Socket } from "socket.io";
-import { EventEmitter } from "events";
 import { JwtPayload } from "jsonwebtoken";
+import { Server, Socket } from "socket.io";
 import TokenUtil from "../utils/jwt";
-import { createNewMessageHandler } from "./chat.socket";
+import {
+  createNewMessageHandler
+} from "./chat.socket";
 import { joinRoomHandler, leaveRoomHandler } from "./room.socket";
 import { playSongSocketHandler } from "./song.socket";
-
-// Khởi tạo EventEmitter cho việc phát bài hát
-const songEmitter = new EventEmitter();
 
 export const socketHandler = (io: Server) => {
   // Middleware xác thực người dùng
@@ -44,7 +42,7 @@ export const socketHandler = (io: Server) => {
 
     socket.on("leaveRoom", async (roomId: string, userId: string) => {
       leaveRoomHandler(socket, roomId, userId);
-    })
+    });
 
     // Lắng nghe sự kiện "newMessage" để nhận tin nhắn mới
     socket.on(
@@ -54,21 +52,16 @@ export const socketHandler = (io: Server) => {
       }
     );
 
-    // Khi người dùng gửi sự kiện phát bài hát
-    socket.on("playSong", (userId: string, roomId: string, songId: string) => {
-      playSongSocketHandler(socket, io, songEmitter, {
-        userId,
-        roomId,
-        songId,
-      });
-    });
-
-    // Lắng nghe sự kiện phát bài hát từ EventEmitter
-    songEmitter.on("playSong", (songId: string) => {
-      console.log("Song played:", songId);
-    });
+    socket.on(
+      "playSong",
+      async (roomId: string, userId: string, songId: string) => {
+        playSongSocketHandler(socket, io, { roomId, userId, songId });
+      }
+    );
 
     socket.on("disconnect", async () => {
+      console.log("____________________ User disconnected");
+
       const { roomId, userId } = socket.data;
       leaveRoomHandler(socket, roomId, userId);
     });

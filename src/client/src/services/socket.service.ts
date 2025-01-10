@@ -11,7 +11,6 @@ export const socket = io(API, {
   },
 });
 
-
 //Đăng ký sự kiện để lắng nghe tin nhắn mới
 export const listenForMessages = (
   roomId: string,
@@ -24,7 +23,7 @@ export const listenForMessages = (
 
 export const leaveRoom = (roomId: string, userId: string) => {
   socket.emit("leaveRoom", roomId, userId);
-}
+};
 
 // Gửi một tin nhắn mới
 export const sendMessage = (
@@ -47,7 +46,6 @@ export const listenForSongPlayed = (
 ) => {
   socket.on("songPlayed", callback);
 };
-
 
 export const disconnectSocket = () => {
   socket.disconnect();

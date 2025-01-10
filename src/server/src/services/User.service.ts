@@ -81,7 +81,7 @@ export default class UserService {
         case "oldest":
           order[0] = ["createdAt", "ASC"];
           break;
-        case "mostFollows":
+        case "mostLikes":
           order[0] = [Sequelize.literal("followers"), "DESC"];
           break;
       }

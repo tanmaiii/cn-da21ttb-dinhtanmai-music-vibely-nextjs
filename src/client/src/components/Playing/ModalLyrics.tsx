@@ -205,19 +205,6 @@ const Lyrics = () => {
         />
       </div>
       <div className={styles.Lyrics_list}>
-        {/* <ul ref={listRef}>
-          {lyrics &&
-            lyrics.map((lyric, index) => (
-              <li
-                ref={index === active ? itemRef : null}
-                key={index}
-                className={`${index === active ? styles.is_active : ""} 
-                  ${index < active ? styles.is_over : ""}`}
-              >
-                <p>{lyric.text}</p>
-              </li>
-            ))}
-        </ul> */}
         {lyrics ? (
           <ul ref={listRef}>
             {lyrics.map((lyric, index) => (
