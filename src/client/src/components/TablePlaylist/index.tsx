@@ -9,6 +9,7 @@ import {
 } from "@hello-pangea/dnd";
 import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
+import Empty from "../common/Empty";
 
 interface Props {
   data: ISong[];
@@ -36,10 +37,10 @@ const TablePlaylist = (props: Props) => {
   };
 
   useEffect(() => {
-    if(data) {
+    if (data) {
       setItems(data);
     }
-  }, [data])
+  }, [data]);
 
   return (
     <div className={`${styles.TablePlaylist}`}>
@@ -70,6 +71,9 @@ const TablePlaylist = (props: Props) => {
           </div>
         </div>
         <div className={`${styles.TablePlaylist_swapper_body}`}>
+          {items.length === 0 && (
+              <Empty />
+          )}
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable direction="vertical" droppableId="droppable">
               {(provided) => (

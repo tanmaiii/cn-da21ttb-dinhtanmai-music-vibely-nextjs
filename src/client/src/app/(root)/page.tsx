@@ -1,21 +1,70 @@
-import { Card, CardArtist } from "@/components/Card";
+'use client';
+
+import { Card } from "@/components/Card";
 import { SectionOneRow } from "@/components/Section";
 import Slideshow from "@/components/Slideshow";
 import { TrackShort } from "@/components/Track";
 import { paths } from "@/lib/constants";
-import { artists, playlists, songs } from "@/lib/data";
+import playlistService from "@/services/playlist.service";
+import songService from "@/services/song.service";
+import { useQuery } from "@tanstack/react-query";
 import styles from "./root.module.scss";
 
 const Home = () => {
+  const { data: songsNew } = useQuery({
+    queryKey: ["songs-new"],
+    queryFn: async () => {
+      const res = await songService.getAllSong({
+        page: 1,
+        limit: 10,
+        sort: "newest",
+      });
+      return res.data.data;
+    },
+  });
 
-  // return <Loading/>
+  const { data: songsPopular } = useQuery({
+    queryKey: ["songs-pupular"],
+    queryFn: async () => {
+      const res = await songService.getAllSong({
+        page: 1,
+        limit: 10,
+        sort: "mostListens",
+      });
+      return res.data.data;
+    },
+  });
+
+  const { data: songsLikes } = useQuery({
+    queryKey: ["songs-likes"],
+    queryFn: async () => {
+      const res = await songService.getAllSong({
+        page: 1,
+        limit: 10,
+        sort: "mostLikes",
+      });
+      return res.data.data;
+    },
+  });
+
+  const { data: playlists } = useQuery({
+    queryKey: ["playlist"],
+    queryFn: async () => {
+      const res = await playlistService.getAll({
+        page: 1,
+        limit: 10,
+        sort: "mostLikes",
+      });
+      return res.data.data;
+    },
+  });
 
   return (
     <div className={styles.Home}>
       <Slideshow />
 
-      <SectionOneRow title="Song popular" path={paths.SONG}>
-        {songs.map((_, index) => (
+      <SectionOneRow title="Song new" path={paths.SONG}>
+        {songsNew && songsNew.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
       </SectionOneRow>
@@ -27,17 +76,17 @@ const Home = () => {
         </div>
         <div className={`${styles.Home_top_row} row`}>
           <div className={`${styles.Home_top_row_col} col pc-4 t-6 m-12`}>
-            {songs.slice(0, 4).map((_, index) => (
+            {songsPopular &&  songsPopular.slice(0, 4).map((_, index) => (
               <TrackShort key={index} num={index + 1} song={_} />
             ))}
           </div>
           <div className={`${styles.Home_top_row_col} col pc-4 t-6 m-12`}>
-            {songs.slice(4, 8).map((_, index) => (
+            {songsPopular &&  songsPopular.slice(4, 8).map((_, index) => (
               <TrackShort key={index} num={index + 4 + 1} song={_} />
             ))}
           </div>
           <div className={`${styles.Home_top_row_col} col pc-4 t-6 m-12`}>
-            {songs.slice(8, 12).map((_, index) => (
+            {songsPopular && songsPopular.slice(8, 12).map((_, index) => (
               <TrackShort key={index} num={index + 8 + 1} song={_} />
             ))}
           </div>
@@ -45,22 +94,22 @@ const Home = () => {
       </div>
 
       <SectionOneRow title="Song popular" path={paths.SONG}>
-        {songs.map((_, index) => (
+        {songsLikes && songsLikes.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
       </SectionOneRow>
 
       <SectionOneRow title="Playlists popular" path={paths.PLAYLIST}>
-        {playlists.map((_, index) => (
+        {playlists && playlists.map((_, index) => (
           <Card key={index} index={index} data={_} />
         ))}
       </SectionOneRow>
 
-      <SectionOneRow title="Artist" path={paths.PLAYLIST}>
+      {/* <SectionOneRow title="Artist" path={paths.PLAYLIST}>
         {artists.map((_, index) => (
           <CardArtist key={index} index={index} artist={_} />
         ))}
-      </SectionOneRow>
+      </SectionOneRow> */}
     </div>
   );
 };

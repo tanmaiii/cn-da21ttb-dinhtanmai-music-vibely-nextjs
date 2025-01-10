@@ -1,5 +1,6 @@
 "use client";
 import { FormCreateSong } from "@/components/Form";
+import { ModalConfirm } from "@/components/Modal";
 import { ButtonLabel } from "@/components/ui/Button";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCustomToast } from "@/hooks/useToast";
@@ -13,7 +14,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
-import Modal, { ModalConfirm } from "@/components/Modal";
 
 const UploadPage = () => {
   const { toastSuccess, toastError } = useCustomToast();

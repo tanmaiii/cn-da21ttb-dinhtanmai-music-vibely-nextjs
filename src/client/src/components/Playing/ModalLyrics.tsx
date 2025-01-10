@@ -3,21 +3,16 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
 import useInactivity from "@/hooks/useInactivity";
 import { IMAGES } from "@/lib/constants";
-import {
-  apiImage,
-  formatDuration,
-  formatImg,
-  toggleFullScreen,
-} from "@/lib/utils";
+import { apiImage, formatImg, toggleFullScreen } from "@/lib/utils";
 import songService from "@/services/song.service";
 import { ISong } from "@/types";
 import { ILyric } from "@/types/song.type";
 import Image from "next/image";
 import { createRef, useCallback, useEffect, useRef, useState } from "react";
-import Slider from "../Slider";
 import { ButtonIconRound } from "../ui/Button";
 import ControlsPlaying from "./ControlsPlaying";
 import styles from "./style.module.scss";
+import IconPlay from "../ui/IconPlay";
 
 const ModalLyrics = () => {
   const { isLyricsOpen, toggleLyrics } = useUI();
@@ -25,7 +20,7 @@ const ModalLyrics = () => {
   const isInactive = useInactivity(5000); // Bắt sự kiện khi không hoạt động trong 5s
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const { currentSong, play, pause, isPlaying } = usePlayer();
+  const { currentSong } = usePlayer();
 
   // Hàm kiểm tra trạng thái toàn màn hình
   const checkFullscreenStatus = () => {
@@ -119,13 +114,11 @@ const ModalLyrics = () => {
         </div>
         <div className={`${styles.ModalLyrics_container_footer}`}>
           <h6>{currentSong?.title}</h6>
-          <div className={`${styles.ModalLyrics_container_footer_slider}`}>
-            <span>{formatDuration(1232)}</span>
-            <Slider percentage={50} onChange={() => {}} />
-            <span>{formatDuration(1232)}</span>
-          </div>
+          <div
+            className={`${styles.ModalLyrics_container_footer_slider}`}
+          ></div>
           <div className={`${styles.ModalLyrics_container_footer_controls}`}>
-            <ControlsPlaying onPlay={() => (isPlaying ? pause() : play())} />
+            <ControlsPlaying />
           </div>
         </div>
       </div>
@@ -253,7 +246,7 @@ const Waiting = () => {
   const swapperRef = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
   const { queue } = usePlayer();
-  const { currentSong, play } = usePlayer();
+  const { currentSong, play, isPlaying } = usePlayer();
 
   const onClickLeft = () => {
     if (!queue) return;
@@ -329,6 +322,13 @@ const Waiting = () => {
                         width={200}
                         height={200}
                       />
+                      {isPlaying && currentSong?.id === song?.id && (
+                        <div
+                          className={`${styles.Waiting_swapper_slider_item_image_icon}`}
+                        >
+                          <IconPlay playing={isPlaying} />
+                        </div>
+                      )}
                     </div>
                     <div
                       className={`${styles.Waiting_swapper_slider_item_info}`}

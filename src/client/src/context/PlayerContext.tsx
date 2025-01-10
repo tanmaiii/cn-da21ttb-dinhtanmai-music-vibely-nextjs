@@ -2,7 +2,6 @@
 
 import songService from "@/services/song.service";
 import { ISong } from "@/types";
-import { fa } from "@faker-js/faker";
 import React, { createContext, useContext, useState } from "react";
 import toast from "react-hot-toast";
 

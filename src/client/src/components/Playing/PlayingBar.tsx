@@ -65,14 +65,10 @@ const CenterPlayingBar = () => {
   const {
     currentSong,
     isPlaying,
-    pause,
-    play,
-    playNext,
-    playPrevious,
     handleSongEnd,
     queue,
     volume,
-    onChangeCurrentTime 
+    onChangeCurrentTime,
   } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,16 +76,6 @@ const CenterPlayingBar = () => {
     if (!audio) return;
     audio.currentTime = (audio.duration / 100) * parseFloat(e.target.value);
     setPercentage(parseFloat(e.target.value));
-  };
-
-  const handlePlay = () => {
-    if (!isPlaying && audioRef.current?.paused) {
-      audioRef.current?.play();
-      play();
-    } else {
-      pause();
-      audioRef.current?.pause();
-    }
   };
 
   const onPlaying = () => {
@@ -133,14 +119,11 @@ const CenterPlayingBar = () => {
     }
   }, [currentSong]);
 
+
   return (
     <div className={`${styles.CenterPlayingBar}`}>
       <div className={`${styles.CenterPlayingBar_top}`}>
-        <ControlsPlaying
-          onPlay={handlePlay}
-          onNext={() => playNext()}
-          onPrev={() => playPrevious()}
-        />
+        <ControlsPlaying />
       </div>
       <div className={`${styles.CenterPlayingBar_bottom}`}>
         <span>

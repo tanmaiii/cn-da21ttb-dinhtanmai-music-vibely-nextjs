@@ -4,7 +4,6 @@ import { privacy } from "@/lib/data";
 import { apiImage, validateFile } from "@/lib/utils";
 import uploadService from "@/services/upload.service";
 import ISong, { SongRequestDto } from "@/types/song.type";
-import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import BoxAudio from "../BoxAudio";
 import SelectGenre from "../SelectGenre";
@@ -26,10 +25,10 @@ const FormCreateSong = ({
   file: fileMp3,
   onSubmit,
   initialData,
+  open,
   onClose,
 }: Props) => {
   const [errors, setErrors] = React.useState<Partial<SongRequestDto>>({});
-  const router = useRouter();
   const [form, setForm] = React.useState<SongRequestDto>({
     title: "",
     description: "",

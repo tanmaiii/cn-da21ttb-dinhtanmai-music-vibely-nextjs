@@ -1,10 +1,10 @@
 "use client";
-import songService from "@/services/song.service";
-import styles from "./admin.module.scss";
-import { Track, TrackShort } from "@/components/Track";
-import { useQuery } from "@tanstack/react-query";
-import LineChart from "@/components/chart/LineChart";
 import BarChart from "@/components/chart/BarChart";
+import LineChart from "@/components/chart/LineChart";
+import { Track } from "@/components/Track";
+import songService from "@/services/song.service";
+import { useQuery } from "@tanstack/react-query";
+import styles from "./admin.module.scss";
 
 const Page = () => {
   const { data: songs } = useQuery({

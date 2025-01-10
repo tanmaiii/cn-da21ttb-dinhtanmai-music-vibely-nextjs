@@ -1,5 +1,5 @@
 "use client";
-import { Dropdown, FormPlaylist, FormRoom } from "@/components/Form";
+import { Dropdown, FormRoom } from "@/components/Form";
 import Modal, { ModalConfirm } from "@/components/Modal";
 import Table from "@/components/Table";
 import LoadingTable from "@/components/Table/loading";
@@ -8,21 +8,17 @@ import { ButtonIconSquare, ButtonLabel } from "@/components/ui/Button";
 import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES, paths } from "@/lib/constants";
 import { apiImage, formatDateTime, formatNumber } from "@/lib/utils";
-import playlistService from "@/services/playlist.service";
+import roomService from "@/services/room.service";
 import {
-  IPlaylist,
   IRoom,
   ISort,
-  PlaylistRequestDto,
-  RoomRequestDto,
+  RoomRequestDto
 } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import styles from "./style.module.scss";
-import roomService from "@/services/room.service";
-import { fa } from "@faker-js/faker";
 
 const DataSort: { label: string; value: string }[] = [
   { label: "Newest", value: "newest" },

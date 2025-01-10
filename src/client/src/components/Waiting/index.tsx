@@ -2,7 +2,6 @@
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
-import { songs } from "@/lib/data";
 import { ISong } from "@/types";
 import {
   DragDropContext,
@@ -17,17 +16,21 @@ import styles from "./style.module.scss";
 
 export const Waiting = () => {
   const { toggleWaiting, isWaitingOpen } = useUI();
-  const { queue } = usePlayer();
+  const { queue, playPlaylist } = usePlayer();
 
   const [ready, setReady] = useState(false);
   // const waitingRef = React.useRef<HTMLDivElement>(null);
-  const [items, setItems] = useState<ISong[]>(songs);
+  const [items, setItems] = useState<ISong[]>(queue);
 
   useEffect(() => {
     if (process.browser) {
       setReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    setItems(queue);
+  }, [queue]);
 
   const handleOnDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -41,6 +44,8 @@ export const Waiting = () => {
     const updatedItems = [...items];
     const [reorderedItem] = updatedItems.splice(source.index, 1);
     updatedItems.splice(destination.index, 0, reorderedItem);
+
+    playPlaylist(updatedItems);
 
     setItems(updatedItems);
   };

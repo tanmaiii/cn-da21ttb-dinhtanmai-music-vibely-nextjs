@@ -191,7 +191,7 @@ const Track = (props: ITrack) => {
               ) : song?.duration ? (
                 formatDuration(parseInt(song?.duration.toString()))
               ) : (
-                0
+                "00:00"
               )}
             </span>
           </div>
@@ -222,6 +222,37 @@ const Track = (props: ITrack) => {
 const TrackShort = (props: ITrack) => {
   const { num, isLoading, song, dontShowPlay = false } = props;
   const { isPlaying, play, currentSong, pause } = usePlayer();
+  const queryClient = useQueryClient();
+
+  const { data: liked } = useQuery({
+    queryKey: ["song", song.id],
+    queryFn: async () => {
+      try {
+        const res = await songService.checkLiked(song.id);
+        return res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  const mutationLiked = useMutation({
+    mutationFn: async (like: boolean) => {
+      try {
+        if (like) {
+          await songService.unLikeSong(song.id);
+        } else {
+          await songService.likeSong(song.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["song", song.id] });
+      queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
+    },
+  });
 
   const handleClickPlay = () => {
     if (currentSong?.id === song?.id && isPlaying) {
@@ -297,20 +328,28 @@ const TrackShort = (props: ITrack) => {
           </div>
         </div>
         <div className={`${styles.TrackShort_swapper_right}`}>
+          <div className={`${liked ? styles.item_active : styles.item_hover}`}>
+            {liked ? (
+              <ButtonIcon
+                onClick={() => mutationLiked.mutate(liked)}
+                className={`${styles.icon_liked}`}
+                icon={<i className="fa-solid fa-heart"></i>}
+              />
+            ) : (
+              <ButtonIcon
+                onClick={() => mutationLiked.mutate(false)}
+                icon={<i className="fa-light fa-heart"></i>}
+              />
+            )}
+          </div>
           <div className={`${styles.item_hover}`}>
-            <ButtonIconRound
-              size="small"
-              icon={
-                <i style={{ color: "red" }} className="fa-solid fa-heart"></i>
-              }
-            />
             <ButtonIconRound
               size="small"
               icon={<i className="fa-solid fa-ellipsis"></i>}
             />
           </div>
           <div className={`${styles.item_default}`}>
-            <span>
+            <span className={`${styles.item_default_time}`}>
               {isLoading ? <Skeleton width={60} /> : formatNumber(song.listens)}
             </span>
           </div>

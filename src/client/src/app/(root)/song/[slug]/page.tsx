@@ -6,11 +6,11 @@ import { usePlayer } from "@/context/PlayerContext";
 import { navSongPage } from "@/lib/constants";
 import { lyrics } from "@/lib/data";
 import songService from "@/services/song.service";
-import { useQuery } from "@tanstack/react-query";
-import { notFound, useParams } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, notFound } from "next/navigation";
 import { useState } from "react";
-import Loading from "./loading";
 import styles from "./style.module.scss";
+import Loading from "./loading";
 
 const SongPage = () => {
   const [nav, setNav] = useState("About");
@@ -18,8 +18,13 @@ const SongPage = () => {
   const [seeMore, setSeeMore] = useState(false);
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: song,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["song", slug],
     queryFn: async () => {
       const res = await songService.getBySlug(slug);
@@ -27,20 +32,55 @@ const SongPage = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  const { data: liked } = useQuery({
+    queryKey: ["song", song?.id],
+    queryFn: async () => {
+      if (!song) return;
+      try {
+        const res = await songService.checkLiked(song.id);
+        return res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
 
-  if (error || !slug) return notFound();
+  const mutationLiked = useMutation({
+    mutationFn: async (like: boolean) => {
+      try {
+        if (like) {
+          if (song) {
+            await songService.unLikeSong(song.id);
+          }
+        } else {
+          if (song) {
+            await songService.likeSong(song.id);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: () => {
+      if (song) {
+        queryClient.invalidateQueries({ queryKey: ["song", song.id] });
+        queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
+      }
+    },
+  });
 
   const handlePlay = () => {
-    console.log("play");
-
-    if (data) play(data);
+    if (song) play(song);
   };
+
+  if (isLoading) return <Loading />;
+
+  if (!slug || isError) return notFound();
 
   return (
     <div className={`${styles.SongPage}`}>
       <div className={`${styles.SongPage_header}`}>
-        {data && <HeaderPage data={data} />}
+        {song && <HeaderPage data={song} />}
       </div>
       <div className={`${styles.SongPage_content}`}>
         <div className={`${styles.SongPage_content_header}`}>
@@ -51,8 +91,19 @@ const SongPage = () => {
           />
           <ButtonIcon
             size="large"
+            onClick={() => mutationLiked.mutate(liked || false)}
             icon={
-              <i style={{ color: "#ff6337" }} className="fa-solid fa-heart"></i>
+              liked ? (
+                <i
+                  style={{ color: "#ff6337" }}
+                  className="fa-solid fa-heart"
+                ></i>
+              ) : (
+                <i
+                  style={{ color: "#ff6337" }}
+                  className="fa-light fa-heart"
+                ></i>
+              )
             }
           />
           <ButtonIcon
@@ -84,9 +135,9 @@ const SongPage = () => {
                     <TrackArtist artist={_} />
                   </div>
                 ))} */}
-                {data?.creator && (
+                {song?.creator && (
                   <div className="col pc-3 t-4 m-6">
-                    <TrackArtist artist={data?.creator} />{" "}
+                    <TrackArtist artist={song?.creator} />{" "}
                   </div>
                 )}
               </div>
@@ -96,17 +147,17 @@ const SongPage = () => {
                 <div
                   className={`${styles.SongPage_content_body_about_genre_list}`}
                 >
-                  <button>{data?.genre?.title}</button>
+                  <button>{song?.genre?.title}</button>
                 </div>
               </div>
 
-              {data?.moods && data?.moods?.length > 1 && (
+              {song?.moods && song?.moods?.length > 1 && (
                 <div className={`${styles.SongPage_content_body_about_moods}`}>
                   <h4>Moods</h4>
                   <div
                     className={`${styles.SongPage_content_body_about_moods_list}`}
                   >
-                    {data?.moods?.map((item, index) => (
+                    {song?.moods?.map((item, index) => (
                       <button key={index}>{item.title}</button>
                     ))}
                   </div>

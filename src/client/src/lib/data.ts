@@ -441,9 +441,9 @@ export const exRoom: IRoom = {
   description: "Description 1",
   creator: exArtist,
   membersCount: 0,
-  songCount: 0,
+  songsCount: 0,
   public: false,
-  createAt: "2024-10-26 19:54:53",
+  createdAt: "2024-10-26 19:54:53",
 };
 
 export const songs: ISong[] = [
@@ -924,7 +924,7 @@ export const comments: IMessageChat[] = [
     content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     user: exArtist,
     room: exRoom,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -933,7 +933,7 @@ export const comments: IMessageChat[] = [
     content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     user: exArtist,
     room: exRoom,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -943,7 +943,7 @@ export const comments: IMessageChat[] = [
       "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -953,7 +953,7 @@ export const comments: IMessageChat[] = [
       "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -963,7 +963,7 @@ export const comments: IMessageChat[] = [
       "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -972,7 +972,7 @@ export const comments: IMessageChat[] = [
     content: "Deserunt mollit anim id est laborum.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -981,7 +981,7 @@ export const comments: IMessageChat[] = [
     content: "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -991,7 +991,7 @@ export const comments: IMessageChat[] = [
       "Nullam varius, turpis et commodo pharetra, est eros bibendum elit.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -1001,7 +1001,7 @@ export const comments: IMessageChat[] = [
       "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -1010,7 +1010,7 @@ export const comments: IMessageChat[] = [
     content: "In hac habitasse platea dictumst. Fusce euismod consequat ante.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -1019,7 +1019,7 @@ export const comments: IMessageChat[] = [
     content: "In hac habitasse platea dictumst. Fusce euismod consequat ante.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -1028,7 +1028,7 @@ export const comments: IMessageChat[] = [
     content: "In hac habitasse platea dictumst. Fusce euismod consequat ante.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
   {
     id: "1",
@@ -1037,7 +1037,7 @@ export const comments: IMessageChat[] = [
     content: "Maecenas malesuada elit lectus felis, malesuada ultricies.",
     room: exRoom,
     user: exArtist,
-    createAt: new Date(),
+    createdAt: new Date(),
   },
 ];
 

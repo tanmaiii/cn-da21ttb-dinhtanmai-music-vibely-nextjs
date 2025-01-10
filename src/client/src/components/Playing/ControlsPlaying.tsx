@@ -1,12 +1,11 @@
-import React from "react";
-import { ButtonIcon, ButtonIconPrimary } from "../ui/Button";
 import { usePlayer } from "@/context/PlayerContext";
+import { ButtonIcon, ButtonIconPrimary } from "../ui/Button";
 import styles from "./style.module.scss";
 
 export const ControlPlayPause = ({
   isPlaying,
   onChange,
-  size = 'large'
+  size = "large",
 }: {
   isPlaying: boolean;
   onChange: () => void;
@@ -27,14 +26,19 @@ export const ControlPlayPause = ({
   );
 };
 
-interface Props {
-  onPlay: () => void;
-  onNext?: () => void;
-  onPrev?: () => void;
-}
+const ControlsPlaying = () => {
+  const {
+    isPlaying,
+    playMode,
+    togglePlayMode,
+    queue,
+    playNext,
+    playPrevious,
+    pause,
+    play,
+  } = usePlayer();
 
-const ControlsPlaying = ({ onPlay, onPrev, onNext }: Props) => {
-  const { isPlaying, playMode, togglePlayMode, queue } = usePlayer();
+  const handleOnPlay = () => (isPlaying ? pause() : play());
 
   return (
     <>
@@ -49,13 +53,13 @@ const ControlsPlaying = ({ onPlay, onPrev, onNext }: Props) => {
       <ButtonIcon
         hide={queue.length === 0}
         icon={<i className="fa-solid fa-backward-step"></i>}
-        onClick={onPrev}
+        onClick={() => playPrevious()}
       />
-      <ControlPlayPause isPlaying={isPlaying} onChange={() => onPlay()} />
+      <ControlPlayPause isPlaying={isPlaying} onChange={() => handleOnPlay()} />
       <ButtonIcon
         hide={queue.length === 0}
         icon={<i className="fa-solid fa-forward-step"></i>}
-        onClick={onNext}
+        onClick={() => playNext()}
       />
       <ButtonIcon
         hide={queue.length === 0}

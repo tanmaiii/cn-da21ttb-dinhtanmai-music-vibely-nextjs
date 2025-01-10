@@ -194,7 +194,7 @@
         & > .icon_liked {
           i {
             font-size: 20px;
-            color: $color-primary;
+            color: $color-red;
           }
         }
       }
@@ -370,13 +370,30 @@
         display: none;
       }
 
+      & > .item_hover_liked {
+        i {
+          font-size: 20px;
+          color: $color-red;
+        }
+      }
+
+      &  .icon_liked{
+        i {
+          font-size: 20px;
+          color: $color-red;
+        }
+      }
+
       & > .item_default {
-        & > span {
+        & > .item_default_time {
           font-size: $size-14;
           font-weight: $font-light;
           color: var(--text-color-2);
           padding-right: 4px;
           transition: $transition;
+          width: 34px;
+          display: block;
+          text-align: center;
         }
       }
     }

@@ -37,7 +37,7 @@ const Page = () => {
 
   return (
     <div className={styles.PageCreateRoom}>
-      <FormRoom onSubmit={(value) => mutationAdd.mutate(value)} />
+      <FormRoom open={true} onSubmit={(value) => mutationAdd.mutate(value)} />
     </div>
   );
 };

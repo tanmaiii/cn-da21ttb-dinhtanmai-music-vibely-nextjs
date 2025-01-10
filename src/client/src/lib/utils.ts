@@ -18,7 +18,7 @@ export const formatDateTime = (dateString: Date) => {
 };
 
 export function formatNumber(num: number): string {
-  if(!num) return "0";
+  if (!num) return "0";
   if (num >= 1_000_000_000) {
     const formatted = (num / 1_000_000_000).toFixed(1);
     return `${parseFloat(formatted)}B`; // Billion
@@ -76,6 +76,7 @@ export const formatDuration = (duration: number): string => {
   if (formattedMinutes && formattedSeconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
   }
+
   return "00:00";
 };
 
@@ -151,7 +152,7 @@ export function apiImage(path: string) {
     return path;
   }
 
-  if(path.includes("http://") || path.includes("https://")) {
+  if (path.includes("http://") || path.includes("https://")) {
     return path;
   }
 
@@ -162,7 +163,7 @@ export const validateFile = (
   e: React.ChangeEvent<HTMLInputElement>,
   maxSize: number = 5 * 1024 * 1024, // 5MB
   validTypes: string[] = ["image/jpeg", "image/png", "image/gif"],
-  required = true,
+  required = true
 ): { file: File | null; error: string | null; required?: boolean } => {
   const file = e.target.files ? e.target.files[0] : null;
 
@@ -175,7 +176,6 @@ export const validateFile = (
   }
 
   console.log(file.size, maxSize);
-  
 
   if (file.size > maxSize) {
     return {
@@ -212,4 +212,4 @@ export const hasPermission = (
 export const checkEmail = (value: string): boolean => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(value);
-}
+};

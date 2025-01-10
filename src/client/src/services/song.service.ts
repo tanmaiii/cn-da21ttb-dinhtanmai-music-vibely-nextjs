@@ -2,7 +2,6 @@ import createHttpClient from "@/lib/createHttpClient";
 import { ISong, ListResponse, QueryParams, ResponseAPI } from "@/types";
 import { ILyric, SongRequestDto } from "@/types/song.type";
 import { AxiosInstance } from "axios";
-import { playSong } from './socket.service';
 
 class SongService {
   private client: AxiosInstance;
