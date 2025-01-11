@@ -19,7 +19,7 @@ interface PlayerState {
   stop: () => void;
   setVolume: (volume: number) => void;
   addToQueue: (song: ISong) => void;
-  removeFromQueue: (id: string) => void;
+  removeFromQueue: (song: ISong) => void;
   togglePlayMode: () => void;
   playPlaylist: (playlist: ISong[]) => void; // Hàm phát playlist
   playNext: () => void;
@@ -64,12 +64,21 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addToQueue = (song: ISong) => {
-    console.log(song);
+    toast.success("Added to queue");
     setQueue((prev) => [...prev, song]); // Thêm bài hát vào cuối queue
+    if (queue.length === 0) {
+      setQueue([song]);
+      setCurrentSong(song);
+      setIsPlaying(true);
+      return;
+    }
   };
 
-  const removeFromQueue = (id: string) => {
-    setQueue((prev) => prev.filter((song) => song.id !== id)); // Loại bỏ bài hát khỏi queue
+  const removeFromQueue = (song: ISong) => {
+    setQueue((prev) => prev.filter((song) => song !== song)); // Loại bỏ bài hát khỏi queue
+    if (currentSong === song) {
+      playNext();
+    }
   };
 
   // Phát bài tiếp theo

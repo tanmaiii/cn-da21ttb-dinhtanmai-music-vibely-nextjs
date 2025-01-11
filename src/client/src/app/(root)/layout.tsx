@@ -10,6 +10,9 @@ import { sidebarLinks } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import styles from "./root.module.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import SongMenu from "@/components/Menu/SongMenu";
 
 export default function RootLayout({
   children,
@@ -17,6 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { isLyricsOpen, isPlayingBar } = useUI();
+  const menuSong = useSelector((state: RootState) => state.menuSong);
   const router = useRouter();
 
   useEffect(() => {
@@ -82,6 +86,7 @@ export default function RootLayout({
       )}
 
       {isLyricsOpen && <ModalLyrics />}
+      {menuSong && <SongMenu/>}
     </main>
   );
 }

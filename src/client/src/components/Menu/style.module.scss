@@ -1,0 +1,61 @@
+@use "@/scss/index.module.scss" as *;
+
+.SongMenu {
+  // opacity: 0;
+  transition: opacity 0.3s;
+  --width: 240px;
+  position: absolute;
+  z-index: $z-index-menu;
+  display: none;
+
+  &.active {
+    display: flex;
+    position: absolute;
+    top: 200px;
+    left: 200px;
+    z-index: $z-index-menu;
+    opacity: 1;
+    display: flex;
+  }
+
+  &_context {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color-2);
+    width: var(--width);
+    padding: $space-4 0;
+    transition: $transition;
+    height: max-content;
+    border-radius: $radius-8;
+    box-shadow: var(--box-shadow);
+    &_list {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.ItemMenu {
+  button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: $space-16;
+    padding: $space-16 $space-16;
+    border-radius: $radius-8;
+    cursor: pointer;
+    transition: $transition;
+    &:hover {
+      background-color: var(--background-color-3);
+    }
+    & i {
+      font-size: $size-16;
+      color: var(--text-color-1);
+    }
+    & span {
+      font-size: $size-16;
+      color: var(--text-color-1);
+      @include text(1);
+    }
+  }
+}

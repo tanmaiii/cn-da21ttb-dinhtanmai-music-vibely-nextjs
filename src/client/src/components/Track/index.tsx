@@ -20,6 +20,10 @@ import { MotionDiv } from "../Motion";
 import { ButtonIcon, ButtonIconRound } from "../ui/Button";
 import IconPlay from "../ui/IconPlay";
 import styles from "./style.module.scss";
+import { useDispatch } from "react-redux";
+import { closeMenu, openMenu } from "@/features/menuSongSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 interface Props {
   num?: number;
@@ -43,6 +47,8 @@ const Track = (props: ITrack) => {
   const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
   const queryClient = useQueryClient();
   const { currentSong, isPlaying } = usePlayer();
+  const dispatch = useDispatch();
+  const menuSong = useSelector((state: RootState) => state.menuSong);
 
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
@@ -77,6 +83,20 @@ const Track = (props: ITrack) => {
   const handleClickPlay = () => {
     if (props.onPlay) {
       props.onPlay(song);
+    }
+  };
+
+  const handleClickOpenMenu = () => {
+    if (menuSong.open) {
+      dispatch(closeMenu());
+      return;
+    } else {
+      dispatch(
+        openMenu({
+          open: true,
+          song: song,
+        })
+      );
     }
   };
 
@@ -210,6 +230,7 @@ const Track = (props: ITrack) => {
               />
             ) : (
               <ButtonIconRound
+                onClick={handleClickOpenMenu}
                 icon={<i className="fa-solid fa-ellipsis"></i>}
               />
             )}
@@ -314,14 +335,6 @@ const TrackShort = (props: ITrack) => {
                   </Link>
                 </h4>
                 <p>
-                  {/* {song?.owner.map((owner, index) => (
-                    <Link
-                      key={index}
-                      href={`${paths.ARTIST}/${owner?.id || 1}`}
-                    >
-                      {owner.name}
-                    </Link>
-                  ))} */}
                   <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
                     {song?.creator?.name}
                   </Link>
