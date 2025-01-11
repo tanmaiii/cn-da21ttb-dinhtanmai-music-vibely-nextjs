@@ -1,7 +1,7 @@
-import path from "path";
-import Genre from "../models/Genre";
 import fs from "fs";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
+import Genre from "../models/Genre";
+import Song from "../models/Song";
 
 export const attributesGenre = ["id", "title", "description"];
 
@@ -31,7 +31,7 @@ export default class GenreService {
       totalItems: data.count,
       currentPage: page || 0,
       totalPages: Math.ceil(data.count / limit) || 0,
-    }
+    };
   }
 
   static async getById(id: string) {
@@ -74,5 +74,25 @@ export default class GenreService {
 
       await Genre.destroy({ where: { id } });
     }
+  }
+
+  static async getGenreWithNumberSongs() {
+    return Genre.findAll({
+      attributes: {
+        include: [
+          ...attributesGenre,
+          [Sequelize.fn("COUNT", Sequelize.col("Songs.id")), "numberOfSongs"],
+        ],
+      },
+      include: [
+        {
+          model: Song,
+          attributes: [],
+          required: false,
+        },
+      ],
+      order: [[Sequelize.literal("numberOfSongs"), "DESC"]],
+      group: ["Genre.id"],
+    });
   }
 }

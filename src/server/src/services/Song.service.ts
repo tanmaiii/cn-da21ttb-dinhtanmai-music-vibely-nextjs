@@ -1,7 +1,7 @@
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import Genre from "../models/Genre";
 import Mood from "../models/Mood";
-import Song from "../models/Song";
+import Song from '../models/Song';
 import { default as SongPlay } from "../models/SongPlay";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
@@ -267,4 +267,34 @@ export default class SongService {
       console.error("❌❌ Trùng lặp bản ghi phát bài hát.");
     }
   };
+
+  static getRecentCreate = async (days: number = 30) => {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+
+    const res = await Song.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: date,
+        },
+      },
+    });
+
+    const songCountByDate = Array.from({ length: days }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      return date.toISOString().split("T")[0];
+    }).reduce((acc: { [key: string]: number }, date) => {
+      acc[date] = 0;
+      return acc;
+    }, {});
+
+    res.forEach((song) => {
+      const date = song.createdAt.toISOString().split("T")[0];
+      songCountByDate[date]++;
+    });
+
+
+    return songCountByDate;
+  }
 }

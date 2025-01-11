@@ -5,6 +5,20 @@ import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 import SongPlayService from "../services/SongPlay.service";
 
+export const getAllSongPlay = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const plays = await SongPlayService.getAllPlays();
+
+    res.status(StatusCodes.OK).json({ data: plays, message: "Get all plays successfully" });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getSongPlays = async (
   req: Request,
   res: Response,

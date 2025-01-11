@@ -1,3 +1,4 @@
+import { IGenre } from "@/types";
 import {
   ArcElement,
   BarElement,
@@ -6,10 +7,9 @@ import {
   Legend,
   LinearScale,
   Title,
-  Tooltip
+  Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -26,33 +26,32 @@ export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
-
-const BarChart = () => {
-  return (
-    <Bar options={options} data={data} />
-  )
+interface GenreN extends IGenre {
+  numberOfSongs: number;
 }
 
-export default BarChart
+const BarChart = ({ genre }: { genre: GenreN[] }) => {
+  console.log(genre);
+
+  const data = {
+    labels: genre.filter((g) => g.numberOfSongs > 0).map((g) => g.title),
+    datasets: [
+      {
+        label: "Listens per Genre",
+        data: genre
+          .filter((g) => g.numberOfSongs > 0)
+          .map((g) => g.numberOfSongs), // số lượt nghe theo thể loại
+        backgroundColor: "rgba(255, 159, 64, 0.5)",
+      },
+    ],
+  };
+
+  return <Bar options={options} data={data} />;
+};
+
+export default BarChart;

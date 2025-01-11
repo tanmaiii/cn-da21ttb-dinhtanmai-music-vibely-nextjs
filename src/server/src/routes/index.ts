@@ -14,6 +14,7 @@ import SongRouter from "./song.routes";
 import SongPlayRouter from "./song_play.routes";
 import UploadRouter from "./upload.routes";
 import UserRouter from "./user.routes";
+import AdminRouter from "./admin.routes";
 
 export default (): express.Router => {
   router.use("/auth", AuthRouter);
@@ -29,5 +30,6 @@ export default (): express.Router => {
   router.use("/room", RoomRouter);
   router.use("/room-chat", RoomChatRouter);
   router.use("/upload", UploadRouter);
+  router.use("/admin", AdminRouter);
   return router;
 };

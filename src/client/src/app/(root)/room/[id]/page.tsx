@@ -29,7 +29,6 @@ import {
 import { socket } from "@/services/socket.service";
 import { ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams, useRouter } from "next/navigation";
@@ -49,6 +48,7 @@ const RoomPage = () => {
   const currentUser = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
   const { toastError } = useCustomToast();
+  const [volume, setVolume] = useState(50);
 
   const { data: rooms } = useQuery({
     queryKey: ["room"],
@@ -162,7 +162,11 @@ const RoomPage = () => {
                     <h4>SONG IS PLAYING:</h4>
                     {/* <div className={`${styles.item}`}> */}
                     {roomId && songs && (
-                      <SongPlaying songs={songs} roomId={roomId} />
+                      <SongPlaying
+                        songs={songs}
+                        roomId={roomId}
+                        volume={volume}
+                      />
                     )}
                     {/* </div> */}
                     <div className={styles.overlay}></div>
@@ -221,24 +225,31 @@ const RoomPage = () => {
                       <div className={`${styles.right}`}>
                         <div className={`${styles.btn_auto}`}></div>
                         <div className={`${styles.btn_volumn}`}>
-                          <ButtonIcon
-                            className={`${styles.btn_volumn_icon}`}
-                            icon={
-                              <i
-                                style={{ color: "white" }}
-                                className="fa-light fa-volume"
-                              ></i>
-                            }
-                          />
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0 },
-                              visible: { opacity: 1 },
-                            }}
-                            className={`${styles.btn_volumn_range}`}
-                          >
-                            <Slider percentage={50} onChange={() => {}} />
-                          </motion.div>
+                          {volume ? (
+                            <ButtonIcon
+                              onClick={() => setVolume(0)}
+                              icon={<i className="fa-light fa-volume"></i>}
+                            />
+                          ) : (
+                            <ButtonIcon
+                              onClick={() => {
+                                if (volume === 0) {
+                                  setVolume(50);
+                                } else {
+                                  setVolume(volume);
+                                }
+                              }}
+                              icon={<i className="fa-light fa-volume-mute"></i>}
+                            />
+                          )}
+                          <div className={`${styles.btn_volumn_range}`}>
+                            <Slider
+                              percentage={volume}
+                              onChange={(e) =>
+                                setVolume(parseFloat(e.target.value))
+                              }
+                            />
+                          </div>
                         </div>
                         <ButtonIcon
                           onClick={() =>
@@ -348,7 +359,15 @@ const RoomPage = () => {
 
 export default RoomPage;
 
-const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
+const SongPlaying = ({
+  roomId,
+  songs,
+  volume,
+}: {
+  songs: ISong[];
+  roomId: string;
+  volume: number;
+}) => {
   const [songPlaying, setSongPlaying] = useState<ISong | null>(null);
   const currentUser = useSelector((state: RootState) => state.user);
   const { toastSuccess } = useCustomToast();
@@ -357,6 +376,12 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [userInteracted, setUserInteracted] = useState(false);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+  }, [volume]);
 
   const handlePlaySong = useCallback(
     (songId: string) => {
@@ -387,7 +412,6 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
     //     const time = new Date(diff);
     //     console.log(time);
     //   }, 1000);
-
     //   return () => {
     //     clearInterval(timer);
     //   };
