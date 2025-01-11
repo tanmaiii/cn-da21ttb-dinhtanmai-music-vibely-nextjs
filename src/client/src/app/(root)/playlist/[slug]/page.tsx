@@ -7,7 +7,7 @@ import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { useCustomToast } from "@/hooks/useToast";
 import { RootState } from "@/lib/store";
 import playlistService from "@/services/playlist.service";
-import { PlaylistRequestDto } from "@/types";
+import { ISong, PlaylistRequestDto } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
@@ -26,8 +26,8 @@ const PlaylistPage = () => {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const currentUser = useSelector((state: RootState) => state.user);
+  const { currentSong, isPlaying, play, pause, playPlaylist } = usePlayer();
   const queryClient = useQueryClient();
-  const { playPlaylist } = usePlayer();
 
   const {
     data: playlist,
@@ -81,6 +81,14 @@ const PlaylistPage = () => {
     },
   });
 
+  const handlePlay = (song: ISong) => {
+    if (currentSong?.id === song?.id && isPlaying) {
+      pause();
+      return;
+    }
+    play(song);
+  };
+
   if (isLoading) return <Loading />;
 
   if (error || !slug) return notFound();
@@ -129,7 +137,9 @@ const PlaylistPage = () => {
                 })
               }
               data={dataSong}
-              renderItem={(item, index) => <Track key={index} song={item} />}
+              renderItem={(item, index) => (
+                <Track key={index} song={item} onPlay={handlePlay} />
+              )}
             />
           ) : (
             <Empty />

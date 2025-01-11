@@ -33,14 +33,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { use, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Loading from "./loading";
 import styles from "./style.module.scss";
 
 const RoomPage = () => {
   const [openChat, setOpenChat] = useState(true);
-  // const [isOpen, setIsOpen] = useState(false);
   const { isWaitingOpen, toggleWaiting, togglePlayingBar } = useUI();
   const swapperRef = useRef<HTMLDivElement>(null);
   const isInactive = useInactivity(5000);
@@ -120,8 +119,11 @@ const RoomPage = () => {
   });
 
   // Phát bài hát
-  const handlePlaySong = (songId: string) => {
-    currentUser && socket.emit("playSong", roomId, currentUser.id, songId);
+  const handlePlaySong = (song: ISong) => {
+    if (currentUser?.id !== room?.creator.id) return;
+    if (currentUser) {
+      socket.emit("playSong", roomId, currentUser.id, song.id);
+    }
   };
 
   if (isLoading) return <Loading />;
@@ -284,11 +286,11 @@ const RoomPage = () => {
                     </div>
                   </div>
                   <div>
-                    <ButtonIconRound
+                    {/* <ButtonIconRound
                       onClick={() => songs && handlePlaySong(songs[0].id)}
                       dataTooltip="Close"
                       icon={<i className="fa-solid fa-play"></i>}
-                    />
+                    /> */}
                     <div className={`${styles.quantity}`}>
                       <i className="fa-solid fa-user-vneck"></i>
                       <span>{formatNumber(room?.membersCount ?? 0)}</span>
@@ -305,7 +307,11 @@ const RoomPage = () => {
                     <TablePlaylist
                       data={songs}
                       renderItem={(item, index) => (
-                        <Track key={index} song={item} />
+                        <Track
+                          key={index}
+                          song={item}
+                          onPlay={handlePlaySong}
+                        />
                       )}
                     />
                   )}
@@ -350,11 +356,14 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [userInteracted, setUserInteracted] = useState(true);
+  const [userInteracted, setUserInteracted] = useState(false);
 
-  const handlePlaySong = (songId: string) => {
-    currentUser && socket.emit("playSong", roomId, currentUser.id, songId);
-  };
+  const handlePlaySong = useCallback(
+    (songId: string) => {
+      if (currentUser) socket.emit("playSong", roomId, currentUser.id, songId);
+    },
+    [currentUser, roomId]
+  );
 
   const {} = useQuery({
     queryKey: ["room", roomId, "currentSong"],
@@ -370,10 +379,28 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
   });
 
   useEffect(() => {
+    // if (startTimer) {
+    //   const timer = setInterval(() => {
+    //     const start = new Date(startTimer).getTime();
+    //     const now = new Date().getTime();
+    //     const diff = now - start;
+    //     const time = new Date(diff);
+    //     console.log(time);
+    //   }, 1000);
+
+    //   return () => {
+    //     clearInterval(timer);
+    //   };
+    // }
+  }, [startTimer]);
+
+  useEffect(() => {
     if (!songPlaying) {
-      songs.length > 0 && handlePlaySong(songs[0]?.id);
+      if (songs.length > 0) {
+        handlePlaySong(songs[0]?.id);
+      }
     }
-  }, [songPlaying]);
+  }, [handlePlaySong, songPlaying, songs]);
 
   // Đảm bảo người dùng đã tương tác với trang
   useEffect(() => {
@@ -398,7 +425,7 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
     return () => {
       socket.off("playReceived");
     };
-  }, [roomId, currentUser]);
+  }, [roomId, currentUser, toastSuccess]);
 
   useEffect(() => {
     if (audioRef.current && songPlaying && userInteracted) {
@@ -418,9 +445,19 @@ const SongPlaying = ({ roomId, songs }: { songs: ISong[]; roomId: string }) => {
   };
 
   const onEnd = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
+    const index = songs.findIndex((song) => song.id === songPlaying?.id);
+
+    if (index < songs.length - 1) {
+      handlePlaySong(songs[index + 1].id);
+    } else {
+      handlePlaySong(songs[0].id);
     }
+
+    // if (currentUser) socket.emit("nextSong", roomId, currentUser.id);
+
+    // if (audioRef.current) {
+    //   audioRef.current.currentTime = 0;
+    // }
   };
 
   if (!songPlaying) return null;

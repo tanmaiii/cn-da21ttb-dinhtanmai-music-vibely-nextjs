@@ -32,6 +32,7 @@ interface ITrack extends Props {
   song: ISong;
   addSoong?: (song: ISong) => void;
   removeSong?: (song: ISong) => void;
+  onPlay?: (song: ISong) => void;
 }
 
 interface ITrackArtist extends Props {
@@ -41,7 +42,7 @@ interface ITrackArtist extends Props {
 const Track = (props: ITrack) => {
   const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
   const queryClient = useQueryClient();
-  const { play, pause, currentSong, isPlaying } = usePlayer();
+  const { currentSong, isPlaying } = usePlayer();
 
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
@@ -74,11 +75,14 @@ const Track = (props: ITrack) => {
   });
 
   const handleClickPlay = () => {
-    if (currentSong?.id === song?.id && isPlaying) {
-      pause();
-      return;
+    // if (currentSong?.id === song?.id && isPlaying) {
+    //   pause();
+    //   return;
+    // }
+    // play(song);
+    if (props.onPlay) {
+      props.onPlay(song);
     }
-    play(song);
   };
 
   return (
