@@ -113,7 +113,7 @@
       margin-bottom: $space-16;
       & .char_card {
         height: 100%;
-        @include flex(flex-start, center, column);
+        @include flex(flex-start, space-between, column);
       }
     }
 

@@ -2,13 +2,13 @@
 
 import { CardRoom } from "@/components/Card";
 import loader from "@/public/images/spinner.svg";
-import roomSerive from "@/services/room.service";
+import roomService from "@/services/room.service";
 import { IRoom, QueryParams } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
-function LoadMorePlaylist({
+function LoadMoreRoom({
   params,
   setNextPage,
 }: {
@@ -31,7 +31,7 @@ function LoadMorePlaylist({
       const delay = 500;
 
       const timeoutId = setTimeout(async () => {
-        const res = await roomSerive.getAll({ ...params });
+        const res = await roomService.getAll({ ...params });
         setData([...data, ...res.data.data]);
         setTotalPages(res.data.totalPages);
         setNextPage(res.data.currentPage + 1);
@@ -70,4 +70,4 @@ function LoadMorePlaylist({
   );
 }
 
-export default LoadMorePlaylist;
+export default LoadMoreRoom;

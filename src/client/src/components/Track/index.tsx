@@ -75,11 +75,6 @@ const Track = (props: ITrack) => {
   });
 
   const handleClickPlay = () => {
-    // if (currentSong?.id === song?.id && isPlaying) {
-    //   pause();
-    //   return;
-    // }
-    // play(song);
     if (props.onPlay) {
       props.onPlay(song);
     }
@@ -121,18 +116,20 @@ const Track = (props: ITrack) => {
                 quality={90}
               />
             )}
-            <button
-              onClick={handleClickPlay}
-              className={`${styles.button_play} ${
-                currentSong?.id === song?.id ? styles.button_play_playing : ""
-              }`}
-            >
-              {isPlaying && currentSong?.id === song?.id ? (
-                <IconPlay playing={isPlaying} />
-              ) : (
-                <i className="fa-solid fa-play"></i>
-              )}
-            </button>
+            {props?.onPlay && (
+              <button
+                onClick={handleClickPlay}
+                className={`${styles.button_play} ${
+                  currentSong?.id === song?.id ? styles.button_play_playing : ""
+                }`}
+              >
+                {isPlaying && currentSong?.id === song?.id ? (
+                  <IconPlay playing={isPlaying} />
+                ) : (
+                  <i className="fa-solid fa-play"></i>
+                )}
+              </button>
+            )}
           </div>
           <div className={`${styles.Track_swapper_col1_desc}`}>
             <h4>

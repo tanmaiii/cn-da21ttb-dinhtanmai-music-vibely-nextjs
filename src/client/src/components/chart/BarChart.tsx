@@ -42,11 +42,12 @@ const BarChart = ({ genre }: { genre: GenreN[] }) => {
     labels: genre.filter((g) => g.numberOfSongs > 0).map((g) => g.title),
     datasets: [
       {
-        label: "Listens per Genre",
+        label: "Number of songs",
         data: genre
           .filter((g) => g.numberOfSongs > 0)
           .map((g) => g.numberOfSongs), // số lượt nghe theo thể loại
-        backgroundColor: "rgba(255, 159, 64, 0.5)",
+        borderColor: "rgb(255, 99,55)",
+        backgroundColor: "rgba(255, 99,55, 0.5)",
       },
     ],
   };

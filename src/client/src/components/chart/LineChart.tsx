@@ -49,9 +49,6 @@ export const options = {
 };
 
 const labels = ["1", "2", "3", "4", "5", "6", "7"];
-// const listensPerMonth = [1200, 1500, 1700, 1400, 2000, 2200, 1900]; // Số lượt nghe mỗi tháng
-
-// const songsPlayedPerMonth = [300, 350, 400, 380, 420, 450, 410]; // Số bài hát được phát mỗ
 
 const LineChart = ({
   listens,

@@ -105,13 +105,17 @@ const Page = () => {
         <div className={`${styles.chars} row`}>
           <div className={`col pc-7 m-12`}>
             <div className={styles.char_card}>
-              <h5 className={styles.title}>Newest songs</h5>
+              <h5 className={styles.title}>
+                Genre distribution of songs
+              </h5>
               {genreNumbers && <BarChart genre={genreNumbers} />}
             </div>
           </div>
           <div className={`col pc-5 m-12`}>
             <div className={styles.char_card}>
-              <h5 className={styles.title}>Revenue</h5>
+              <h5 className={styles.title}>
+                Listens and created songs
+              </h5>
               {plays && createSong && (
                 <LineChart listens={plays} songs={createSong} />
               )}

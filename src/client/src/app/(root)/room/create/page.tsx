@@ -2,7 +2,7 @@
 
 import { FormRoom } from "@/components/Form";
 import { useCustomToast } from "@/hooks/useToast";
-import roomSerive from "@/services/room.service";
+import roomService from "@/services/room.service";
 import { RoomRequestDto } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ const Page = () => {
 
   const mutationAdd = useMutation({
     mutationFn: async (data: RoomRequestDto) => {
-      const res = await roomSerive.create(data);
+      const res = await roomService.create(data);
       return res.data;
     },
     onSuccess: (data) => {
@@ -31,7 +31,7 @@ const Page = () => {
     },
   });
 
-  if (!hasPermission(currentUser?.role.permissions, PERMISSIONS.CREATE_SONGS)) {
+  if (!hasPermission(currentUser?.role.permissions, PERMISSIONS.CREATE_ROOM)) {
     router.push(paths.ROOM);
   }
 

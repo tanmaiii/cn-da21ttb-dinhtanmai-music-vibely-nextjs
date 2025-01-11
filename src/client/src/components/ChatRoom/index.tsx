@@ -4,7 +4,7 @@ import { IMAGES, navRoomPage, paths } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import { apiImage } from "@/lib/utils";
 import chatSerive from "@/services/chat.service";
-import roomSerive from "@/services/room.service";
+import roomService from "@/services/room.service";
 import songService from "@/services/song.service";
 import { IArtist, ISong } from "@/types";
 import { IMessageChat, IRoom } from "@/types/room.type";
@@ -170,14 +170,14 @@ const ChatRoomRequest = ({ roomId }: { roomId: string }) => {
   const { data: songsIsExist } = useQuery({
     queryKey: ["room", roomId, "songs"],
     queryFn: async () => {
-      const res = await roomSerive.getAllSong(roomId);
+      const res = await roomService.getAllSong(roomId);
       return res.data;
     },
   });
 
   const mutionAdd = useMutation({
     mutationFn: async (songId: string) => {
-      const res = await roomSerive.addSong(roomId, [songId]);
+      const res = await roomService.addSong(roomId, [songId]);
       return res.data;
     },
     onSuccess: () => {
@@ -285,7 +285,7 @@ const ChatRoomMember = ({ roomId }: { roomId: string }) => {
     queryKey: ["room-member", roomId, page, debouncedSearchTerm],
     queryFn: async () => {
       console.log("debouncedSearchTerm", debouncedSearchTerm);
-      const res = await roomSerive.getMembers(roomId, {
+      const res = await roomService.getMembers(roomId, {
         page,
         limit: 10,
         keyword,

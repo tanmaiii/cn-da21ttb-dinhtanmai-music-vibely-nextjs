@@ -22,10 +22,6 @@ import {
   toggleFullScreen,
 } from "@/lib/utils";
 import imgBanner from "@/public/images/room-banner2.jpg";
-import {
-  default as roomSerive,
-  default as roomService,
-} from "@/services/room.service";
 import { socket } from "@/services/socket.service";
 import { ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -36,6 +32,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Loading from "./loading";
 import styles from "./style.module.scss";
+import roomService from "@/services/room.service";
 
 const RoomPage = () => {
   const [openChat, setOpenChat] = useState(true);
@@ -53,7 +50,7 @@ const RoomPage = () => {
   const { data: rooms } = useQuery({
     queryKey: ["room"],
     queryFn: async () => {
-      const res = await roomSerive.getAll({ page: 1, sort: "mostLikes" });
+      const res = await roomService.getAll({ page: 1, sort: "mostLikes" });
       return res.data.data;
     },
     staleTime: 1000 * 60 * 5,
@@ -77,7 +74,7 @@ const RoomPage = () => {
     queryKey: ["room", roomId, isMember],
     queryFn: async () => {
       if (isMember) {
-        const res = await roomSerive.getById(roomId);
+        const res = await roomService.getById(roomId);
         return res && res.data;
       }
     },
@@ -91,7 +88,7 @@ const RoomPage = () => {
   } = useQuery({
     queryKey: ["room", roomId, "songs"],
     queryFn: async () => {
-      const res = await roomSerive.getAllSong(roomId);
+      const res = await roomService.getAllSong(roomId);
       return res.data;
     },
   });
@@ -393,7 +390,7 @@ const SongPlaying = ({
   const {} = useQuery({
     queryKey: ["room", roomId, "currentSong"],
     queryFn: async () => {
-      const res = await roomSerive.getSongPlaying(roomId);
+      const res = await roomService.getSongPlaying(roomId);
       console.log(res.data);
 
       setSongPlaying(res.data.song);
