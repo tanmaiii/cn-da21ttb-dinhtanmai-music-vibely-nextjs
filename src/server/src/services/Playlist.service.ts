@@ -1,3 +1,4 @@
+import fs from "fs";
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import Genre from "../models/Genre";
 import Mood from "../models/Mood";
@@ -7,8 +8,6 @@ import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
 import { attributesMood } from "./Mood.service";
 import { attributesUser } from "./User.service";
-import { at, includes } from "lodash";
-import fs from "fs";
 
 export const attributesPlaylist = [
   "id",
@@ -17,6 +16,7 @@ export const attributesPlaylist = [
   "imagePath",
   "description",
   "createdAt",
+  "userId",
   "public",
 ];
 
@@ -142,8 +142,8 @@ export default class PlaylistService {
   };
 
   static getAllLikePagination = async ({
-    page = 1,
-    limit = 10,
+    page = 0,
+    limit = 0,
     userId,
     keyword,
     my,
@@ -160,6 +160,16 @@ export default class PlaylistService {
       whereCondition.userId = userId;
     }
 
+    if (keyword) {
+      whereCondition[Op.and] = whereCondition[Op.and] || [];
+      whereCondition[Op.and].push({
+        [Op.or]: [
+          { title: { [Op.substring]: keyword } },
+          { description: { [Op.substring]: keyword } },
+        ],
+      });
+    }
+
     const playlistLikes = await PlaylistLikes.findAll({
       where: { userId },
       attributes: ["playlistId", "createdAt"], // Lấy danh sách playlistId
@@ -167,7 +177,7 @@ export default class PlaylistService {
     });
 
     const playlistIds = playlistLikes.map((like) => like.playlistId); // Lấy danh sách playlistId
-    
+
     const totalItems = await Playlist.count({
       where: {
         [Op.and]: [whereCondition, { id: { [Op.in]: playlistIds } }],
@@ -178,8 +188,8 @@ export default class PlaylistService {
     const playlists = await Playlist.findAll({
       where: { [Op.and]: [whereCondition, { id: { [Op.in]: playlistIds } }] },
       ...playlistQueryOptions,
-      offset,
-      limit,
+      offset: offset ? offset : undefined,
+      limit: limit ? limit : undefined,
     } as any);
 
     const orderedSongs = playlistIds
@@ -189,7 +199,6 @@ export default class PlaylistService {
         })
       )
       .filter((playlist) => playlist !== null && playlist !== undefined);
-
 
     return {
       data: orderedSongs,
@@ -209,6 +218,7 @@ export default class PlaylistService {
           [Op.or]: [{ public: true }, { userId }],
         }
       : { public: true };
+
     const playlist = await Playlist.findOne({
       ...playlistQueryOptions,
       where: { id, ...whereCondition },

@@ -21,6 +21,21 @@
       padding: $space-16;
       @include flex(center, start, row);
       gap: $space-8;
+      & .button_menu {
+        --size: 40px;
+        width: var(--size);
+        height: var(--size);
+        font-size: $size-20;
+        cursor: pointer;
+        transition: opacity 0.3s;
+        border-radius: 50%;
+        opacity: 1;
+        // background-color: var(--background-color-3);
+        color: var(--text-color-1);
+        &:hover {
+          opacity: 0.8;
+        }
+      }
     }
 
     &_nav {

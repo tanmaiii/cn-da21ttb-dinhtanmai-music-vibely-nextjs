@@ -42,7 +42,7 @@ export const getAllHandler = async (
       sort: sort as SortOptions,
       userId: userInfo.id || undefined,
       keyword: keyword as string,
-      where: whereClause
+      where: whereClause,
     });
 
     res.json({ data: songs, message: "Get songs successfully" });
@@ -378,20 +378,22 @@ export const getLyricHandler = async (
       throw new ApiError(StatusCodes.NOT_FOUND, "Song not found");
     }
 
-    if(!existSong.lyricPath) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "Lyric not found");
+    if (!existSong.lyricPath) {
+      res
+        .status(StatusCodes.OK)
+        .json({ data: null, message: "Get lyric successfully" });
+      return;
     }
-    
+
     const lyrics = await readLrcFile(`./uploads/lyrics/${existSong.lyricPath}`);
 
-    if(!lyrics) {
+    if (!lyrics) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Lyric not found");
     }
 
     res
       .status(StatusCodes.OK)
       .json({ data: lyrics, message: "Get lyric successfully" });
-
   } catch (error) {
     next(error);
   }

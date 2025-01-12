@@ -12,6 +12,7 @@ interface Props {
   dataTooltip?: string;
   white?: boolean;
   type?: "button" | "submit" | "reset";
+  ref?: React.RefObject<HTMLButtonElement>;
   // disable?: boolean;
 }
 
@@ -25,40 +26,61 @@ const ButtonIconPrimary = (props: Props) => {
         styles.Button_IconPrimary
       } ${styles[props.size || "medium"]}`}
       onClick={props.onClick}
+      ref={props.ref}
     >
       {props.icon}
     </button>
   );
 };
 
-const ButtonIcon = (props: Props) => {
+const ButtonIcon = ({
+  dataTooltip,
+  hide,
+  style,
+  className,
+  size,
+  icon,
+  onClick,
+  ...props
+}: Props) => {
   return (
     <button
-      data-tooltip={props.dataTooltip}
-      disabled={props.hide}
-      style={props.style}
-      className={`${props.className} ${styles.Button} ${styles.Button_Icon} ${
-        styles[props.size || "medium"]
+      data-tooltip={dataTooltip}
+      disabled={hide}
+      style={style}
+      className={`${className} ${styles.Button} ${styles.Button_Icon} ${
+        styles[size || "medium"]
       }`}
-      onClick={props.onClick}
+      onClick={onClick}
+      ref={props.ref}
     >
-      {props.icon}
+      {icon}
     </button>
   );
 };
 
-const ButtonIconRound = (props: Props) => {
+const ButtonIconRound = ({
+  dataTooltip,
+  hide,
+  style,
+  className,
+  size,
+  icon,
+  onClick,
+  ...props
+}: Props) => {
   return (
     <button
-      data-tooltip={props.dataTooltip}
-      disabled={props.hide}
-      style={props.style}
-      className={`${props.className}  ${styles.Button} ${
-        styles.Button_IconRound
-      } ${styles[props.size || "medium"]}`}
-      onClick={props.onClick}
+      data-tooltip={dataTooltip}
+      disabled={hide}
+      style={style}
+      className={`${className}  ${styles.Button} ${styles.Button_IconRound} ${
+        styles[size || "medium"]
+      }`}
+      onClick={onClick}
+      ref={props.ref}
     >
-      {props.icon}
+      {icon}
     </button>
   );
 };
@@ -90,9 +112,11 @@ const ButtonLabel = (props: ButtonLabelProps) => {
       data-tooltip={props?.dataTooltip}
       disabled={props?.hide}
       style={props?.style}
-      className={`${props?.className}  ${styles.Button} ${styles.Button_Label} ${
-        props?.line && styles.Button_Label_line
-      } ${styles[props?.size || "medium"]}`}
+      className={`${props?.className}  ${styles.Button} ${
+        styles.Button_Label
+      } ${props?.line && styles.Button_Label_line} ${
+        styles[props?.size || "medium"]
+      }`}
       onClick={props?.onClick}
       type={props?.type}
     >

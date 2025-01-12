@@ -68,6 +68,30 @@ class PlaylistService {
   async updateSongs(id: string, songIds: string[]) {
     await this.client.put(id, { songIds });
   }
+
+  async checkSongToPlaylist(
+    id: string,
+    data: { songId: string }
+  ): Promise<ResponseAPI<boolean>> {
+    const res = await this.client.post<ResponseAPI<boolean>>(
+      `/${id}/check-song`, {...data}
+    );
+    return res.data;
+  }
+
+  async addSongToPlaylist(id: string, data: { songIds: string[] }) {
+    const res = await this.client.post<ResponseAPI<boolean>>(
+      `/${id}/song`, {...data}
+    );
+    return res.data;
+  }
+
+  async removeSongFromPlaylist(id: string, data: { songIds: string[] }) {
+    const res = await this.client.delete<ResponseAPI<boolean>>(
+      `/${id}/song`, { data }
+    );
+    return res.data;
+  }
 }
 
 export default new PlaylistService() as PlaylistService;

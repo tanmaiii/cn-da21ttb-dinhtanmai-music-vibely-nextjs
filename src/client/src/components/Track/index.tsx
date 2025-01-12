@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { closeMenu, openMenu } from "@/features/menuSongSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { useRef } from "react";
 
 interface Props {
   num?: number;
@@ -49,6 +50,7 @@ const Track = (props: ITrack) => {
   const { currentSong, isPlaying } = usePlayer();
   const dispatch = useDispatch();
   const menuSong = useSelector((state: RootState) => state.menuSong);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
@@ -86,19 +88,27 @@ const Track = (props: ITrack) => {
     }
   };
 
-  const handleClickOpenMenu = () => {
+  function handleClickOpenMenu() {
     if (menuSong.open) {
       dispatch(closeMenu());
       return;
-    } else {
+    }
+    const rect = btnRef?.current?.getBoundingClientRect();
+    if (rect) {
       dispatch(
         openMenu({
           open: true,
-          song: song,
+          song,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          },
         })
       );
     }
-  };
+  }
 
   return (
     <MotionDiv
@@ -229,10 +239,20 @@ const Track = (props: ITrack) => {
                 icon={<i className="fa-solid fa-minus"></i>}
               />
             ) : (
-              <ButtonIconRound
-                onClick={handleClickOpenMenu}
-                icon={<i className="fa-solid fa-ellipsis"></i>}
-              />
+              <>
+                {/* <ButtonIconRound
+                  ref={btnRef}
+                  onClick={handleClickOpenMenu}
+                  icon={<i className="fa-solid fa-ellipsis"></i>}
+                /> */}
+                <button
+                  className={`${styles.button_menu}`}
+                  ref={btnRef}
+                  onClick={handleClickOpenMenu}
+                >
+                  <i className="fa-solid fa-ellipsis"></i>
+                </button>
+              </>
             )}
           </div>
         </div>

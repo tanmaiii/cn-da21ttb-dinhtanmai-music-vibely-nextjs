@@ -20,25 +20,21 @@ export default function AuthProvider({
         const { data } = await authService.identify();
         if (data) {
           dispatch(setUser(data));
-        } else {
-          tokenService.clear();
         }
       })();
     }
   });
 
   const {} = useQuery({
-    queryKey: ['currentUser'],
+    queryKey: ["currentUser"],
     queryFn: async () => {
       const { data } = await authService.identify();
-      if(data) {
+      if (data) {
         dispatch(setUser(data));
-      }else{
-        tokenService.clear();
       }
-      return data
+      return data;
     },
-  })
+  });
 
   return <>{children}</>;
 }

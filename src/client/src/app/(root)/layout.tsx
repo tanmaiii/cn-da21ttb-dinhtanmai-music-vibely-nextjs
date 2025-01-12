@@ -22,11 +22,20 @@ export default function RootLayout({
   const { isLyricsOpen, isPlayingBar } = useUI();
   const menuSong = useSelector((state: RootState) => state.menuSong);
   const router = useRouter();
+  const bodyRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const body = document.querySelector(".RootLayout_main");
     if (body) body.scrollTo(0, 0);
   }, [router.prefetch]);
+
+  useEffect(() => {
+    if (menuSong.open && bodyRef.current) {
+      bodyRef.current.style.overflow = "hidden";
+    } else {
+      if (bodyRef.current) bodyRef.current.style.overflow = "auto";
+    }
+  }, [menuSong.open]);
 
   return (
     <main className={`row no-gutters ${styles.RootLayout}`}>
@@ -46,6 +55,7 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         <div className={` ${styles.RootLayout_top_main}`}>
           <div
+            ref={bodyRef}
             className={`RootLayout_main ${styles.RootLayout_top_main_content}`}
           >
             {/* ------------------------------------------- */}
@@ -86,7 +96,7 @@ export default function RootLayout({
       )}
 
       {isLyricsOpen && <ModalLyrics />}
-      {menuSong && <SongMenu/>}
+      {menuSong && <SongMenu />}
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./style.module.scss";
 
 interface Props {
@@ -10,17 +10,38 @@ interface Props {
 
 const ItemMenu = (props: Props) => {
   const { icon, title, itemFunc } = props;
+  const MenuRef = useRef<HTMLDivElement>(null);
+  const SubmenuRef = useRef<HTMLUListElement>(null);
+  const ParentMenuRef = useRef<HTMLButtonElement>(null);
+  const [openSubMenu, setOpenSubMenu] = React.useState(false);
 
-  const handleOnClick = () => {
-    itemFunc();
-  };
+  useEffect(() => {
+    if (MenuRef.current && ParentMenuRef.current && SubmenuRef.current) {
+      MenuRef.current.addEventListener("mouseenter", () => {
+        setOpenSubMenu(true);
+      });
+      ParentMenuRef.current.addEventListener("mouseleave", () => {
+        setOpenSubMenu(false);
+      });
+      SubmenuRef.current.addEventListener("mouseleave", () => {
+        setOpenSubMenu(true);
+      });
+    }
+  }, []);
 
   return (
-    <div className={styles.ItemMenu}>
-      <button onClick={handleOnClick}>
+    <div ref={MenuRef} className={styles.ItemMenu}>
+      <button ref={ParentMenuRef} onClick={itemFunc}>
         {icon}
         <span>{title}</span>
       </button>
+      <ul
+        ref={SubmenuRef}
+        className={`${styles.ItemMenu_submenu} 
+          ${openSubMenu ? styles.active : ""}`}
+      >
+        {props.children}
+      </ul>
     </div>
   );
 };

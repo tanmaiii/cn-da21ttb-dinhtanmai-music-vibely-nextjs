@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addSongToPlaylistHandler,
   checkLikePlaylistHandler,
+  checkSongToPlaylistHandler,
   createPlaylistHandler,
   deletePlaylistHandler,
   getAllPlaylistHandler,
@@ -18,6 +19,7 @@ import { authorize, validateData } from "../middleware";
 import { isPlaylistAuthor } from "../middleware/auth.middleware";
 import {
   addSongToPlaylistSchema,
+  checkSongToPlaylistSchema,
   createPlaylistSchema,
   getAllPlaylistLikeSchema,
   getAllPlaylistSchema,
@@ -95,6 +97,14 @@ router.get(
 );
 
 router.post(
+  "/:id/check-song",
+  // isPlaylistAuthor,
+  authorize(PERMISSIONS.UPDATE_PLAYLISTS),
+  validateData(checkSongToPlaylistSchema),
+  checkSongToPlaylistHandler
+);
+
+router.post(
   "/:id/song",
   isPlaylistAuthor,
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
@@ -106,6 +116,7 @@ router.delete(
   "/:id/song",
   isPlaylistAuthor,
   authorize(PERMISSIONS.UPDATE_PLAYLISTS),
+  validateData(addSongToPlaylistSchema),
   removeSongToPlaylistHandler
 );
 

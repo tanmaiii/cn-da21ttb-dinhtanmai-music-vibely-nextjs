@@ -7,11 +7,15 @@ import { navSongPage } from "@/lib/constants";
 import songService from "@/services/song.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, notFound } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./style.module.scss";
 import Loading from "./loading";
 import TablePlaylist from "@/components/TablePlaylist";
 import { useCustomToast } from "@/hooks/useToast";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { closeMenu, openMenu } from "@/features/menuSongSlice";
 
 const SongPage = () => {
   const { toastSuccess } = useCustomToast();
@@ -21,6 +25,9 @@ const SongPage = () => {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const queryClient = useQueryClient();
+  const menuSong = useSelector((state: RootState) => state.menuSong);
+  const dispatch = useDispatch();
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const {
     data: song,
@@ -100,6 +107,28 @@ const SongPage = () => {
     if (song) play(song);
   };
 
+  function handleClickOpenMenu() {
+    if (menuSong.open) {
+      dispatch(closeMenu());
+      return;
+    }
+    const rect = btnRef?.current?.getBoundingClientRect();
+    if (rect) {
+      dispatch(
+        openMenu({
+          open: true,
+          song,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          },
+        })
+      );
+    }
+  }
+
   if (isLoading) return <Loading />;
 
   if (!slug || isError) return notFound();
@@ -133,10 +162,19 @@ const SongPage = () => {
               )
             }
           />
-          <ButtonIcon
+          {/* <ButtonIcon
+            onClick={handleClickOpenMenu}
+            ref={btnRef}
             size="large"
             icon={<i className="fa-solid fa-ellipsis"></i>}
-          />
+          /> */}
+          <button
+            className={`${styles.button_menu}`}
+            ref={btnRef}
+            onClick={handleClickOpenMenu}
+          >
+            <i className="fa-solid fa-ellipsis"></i>
+          </button>
         </div>
         <div className={`${styles.SongPage_content_nav}`}>
           <div className={`${styles.SongPage_content_nav_list}`}>

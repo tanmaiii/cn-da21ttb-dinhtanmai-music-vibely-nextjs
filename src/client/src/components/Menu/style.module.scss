@@ -1,18 +1,15 @@
 @use "@/scss/index.module.scss" as *;
 
 .SongMenu {
-  // opacity: 0;
   transition: opacity 0.3s;
-  --width: 240px;
   position: absolute;
+  --width: 240px;
   z-index: $z-index-menu;
   display: none;
 
   &.active {
     display: flex;
     position: absolute;
-    top: 200px;
-    left: 200px;
     z-index: $z-index-menu;
     opacity: 1;
     display: flex;
@@ -28,6 +25,7 @@
     height: max-content;
     border-radius: $radius-8;
     box-shadow: var(--box-shadow);
+    // border: 1px solid var(--border-color);
     &_list {
       display: flex;
       flex-direction: column;
@@ -36,7 +34,7 @@
 }
 
 .ItemMenu {
-  button {
+  & > button {
     width: 100%;
     display: flex;
     align-items: center;
@@ -46,7 +44,7 @@
     cursor: pointer;
     transition: $transition;
     &:hover {
-      background-color: var(--background-color-3);
+      background-color: var(--background-color-1);
     }
     & i {
       font-size: $size-16;
@@ -57,5 +55,110 @@
       color: var(--text-color-1);
       @include text(1);
     }
+  }
+
+  &_submenu {
+    visibility: hidden;
+    &.active {
+      visibility: visible;
+    }
+  }
+}
+
+.SubMenu_addSong {
+  position: absolute;
+  background-color: var(--background-color-2);
+  width: var(--width);
+  box-shadow: var(--box-shadow);
+  @include flex(center, start, column);
+  padding: $space-8 $space-4;
+  border-radius: $radius-8;
+
+  max-height: 300px;
+  overflow-y: auto;
+
+  top: 0;
+  // left: -100%;
+
+  display: none;
+
+  &_search {
+    @include flex(start, center, row);
+    width: 100%;
+    padding: $space-12 $space-8;
+    background-color: var(--background-color-3);
+    border-radius: $radius-6;
+    gap: $space-4;
+    margin-bottom: $space-4;
+    // position: relative;
+    i {
+      font-size: $size-18;
+      color: var(--text-color-2);
+    }
+
+    input {
+      font-size: $size-16;
+      color: var(--text-color-1);
+    }
+  }
+  hr {
+    width: 100%;
+  }
+  &_item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: $space-16;
+    padding: $space-12 $space-16;
+    border-radius: $radius-8;
+    cursor: pointer;
+    // transition: $transition;
+    &:hover {
+      background-color: var(--background-color-1);
+      & > .icon_remove {
+        display: block;
+      }
+      & > .icon_check {
+        display: none;
+      }
+    }
+    i {
+      font-size: $size-16;
+      color: var(--text-color-1);
+    }
+    & img {
+      width: 28px;
+      height: 28px;
+      border-radius: $radius-4;
+      background-color: var(--background-color-1);
+      overflow: hidden;
+    }
+    &_info {
+      flex: 1;
+      & span {
+        text-align: left;
+        font-size: $size-16;
+        color: var(--text-color-1);
+        @include text(1);
+      }
+    }
+
+    & > .icon_remove {
+      color: $color-red;
+      display: none;
+    }
+    & > .icon_check {
+      color: $color-green;
+    }
+    & > .icon_add {
+      color: $color-primary;
+    }
+  }
+  & > .noResult {
+    padding: $space-8;
+    font-size: $size-14;
+    color: var(--text-color-2);
+    font-weight: $font-medium;
+    @include text(1);
   }
 }

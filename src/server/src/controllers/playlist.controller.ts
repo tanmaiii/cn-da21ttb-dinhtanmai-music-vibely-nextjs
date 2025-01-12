@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { get } from "lodash";
 import {
   AddSongToPlaylistInput,
+  CheckSongToPlaylistInput,
   CreatePlaylistInput,
   GetAllPlaylistInput,
   GetAllPlaylistLikeInput,
@@ -220,14 +221,15 @@ export const addSongToPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const existPlaylist = await PlaylistService.getById(req.params.id);
+    const userInfo = get(req, "identity") as IIdentity;
+    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
     const songIds = req.body.songIds;
 
-    if (!existPlaylist) {
+    if (!existPlaylist || !songIds) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
-    if (songIds.length > 0) {
+    if (songIds && songIds.length > 0) {
       for (const songId of songIds) {
         const existSong = await SongService.getSongById(songId);
         if (!existSong) {
@@ -251,6 +253,40 @@ export const addSongToPlaylistHandler = async (
   }
 };
 
+export const checkSongToPlaylistHandler = async (
+  req: Request<
+    CheckSongToPlaylistInput["params"],
+    {},
+    CheckSongToPlaylistInput["body"]
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userInfo = get(req, "identity") as IIdentity;
+    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
+    const songId = req.body.songId;
+
+    if (!existPlaylist || !songId) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
+    }
+
+    const existSong = await PlaylistSongService.checkSongInPlaylist(
+      req.params.id,
+      songId
+    );
+
+    res.status(StatusCodes.OK).json({
+      data: existSong,
+      message: "Check song in playlist successfully",
+    });
+
+    return;
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Xóa bài hát khỏi playlist
 export const removeSongToPlaylistHandler = async (
   req: Request<
@@ -262,10 +298,11 @@ export const removeSongToPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const existPlaylist = await PlaylistService.getById(req.params.id);
+    const userInfo = get(req, "identity") as IIdentity;
+    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
     const songIds = req.body.songIds;
 
-    if (!existPlaylist) {
+    if (!existPlaylist || !songIds) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist or song not found");
     }
 
@@ -405,7 +442,7 @@ export const getAllPlaylistLikedHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { limit = 10, page = 1, keyword, my } = req.query;
+    const { limit = 0, page = 1, keyword, my } = req.query;
 
     const userId = get(req, "identity") as IIdentity;
 

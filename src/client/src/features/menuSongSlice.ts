@@ -11,16 +11,17 @@ export interface menuSongState {
   // top: number;
   // width?: number;
   // height?: number;
+  position?: {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  };
 }
 
 const initialState: menuSongState = {
   open: false,
   song: undefined,
-  // playlistId?: "";
-  // left: 0,
-  // top: 0,
-  // width: 0,
-  // height: 0,
 };
 
 export const menuSong = createSlice({
@@ -30,11 +31,7 @@ export const menuSong = createSlice({
     openMenu: (state, action: PayloadAction<menuSongState>) => {
       state.open = true;
       state.song = action.payload.song;
-      // state.playlistId = action.payload.playlistId;
-      // state.left = action.payload.left;
-      // state.width = action.payload.width;
-      // state.top = action.payload.top;
-      // state.height = action.payload.height;
+      state.position = action.payload.position;
     },
     closeMenu: (state) => {
       state.open = false;

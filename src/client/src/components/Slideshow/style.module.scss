@@ -99,16 +99,17 @@
   cursor: pointer;
 
   @include tablet {
-    height: 300px;
+    height: 400px;
   }
 
   @include mobile {
     height: 200px;
+    padding: 20px;
   }
 
   &_content {
     z-index: 2;
-    width: 40%;
+    width: 60%;
     height: 100%;
     // background-color: red;
     @include flex(start, space-between, column);
@@ -118,16 +119,27 @@
       font-size: $size-16;
       font-weight: $font-bold;
       color: $color-white-1;
+      @include mobile {
+        font-size: 12px;
+      }
     }
     &_title {
       font-size: 60px;
       font-weight: $font-bold;
       color: $color-white-1;
       line-height: 60px;
+      @include mobile {
+        font-size: 20px;
+        line-height: 20px;
+      }
     }
     &_desc {
       font-size: $size-16;
       color: $color-white-2;
+      @include mobile {
+        font-size: 14px;
+        @include text(2);
+      }
     }
     &_bottom {
       @include flex(center, center);

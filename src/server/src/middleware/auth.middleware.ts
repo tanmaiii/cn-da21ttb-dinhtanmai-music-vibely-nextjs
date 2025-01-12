@@ -166,6 +166,8 @@ export const isPlaylistAuthor = async (
       return;
     }
 
+    console.log(playlist.userId, userInfo.id);
+    
     if (playlist.userId !== userInfo.id) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
