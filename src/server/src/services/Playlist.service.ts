@@ -142,8 +142,8 @@ export default class PlaylistService {
   };
 
   static getAllLikePagination = async ({
-    page = 0,
-    limit = 0,
+    page = 1,
+    limit = 10,
     userId,
     keyword,
     my,
@@ -189,7 +189,7 @@ export default class PlaylistService {
       where: { [Op.and]: [whereCondition, { id: { [Op.in]: playlistIds } }] },
       ...playlistQueryOptions,
       offset: offset ? offset : undefined,
-      limit: limit ? limit : undefined,
+      limit: limit !== 0 ? limit : undefined,
     } as any);
 
     const orderedSongs = playlistIds

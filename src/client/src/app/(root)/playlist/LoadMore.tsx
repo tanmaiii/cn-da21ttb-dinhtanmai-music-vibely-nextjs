@@ -28,7 +28,7 @@ function LoadMorePlaylist({
   useEffect(() => {
     if (inView) {
       setIsLoading(true);
-      const delay = 500;
+      const delay = 200;
 
       const timeoutId = setTimeout(async () => {
         const res = await playlistService.getAll({ ...params });

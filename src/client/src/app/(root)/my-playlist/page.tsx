@@ -14,6 +14,8 @@ import Loading from "./loading";
 import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
 import Empty from "@/components/common/Empty";
+import { useRouter, useSearchParams } from "next/navigation";
+import { paths } from "@/lib/constants";
 
 const DataSort: { id: number; name: string; value: string }[] = [
   { id: 1, name: "All", value: "false" },
@@ -26,6 +28,9 @@ const MyPlaylistPage = () => {
   const [showAdd, setShowAdd] = useState(false);
   const { toastError, toastSuccess } = useCustomToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = Object.fromEntries(searchParams.entries());
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["my-playlist"] });
@@ -34,7 +39,11 @@ const MyPlaylistPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["my-playlist", active],
     queryFn: async () => {
-      const res = await playlistService.getMe({ page: 1, my: active });
+      const res = await playlistService.getMe({
+        page: 1,
+        limit: 10,
+        my: active,
+      });
       setNextPage(2);
       return res.data.data;
     },
@@ -42,8 +51,10 @@ const MyPlaylistPage = () => {
   });
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    if (query.sort) {
+      setActive(query.sort as string);
+    }
+  }, [query]);
 
   const mutationAdd = useMutation({
     mutationFn: async (data: PlaylistRequestDto) => {
@@ -59,6 +70,11 @@ const MyPlaylistPage = () => {
       toastError(error.message);
     },
   });
+
+  const onChangeSort = (value: string) => {
+    setActive(value);
+    router.push(paths.MY_PLAYLIST + `?sort=${value}`);
+  };
 
   if (isLoading) <Loading />;
 
@@ -77,7 +93,7 @@ const MyPlaylistPage = () => {
           <SliderNav
             active={active}
             listNav={DataSort}
-            setActive={(value: string) => setActive(value as ISort)}
+            setActive={(value: string) => onChangeSort(value as ISort)}
           />
         </div>
       </div>
@@ -89,7 +105,7 @@ const MyPlaylistPage = () => {
             ))}
             <LoadMore
               setNextPage={setNextPage}
-              params={{ page: nextPage, my: active }}
+              params={{ page: nextPage, my: active, limit: 10 }}
             />
           </Section>
         ) : (

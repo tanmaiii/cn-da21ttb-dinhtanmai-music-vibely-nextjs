@@ -114,7 +114,11 @@ const Card = (props: Props) => {
             ) : (
               <Image
                 src={
-                  (data?.imagePath && apiImage(data?.imagePath)) || IMAGES.SONG
+                  data?.imagePath
+                    ? apiImage(data?.imagePath)
+                    : isSong
+                    ? IMAGES.SONG
+                    : IMAGES.PLAYLIST
                 }
                 alt="image.png"
                 width={200}

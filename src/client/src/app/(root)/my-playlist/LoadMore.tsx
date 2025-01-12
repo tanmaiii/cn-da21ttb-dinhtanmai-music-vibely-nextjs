@@ -28,11 +28,15 @@ function LoadMore({
 
   useEffect(() => {
     if (inView) {
+      console.log("inView", inView);
+      
       setIsLoading(true);
-      const delay = 500;
+      const delay = 200;
 
       const timeoutId = setTimeout(async () => {
         const res = await playlistService.getMe({ ...params });
+        console.log("res", res);
+        
         setData([...data, ...res.data.data]);
         setTotalPages(res.data.totalPages);
         setNextPage(res.data.currentPage + 1);
