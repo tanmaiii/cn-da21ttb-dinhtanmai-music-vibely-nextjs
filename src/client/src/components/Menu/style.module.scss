@@ -1,6 +1,7 @@
 @use "@/scss/index.module.scss" as *;
 
-.SongMenu {
+.SongMenu,
+.PlaylistMenu {
   transition: opacity 0.3s;
   position: absolute;
   --width: 240px;
@@ -78,7 +79,6 @@
   overflow-y: auto;
 
   top: 0;
-  // left: -100%;
 
   display: none;
 
@@ -90,7 +90,6 @@
     border-radius: $radius-6;
     gap: $space-4;
     margin-bottom: $space-4;
-    // position: relative;
     i {
       font-size: $size-18;
       color: var(--text-color-2);

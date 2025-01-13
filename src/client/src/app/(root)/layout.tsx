@@ -13,6 +13,8 @@ import styles from "./root.module.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import SongMenu from "@/components/Menu/SongMenu";
+import PlaylistMenu from "@/components/Menu/PlaylistMenu";
+import menuPlaylist from "../../features/menuPlaylistSlice";
 
 export default function RootLayout({
   children,
@@ -21,6 +23,7 @@ export default function RootLayout({
 }>) {
   const { isLyricsOpen, isPlayingBar } = useUI();
   const menuSong = useSelector((state: RootState) => state.menuSong);
+  const menuPlaylist = useSelector((state: RootState) => state.menuPlaylist);
   const router = useRouter();
   const bodyRef = React.useRef<HTMLDivElement>(null);
 
@@ -97,6 +100,7 @@ export default function RootLayout({
 
       {isLyricsOpen && <ModalLyrics />}
       {menuSong && <SongMenu />}
+      {menuPlaylist && <PlaylistMenu />}
     </main>
   );
 }

@@ -97,7 +97,7 @@ const FormPlaylist = ({ onSubmit, initialData, open, onClose }: Props) => {
     setImageFile(null);
     setErrors((prev) => ({ ...prev, imagePath: "" })); // Reset error
 
-    const { file, error } = validateFile(e);
+    const { file, error } = validateFile(e, 5 * 1024 * 1024, ["image/jpeg"], false);
 
     if (!file) {
       handleChange({ imagePath: undefined });

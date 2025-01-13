@@ -92,6 +92,21 @@ class PlaylistService {
     );
     return res.data;
   }
+
+  async checkLiked(playlistId: string): Promise<ResponseAPI<boolean>> {
+    const res = await this.client.get<ResponseAPI<boolean>>(playlistId + "/like");
+    return res.data;
+  }
+
+  async likeSong(playlistId: string): Promise<ResponseAPI<null>> {
+    const res = await this.client.post<ResponseAPI<null>>(playlistId + "/like");
+    return res.data;
+  }
+
+  async unLikeSong(playlistId: string): Promise<ResponseAPI<null>> {
+    const res = await this.client.delete<ResponseAPI<null>>(playlistId + "/like");
+    return res.data;
+  }
 }
 
 export default new PlaylistService() as PlaylistService;

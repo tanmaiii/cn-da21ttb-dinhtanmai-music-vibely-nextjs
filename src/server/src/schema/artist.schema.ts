@@ -23,9 +23,11 @@ export const getArtistBySlugSchema = object({ ...slug });
 export const getArtistSongSchema = object({ ...params, ...querySchema });
 export const getArtistPlaylistSchema = object({ ...params, ...querySchema });
 export const followArtistSchema = object({ ...params });
+export const getArtistFollowSchema = object({ ...querySchema });
 
 export type GetAllArtistInput = TypeOf<typeof getAllArtistSchema>;
 export type GetArtistBySlugInput = TypeOf<typeof getArtistBySlugSchema>;
 export type GetArtistSongInput = TypeOf<typeof getArtistSongSchema>;
 export type GetArtistPlaylistInput = TypeOf<typeof getArtistPlaylistSchema>;
 export type followArtistInput = TypeOf<typeof followArtistSchema>;
+export type getArtistFollowInput = TypeOf<typeof getArtistFollowSchema>;

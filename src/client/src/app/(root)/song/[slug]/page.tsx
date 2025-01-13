@@ -42,7 +42,7 @@ const SongPage = () => {
   });
 
   const { data: liked } = useQuery({
-    queryKey: ["song", song?.id],
+    queryKey: ["song-like", song?.id],
     queryFn: async () => {
       if (!song) return;
       try {
@@ -57,14 +57,11 @@ const SongPage = () => {
   const mutationLiked = useMutation({
     mutationFn: async (like: boolean) => {
       try {
+        if (!song) return;
         if (like) {
-          if (song) {
-            await songService.unLikeSong(song.id);
-          }
+          await songService.unLikeSong(song.id);
         } else {
-          if (song) {
-            await songService.likeSong(song.id);
-          }
+          await songService.likeSong(song.id);
         }
       } catch (error) {
         console.log(error);
@@ -74,6 +71,7 @@ const SongPage = () => {
       if (song) {
         toastSuccess(liked ? "Remove from favorite" : "Add to favorite");
         queryClient.invalidateQueries({ queryKey: ["song", song.id] });
+        queryClient.invalidateQueries({ queryKey: ["song-like", song?.id] });
         queryClient.invalidateQueries({ queryKey: ["song-favorites"] });
       }
     },
@@ -162,12 +160,6 @@ const SongPage = () => {
               )
             }
           />
-          {/* <ButtonIcon
-            onClick={handleClickOpenMenu}
-            ref={btnRef}
-            size="large"
-            icon={<i className="fa-solid fa-ellipsis"></i>}
-          /> */}
           <button
             className={`${styles.button_menu}`}
             ref={btnRef}

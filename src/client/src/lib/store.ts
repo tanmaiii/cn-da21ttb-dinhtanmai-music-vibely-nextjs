@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "@/features/userSlice";
 import menuSongSlice from "@/features/menuSongSlice";
+import menuPlaylistSlice from "@/features/menuPlaylistSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       user: userSlice,
       menuSong: menuSongSlice,
+      menuPlaylist: menuPlaylistSlice,
     },
   });
 };

@@ -1,11 +1,10 @@
 "use client";
-import { IPlaylist, ISong } from "@/types";
+import { IPlaylist } from "@/types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface menuSongState {
+export interface menuState {
   open: boolean;
-  song?: ISong;
   playlist?: IPlaylist;
   position?: {
     left: number;
@@ -15,18 +14,17 @@ export interface menuSongState {
   };
 }
 
-const initialState: menuSongState = {
+const initialState: menuState = {
   open: false,
-  song: undefined,
+  playlist: undefined,
 };
 
-export const menuSong = createSlice({
+export const menuPlaylist = createSlice({
   name: "user",
   initialState,
   reducers: {
-    openMenu: (state, action: PayloadAction<menuSongState>) => {
+    openMenu: (state, action: PayloadAction<menuState>) => {
       state.open = true;
-      state.song = action.payload.song;
       state.playlist = action.payload.playlist;
       state.position = action.payload.position;
     },
@@ -36,6 +34,6 @@ export const menuSong = createSlice({
   },
 });
 
-export const { openMenu, closeMenu } = menuSong.actions;
+export const { openMenu, closeMenu } = menuPlaylist.actions;
 
-export default menuSong.reducer;
+export default menuPlaylist.reducer;

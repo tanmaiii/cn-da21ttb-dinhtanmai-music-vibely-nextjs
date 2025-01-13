@@ -149,10 +149,10 @@
         background-position: 50% center;
         background-size: cover;
         filter: blur(50px);
-        position: absolute;
         inset: -100px;
         display: block;
-        background-color: $color-primary;
+        position: absolute;
+        background-color: var(--background-color-1);
       }
       & > .overlay {
         top: 0;
@@ -249,6 +249,7 @@
     aspect-ratio: 1/1;
     animation: spin 10s linear infinite;
     animation-play-state: paused;
+    background-color: var(--background-color-2);
     &_active {
       animation-play-state: running;
     }

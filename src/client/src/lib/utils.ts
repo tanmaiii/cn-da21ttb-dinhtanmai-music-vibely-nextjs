@@ -163,7 +163,7 @@ export const validateFile = (
   e: React.ChangeEvent<HTMLInputElement>,
   maxSize: number = 5 * 1024 * 1024, // 5MB
   validTypes: string[] = ["image/jpeg", "image/png", "image/gif"],
-  required = true
+  required: boolean = true
 ): { file: File | null; error: string | null; required?: boolean } => {
   const file = e.target.files ? e.target.files[0] : null;
 

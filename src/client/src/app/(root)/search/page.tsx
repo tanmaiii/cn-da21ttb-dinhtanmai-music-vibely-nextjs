@@ -1,13 +1,19 @@
 "use client";
 
-import { IMAGES } from "@/lib/constants";
+import { IMAGES, paths } from "@/lib/constants";
 import Image from "next/image";
 import styles from "./style.module.scss";
 import { useQuery } from "@tanstack/react-query";
 import genreService from "@/services/genre.service";
 import { apiImage } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 const Search = () => {
+  const [history, setHistory] = useState<string[]>(["We don", "EDM", "Jack"]);
+  const router = useRouter();
+  const params = useParams();
+  const searchTerm = decodeURIComponent((params.keyword as string) || "");
   const { data: genres } = useQuery({
     queryKey: ["genre"],
     queryFn: async () => {
@@ -16,25 +22,32 @@ const Search = () => {
     },
   });
 
+  useEffect(() => {
+    let prev = JSON.parse(localStorage.getItem("search-history") || "[]");
+    if (prev) {
+      setHistory(prev);
+    }
+  }, []);
+
   return (
     <div className={`${styles.Search}`}>
-      <div className={`${styles.Search_history}`}>
-        <h4>History</h4>
-        <div className={`${styles.Search_history_list}`}>
-          <div className={`${styles.Search_history_list_item}`}>
-            <i className="fa-light fa-magnifying-glass"></i>
-            <span>We dont</span>
-          </div>
-          <div className={`${styles.Search_history_list_item}`}>
-            <i className="fa-light fa-magnifying-glass"></i>
-            <span>EDM</span>
-          </div>
-          <div className={`${styles.Search_history_list_item}`}>
-            <i className="fa-light fa-magnifying-glass"></i>
-            <span>Jack</span>
+      {history && history.length > 0 && (
+        <div className={`${styles.Search_history}`}>
+          <h4>History</h4>
+          <div className={`${styles.Search_history_list}`}>
+            {history.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => router.push(paths.SEARCH + "/" + item)}
+                className={`${styles.Search_history_list_item}`}
+              >
+                <i className="fa-light fa-magnifying-glass"></i>
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
       <div className={`${styles.Search_genre}`}>
         <h4>Genre</h4>
         <div className={`${styles.Search_genre_list} row`}>

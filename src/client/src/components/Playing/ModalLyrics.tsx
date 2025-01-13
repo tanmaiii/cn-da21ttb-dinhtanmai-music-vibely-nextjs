@@ -64,11 +64,11 @@ const ModalLyrics = () => {
           <div
             className={`${styles.image}`}
             style={{
-              backgroundImage: `url(${
+              backgroundImage: `url(${formatImg(
                 currentSong?.imagePath
-                  ? formatImg(apiImage(currentSong?.imagePath))
-                  : ""
-              })`,
+                  ? apiImage(currentSong?.imagePath)
+                  : IMAGES.LOGO
+              )})`,
             }}
           ></div>
           <div className={`${styles.overlay}`}></div>

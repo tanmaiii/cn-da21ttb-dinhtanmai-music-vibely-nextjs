@@ -14,7 +14,7 @@ import { RootState } from "@/lib/store";
 import { apiImage, hasPermission } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
@@ -28,6 +28,8 @@ const Header = () => {
   const router = useRouter();
   const { toastSuccess } = useCustomToast();
   const currentUser = useSelector((state: RootState) => state.user);
+  const params = useParams();
+  const searchTerm = decodeURIComponent((params.keyword as string) || "");
 
   useEffect(() => {
     const body = document.querySelector(".RootLayout_main");
@@ -55,17 +57,15 @@ const Header = () => {
   });
 
   const handleSearch = (value: string) => {
-    // const removeVietnameseTones = (str: string) => {
-    //   return str
-    //   .normalize("NFD")
-    //   .replace(/[\u0300-\u036f]/g, "")
-    //   .replace(/đ/g, "d")
-    //   .replace(/Đ/g, "D");
-    // };
-    // const sanitizedValue = removeVietnameseTones(value);
     setKeyword(value);
     router.push(`${paths.SEARCH}/${value}`);
   };
+
+  useEffect(() => {
+    if (keyword !== searchTerm) {
+      setKeyword(searchTerm);
+    }
+  }, [searchTerm]);
 
   return (
     <>
@@ -93,7 +93,10 @@ const Header = () => {
               <ButtonIcon
                 size="small"
                 icon={<i className="fa-regular fa-times"></i>}
-                onClick={() => handleSearch("")}
+                onClick={() => {
+                  router.push(paths.SEARCH);
+                  handleSearch("");
+                }}
               />
             )}
           </div>

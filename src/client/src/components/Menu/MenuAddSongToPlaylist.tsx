@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "../ui";
 import styles from "./style.module.scss";
 import { useCustomToast } from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { closeMenu } from "@/features/menuSongSlice";
 
 interface Props {
   song: ISong;
@@ -105,6 +107,7 @@ const ItemPlaylist = (props: ItemPlaylistProps) => {
   const { playlist, song } = props;
   const { toastError, toastSuccess } = useCustomToast();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const { data: isAdd } = useQuery({
     queryKey: ["check-song-to-playlist", playlist.id],
@@ -134,6 +137,10 @@ const ItemPlaylist = (props: ItemPlaylistProps) => {
       queryClient.invalidateQueries({
         queryKey: ["check-song-to-playlist", playlist.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["playlist-song", playlist?.id],
+      });
+      dispatch(closeMenu());
     },
     onError: (error: unknown) => {
       toastError((error as Error).message);

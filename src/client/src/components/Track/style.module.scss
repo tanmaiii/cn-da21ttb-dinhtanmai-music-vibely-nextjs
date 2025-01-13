@@ -501,6 +501,39 @@
         @include flex(center, center, row);
         gap: $space-8;
       }
+
+      .btn_follow {
+        padding: $space-8 $space-12;
+        font-size: $size-14;
+        font-weight: $font-bold;
+        color: var(--text-color-1);
+        // background-color: var(--primary-color);
+        border: 1px solid var(--border-color);
+        border-radius: 32px;
+        cursor: pointer;
+        transition: all 0.3s;
+        .btn_folowing {
+          display: block;
+          &:first-child {
+            display: block;
+          }
+          &:last-child {
+            display: none;
+          }
+        }
+        &:hover {
+          // background-color: var(--primary-color-2);
+          border-color: var(--text-color-1);
+          .btn_folowing {
+            &:first-child {
+              display: none;
+            }
+            &:last-child {
+              display: block;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -49,6 +49,11 @@ class ArtistService {
     const res = await this.client.get<ResponseAPI<ListResponse<IPlaylist>>>(`/${id}/playlist`, {params});
     return res.data;
   }
+
+  async getArtistFollowers(params: QueryParams): Promise<ResponseAPI<ListResponse<IArtist>>> {
+    const res = await this.client.get<ResponseAPI<ListResponse<IArtist>>>(`/follow`, {params});
+    return res.data;
+  }
 }
 
 const artistService = new ArtistService();

@@ -171,7 +171,7 @@ const ArtistPage = () => {
             playlists?.length === 0 && <Empty />}
 
           {songs && songs?.length > 0 && (
-            <div>
+            <div style={{ width: "100%" }}>
               <div className={`${styles.ArtistPage_content_body_header} `}>
                 <h2>Top Songs By Sơn Tùng MTP</h2>
               </div>

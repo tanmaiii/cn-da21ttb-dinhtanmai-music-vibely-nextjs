@@ -11,7 +11,7 @@ import {
   padNumber,
 } from "@/lib/utils";
 import songService from "@/services/song.service";
-import { IArtist, ISong } from "@/types";
+import { IArtist, IPlaylist, ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +25,8 @@ import { closeMenu, openMenu } from "@/features/menuSongSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import artistService from "@/services/artist.service";
 
 interface Props {
   num?: number;
@@ -35,6 +37,7 @@ interface ITrack extends Props {
   primary?: boolean;
   dontShowPlay?: boolean;
   song: ISong;
+  playlist?: IPlaylist;
   addSoong?: (song: ISong) => void;
   removeSong?: (song: ISong) => void;
   onPlay?: (song: ISong) => void;
@@ -99,6 +102,7 @@ const Track = (props: ITrack) => {
         openMenu({
           open: true,
           song,
+          playlist: props.playlist,
           position: {
             top: rect.top,
             left: rect.left,
@@ -267,7 +271,7 @@ const TrackShort = (props: ITrack) => {
   const queryClient = useQueryClient();
   const btnRef = useRef<HTMLButtonElement>(null);
   const dispatch = useDispatch();
-  
+
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
     queryFn: async () => {
@@ -313,6 +317,7 @@ const TrackShort = (props: ITrack) => {
         openMenu({
           open: true,
           song,
+          playlist: props.playlist,
           position: {
             top: rect.top,
             left: rect.left,
@@ -425,6 +430,36 @@ const TrackShort = (props: ITrack) => {
 
 const TrackArtist = (props: ITrackArtist) => {
   const { artist, isLoading = false } = props;
+  const currentUser = useSelector((state: RootState) => state.user);
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { data: isFollow } = useQuery({
+    queryKey: ["artist-follow", artist],
+    queryFn: async () => {
+      if (!artist) return;
+      const res = await artistService.checkFollow(artist?.id);
+      return res.data;
+    },
+  });
+
+  const mutationFollow = useMutation({
+    mutationFn: async (isFollow: boolean) => {
+      if (!artist) return;
+      if (isFollow) {
+        const res = await artistService.unFollow(artist.id);
+        return res.data;
+      } else {
+        const res = await artistService.follow(artist.id);
+        return res.data;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["artist-follow", artist] });
+      queryClient.invalidateQueries({ queryKey: ["artist", artist?.slug] });
+    },
+  });
+
   return (
     <div aria-disabled={isLoading} className={`${styles.TrackArtist}`}>
       <div className={`${styles.TrackArtist_swapper}`}>
@@ -453,8 +488,23 @@ const TrackArtist = (props: ITrackArtist) => {
         </div>
         <div className={`${styles.TrackArtist_swapper_right}`}>
           <div className={`${styles.item_hover}`}>
-            <ButtonIconRound icon={<i className="fa-solid fa-heart"></i>} />
-            <ButtonIconRound icon={<i className="fa-solid fa-ellipsis"></i>} />
+            {/* <ButtonIconRound icon={<i className="fa-solid fa-heart"></i>} /> */}
+            {currentUser && currentUser.id !== artist?.id && (
+              <button
+                onClick={() => mutationFollow.mutate(isFollow || false)}
+                className={styles.btn_follow}
+              >
+                {isFollow ? (
+                  <>
+                    <span className={styles.btn_folowing}>Following</span>
+                    <span className={styles.btn_folowing}>Unfollow</span>
+                  </>
+                ) : (
+                  <span>Follow</span>
+                )}
+              </button>
+            )}
+            {/* <ButtonIconRound icon={<i className="fa-solid fa-ellipsis"></i>} /> */}
           </div>
         </div>
       </div>

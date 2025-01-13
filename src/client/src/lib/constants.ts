@@ -45,6 +45,7 @@ export const paths = {
   PROFILE: "/profile",
   PLAYLIST: "/playlist",
   MY_PLAYLIST: "/my-playlist",
+  MY_ARTIST: "/my-artist",
   SONG: "/song",
   ARTIST: "/artist",
   UPLOAD: "/upload",
@@ -76,11 +77,11 @@ export const sidebarLinks = [
         paths: [paths.SEARCH],
         icon: "fa-light fa-magnifying-glass",
       },
-      {
-        title: "Trending",
-        paths: [paths.TRENDING],
-        icon: "fa-light fa-fire",
-      },
+      // {
+      //   title: "Trending",
+      //   paths: [paths.TRENDING],
+      //   icon: "fa-light fa-fire",
+      // },
       {
         title: "Room",
         paths: [paths.ROOM],
@@ -108,7 +109,7 @@ export const sidebarLinks = [
     items: [
       {
         title: "Artist",
-        paths: [paths.ARTIST],
+        paths: [paths.MY_ARTIST],
         icon: "fa-light fa-user",
       },
     ],

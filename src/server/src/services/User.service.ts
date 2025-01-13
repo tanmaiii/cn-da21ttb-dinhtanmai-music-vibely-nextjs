@@ -3,6 +3,7 @@ import Permissions from "../models/Permissions";
 import Roles from "../models/Roles";
 import User from "../models/User";
 import { SortOptions } from "../utils/commonUtils";
+import Follows from "../models/Follows";
 
 export const attributesUser = ["id", "name", "email", "slug", "imagePath"];
 export const attributesRole = ["id", "name"];
@@ -119,6 +120,67 @@ export default class UserService {
     return {
       data: users.rows,
       sort: sort || "newest",
+      keyword: keyword || "",
+      user: userId || "",
+      limit: limit,
+      totalItems: totalItems,
+      currentPage: page,
+      totalPages: Math.ceil(totalItems / limit),
+    };
+  }
+
+  static async getAllFollowPagination({
+    page = 1,
+    limit = 10,
+    userId,
+    keyword,
+  }: GetAllOptions) {
+    const offset = (page - 1) * limit;
+
+    const whereCondition = {} as any;
+    
+    if (keyword) {
+      whereCondition[Op.and] = whereCondition[Op.and] || [];
+      whereCondition[Op.and].push({
+        [Op.or]: [
+          { name: { [Op.substring]: keyword } },
+          { email: { [Op.substring]: keyword } },
+        ],
+      });
+    }
+
+    const follows = await Follows.findAll({
+      where: { followerId: userId },
+      attributes: ["followingId", "followerId", 'createdAt'], // Lấy danh sách playlistId
+      order: [["createdAt", "DESC"]],
+    });
+
+    const followIds = follows.map((f) => f.followingId);
+
+    const totalItems = await User.count({
+      where: {
+        [Op.and]: [whereCondition, { id: { [Op.in]: followIds } }],
+      },
+    });
+
+    const users = await User.findAll({
+      where: { [Op.and]: [whereCondition, { id: { [Op.in]: followIds } }] },
+      ...this.userQueryOptions,
+      offset: offset ? offset : undefined,
+      limit: limit !== 0 ? limit : undefined,
+    } as any);
+
+    const orderedUser = followIds
+      .map((id) =>
+        users.find((follow) => {
+          return follow.id === id;
+        })
+      )
+      .filter((follow) => follow !== null && follow !== undefined);
+
+    return {
+      data: orderedUser,
+      sort: "newest",
       keyword: keyword || "",
       user: userId || "",
       limit: limit,

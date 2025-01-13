@@ -1,20 +1,22 @@
-import e, { NextFunction, Request, Response } from "express";
-import UserService from "../services/User.service";
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { get } from "lodash";
 import {
   followArtistInput,
   GetAllArtistInput,
   GetArtistBySlugInput,
+  getArtistFollowInput,
   GetArtistPlaylistInput,
 } from "../schema/artist.schema";
 import LikeService from "../services/Like.service";
-import { get } from "lodash";
-import ApiError from "../utils/ApiError";
-import { StatusCodes } from "http-status-codes";
-import { SortOptions } from "../utils/commonUtils";
-import SongService from "../services/Song.service";
 import PlaylistService from "../services/Playlist.service";
 import RoleService from "../services/Role.service";
+import SongService from "../services/Song.service";
+import UserService from "../services/User.service";
+import ApiError from "../utils/ApiError";
+import { SortOptions } from "../utils/commonUtils";
 import { ROLES } from "../utils/contants";
+import { IIdentity } from "middleware/auth.middleware";
 
 export const getArtistsHandler = async (
   req: Request<{}, GetAllArtistInput["query"]>,
@@ -216,6 +218,32 @@ export const checkFollowArtistHandler = async (
       data: existFollow ? true : false,
       message: "Check follow artist successfully",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getArtistFollowersHandler = async (
+  req: Request<{}, {}, getArtistFollowInput["query"]>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { limit = 10, page = 1, keyword, sort } = req.query;
+    const userInfo = get(req, "identity") as IIdentity;
+
+    const roleArtist = await RoleService.getRoleByName(ROLES.ARTIST);
+
+    const artists = await UserService.getAllFollowPagination({
+      limit: parseInt(limit as string, 10),
+      page: parseInt(page as string, 10),
+      sort: sort as SortOptions,
+      keyword: keyword as string,
+      userId: userInfo.id,
+      where: { roleId: roleArtist.id },
+    });
+
+    res.json({ data: artists, message: "Get artists successfully" });
   } catch (error) {
     next(error);
   }

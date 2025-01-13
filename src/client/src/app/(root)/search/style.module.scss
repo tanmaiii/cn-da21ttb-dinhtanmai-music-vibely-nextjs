@@ -25,6 +25,7 @@
     }
     &_list {
       @include flex(center, flex-start, row);
+      flex-wrap: wrap;
       gap: $space-12;
       margin-bottom: $space-12;
       overflow: hidden;

@@ -2,7 +2,7 @@
 import { Card, CardArtist, CardRoom } from "@/components/Card";
 import { SectionOneRow } from "@/components/Section";
 import { TrackShort } from "@/components/Track";
-import { IMAGES, paths } from "@/lib/constants";
+import { IMAGES, paths, ROLES } from "@/lib/constants";
 import { apiImage } from "@/lib/utils";
 import artistService from "@/services/artist.service";
 import songService from "@/services/song.service";
@@ -14,6 +14,8 @@ import styles from "./style.module.scss";
 import playlistService from "@/services/playlist.service";
 import Empty from "@/components/common/Empty";
 import roomService from "@/services/room.service";
+import userService from "@/services/user.service";
+import { useEffect } from "react";
 
 const SearchPage = () => {
   // const router = useRouter();
@@ -87,11 +89,38 @@ const SearchPage = () => {
     staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
   });
 
+  const { data: users } = useQuery({
+    queryKey: ["search-users", searchTerm],
+    queryFn: async () => {
+      const res = await userService.getAllUsers({
+        page: 1,
+        limit: 10,
+        keyword: searchTerm,
+      });
+      return res.data.data;
+    },
+    staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
+  });
+
+  useEffect(() => {
+    let prev = JSON.parse(localStorage.getItem("search-history") || "[]");
+    if (searchTerm) {
+      if (!prev.includes(searchTerm)) {
+        const existingHistory = JSON.parse(
+          localStorage.getItem("search-history") || "[]"
+        );
+        const newHistory = [searchTerm, ...existingHistory];
+        const trimmedHistory = newHistory.slice(0, 5);
+        localStorage.setItem("search-history", JSON.stringify(trimmedHistory));
+      }
+    }
+  }, [searchTerm]);
+
   if (
     songPopular?.length === 0 &&
     songs?.length === 0 &&
     artists?.length === 0 &&
-    playlists?.length === 0 && 
+    playlists?.length === 0 &&
     room?.length === 0
   )
     return <Empty />;
@@ -170,6 +199,14 @@ const SearchPage = () => {
           {artists.map((item, index) => (
             <CardArtist key={index} index={index} artist={item} />
           ))}
+        </SectionOneRow>
+      )}
+
+      {users && users.length > 0 && (
+        <SectionOneRow title="Profile">
+          {users.map((item, index) => {
+            return <CardArtist key={index} index={index} artist={item} />;
+          })}
         </SectionOneRow>
       )}
     </div>

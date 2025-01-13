@@ -15,6 +15,7 @@ import Modal, { ModalConfirm } from "../Modal";
 import ItemMenu from "./ItemMenu";
 import AddSongToPlaylist from "./MenuAddSongToPlaylist";
 import styles from "./style.module.scss";
+import playlistService from "@/services/playlist.service";
 
 const SongMenu = () => {
   const currentUser = useSelector((state: RootState) => state.user);
@@ -90,6 +91,27 @@ const SongMenu = () => {
     }
   }, [position, SongMenuRef, window.innerWidth, window.innerHeight]);
 
+  const mutationRemoveFromPlaylist = useMutation({
+    mutationFn: async ({
+      playlistId,
+      songId,
+    }: {
+      playlistId: string;
+      songId: string;
+    }) => {
+      await playlistService.removeSongFromPlaylist(playlistId, {
+        songIds: [songId],
+      });
+    },
+    onSuccess: () => {
+      toastSuccess("Remove song from playlist successfully");
+      dispatch(closeMenu());
+      queryClient.invalidateQueries({
+        queryKey: ["playlist-song", menuSong.playlist?.id],
+      });
+    },
+  });
+
   const mutationDelete = useMutation({
     mutationFn: async (song: ISong) => {
       await songService.delete(song.id);
@@ -137,6 +159,20 @@ const SongMenu = () => {
           >
             <AddSongToPlaylist song={menuSong.song} />
           </ItemMenu>
+          {currentUser?.id === menuSong.playlist?.creator.id && (
+            <ItemMenu
+              icon={<i className="fa-regular fa-trash"></i>}
+              title="Remove from playlist"
+              itemFunc={() => {
+                if (menuSong.song && menuSong.playlist?.id) {
+                  mutationRemoveFromPlaylist.mutate({
+                    playlistId: menuSong.playlist?.id,
+                    songId: menuSong.song.id,
+                  });
+                }
+              }}
+            />
+          )}
           {!queue.includes(menuSong.song) ? (
             <ItemMenu
               icon={<i className="fa-regular fa-list-music"></i>}
@@ -188,11 +224,11 @@ const SongMenu = () => {
               router.push(`${paths.ARTIST}/${menuSong?.song?.creator.slug}`)
             }
           />
-          <ItemMenu
+          {/* <ItemMenu
             title={"Share"}
             icon={<i className="fa-light fa-arrow-up-from-bracket"></i>}
             itemFunc={() => console.log("Add to playlist")}
-          />
+          /> */}
         </div>
         {openDelete && menuSong.song && (
           <ModalConfirm

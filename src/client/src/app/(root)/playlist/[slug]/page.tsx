@@ -10,7 +10,7 @@ import playlistService from "@/services/playlist.service";
 import { ISong, PlaylistRequestDto } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notFound, useParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./style.module.scss";
 import { FormPlaylist } from "@/components/Form";
@@ -19,6 +19,8 @@ import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
 import Loading from "./loading";
 import Empty from "@/components/common/Empty";
 import { usePlayer } from "@/context/PlayerContext";
+import { useDispatch } from "react-redux";
+import { closeMenu, openMenu } from "@/features/menuPlaylistSlice";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -26,8 +28,11 @@ const PlaylistPage = () => {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const currentUser = useSelector((state: RootState) => state.user);
+  const menuPlaylist = useSelector((state: RootState) => state.menuPlaylist);
   const { currentSong, isPlaying, play, pause, playPlaylist } = usePlayer();
   const queryClient = useQueryClient();
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dispatch = useDispatch();
 
   const {
     data: playlist,
@@ -89,6 +94,66 @@ const PlaylistPage = () => {
     play(song);
   };
 
+  const { data: liked } = useQuery({
+    queryKey: ["playlist-like", playlist?.id],
+    queryFn: async () => {
+      if (!playlist) return;
+      try {
+        const res = await playlistService.checkLiked(playlist.id);
+        return res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  const mutationLiked = useMutation({
+    mutationFn: async (like: boolean) => {
+      try {
+        if (!playlist) return;
+        if (like) {
+          await playlistService.unLikeSong(playlist.id);
+        } else {
+          await playlistService.likeSong(playlist.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: () => {
+      if (playlist) {
+        toastSuccess(liked ? "Remove from favorite" : "Add to favorite");
+        queryClient.invalidateQueries({ queryKey: ["playlist", playlist.id] });
+        queryClient.invalidateQueries({
+          queryKey: ["playlist-like", playlist.id],
+        });
+        queryClient.invalidateQueries({ queryKey: ["playlist-favorites"] });
+      }
+    },
+  });
+
+  const handleClickOpenMenu = () => {
+    if (menuPlaylist.open) {
+      dispatch(closeMenu());
+      return;
+    }
+    const rect = btnRef?.current?.getBoundingClientRect();
+    if (rect) {
+      dispatch(
+        openMenu({
+          open: true,
+          playlist: playlist,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          },
+        })
+      );
+    }
+  };
+
   if (isLoading) return <Loading />;
 
   if (error || !slug) return notFound();
@@ -114,16 +179,27 @@ const PlaylistPage = () => {
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
           />
-          <ButtonIcon
-            size="large"
-            icon={
-              <i style={{ color: "#ff6337" }} className="fa-solid fa-heart"></i>
-            }
-          />
-          <ButtonIcon
-            size="large"
-            icon={<i className="fa-solid fa-ellipsis"></i>}
-          />
+          {currentUser?.id !== playlist?.creator?.id && (
+            <ButtonIcon
+              size="large"
+              className={styles.btn_like}
+              onClick={() => mutationLiked.mutate(liked || false)}
+              icon={
+                liked ? (
+                  <i className="fa-solid fa-heart"></i>
+                ) : (
+                  <i className="fa-light fa-heart"></i>
+                )
+              }
+            />
+          )}
+          <button
+            className={`${styles.button_menu}`}
+            ref={btnRef}
+            onClick={handleClickOpenMenu}
+          >
+            <i className="fa-solid fa-ellipsis"></i>
+          </button>
         </div>
 
         <div className={`${styles.PlaylistPage_content_body}`}>
@@ -138,7 +214,12 @@ const PlaylistPage = () => {
               }
               data={dataSong}
               renderItem={(item, index) => (
-                <Track key={index} song={item} onPlay={handlePlay} />
+                <Track
+                  key={index}
+                  song={item}
+                  playlist={playlist}
+                  onPlay={handlePlay}
+                />
               )}
             />
           ) : (

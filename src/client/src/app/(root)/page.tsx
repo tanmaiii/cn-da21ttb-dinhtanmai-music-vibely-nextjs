@@ -109,7 +109,7 @@ const Home = () => {
                   <TrackShort key={index} num={index + 4 + 1} song={_} />
                 ))}
           </div>
-          <div className={`${styles.Home_top_row_col} col pc-4 t-6 m-12`}>
+          <div className={`${styles.Home_top_row_col} col pc-4 t-0 m-0`}>
             {songsPopular &&
               songsPopular
                 .slice(8, 12)
@@ -134,7 +134,7 @@ const Home = () => {
           ))}
       </SectionOneRow>
 
-      <SectionOneRow title="Artist" path={paths.PLAYLIST}>
+      <SectionOneRow title="Artist" path={paths.ARTIST}>
         {artists &&
           artists.map((_, index) => (
             <CardArtist key={index} index={index} artist={_} />

@@ -3,6 +3,7 @@ import {
   checkFollowArtistHandler,
   followArtistHandler,
   getArtistBySlugHandler,
+  getArtistFollowersHandler,
   getArtistPlaylistHandler,
   getArtistsHandler,
   getArtistSongHandler,
@@ -14,22 +15,15 @@ import {
   getAllArtistSchema,
   getArtistBySlugSchema,
   getArtistPlaylistSchema,
-  getArtistSongSchema
+  getArtistSongSchema,
 } from "../schema/artist.schema";
 
 const router = Router();
 
-router.get("/", validateData(getAllArtistSchema), getArtistsHandler);
-router.get("/:slug/slug", validateData(getArtistBySlugSchema), getArtistBySlugHandler);
 router.get(
-  "/:id/playlist",
-  validateData(getArtistPlaylistSchema),
-  getArtistPlaylistHandler
-);
-router.get(
-  "/:id/song",
-  validateData(getArtistSongSchema),
-  getArtistSongHandler
+  "/follow",
+  validateData(getAllArtistSchema),
+  getArtistFollowersHandler
 );
 router.post(
   "/:id/follow",
@@ -45,6 +39,23 @@ router.get(
   "/:id/follow",
   validateData(followArtistSchema),
   checkFollowArtistHandler
+);
+
+router.get("/", validateData(getAllArtistSchema), getArtistsHandler);
+router.get(
+  "/:slug/slug",
+  validateData(getArtistBySlugSchema),
+  getArtistBySlugHandler
+);
+router.get(
+  "/:id/playlist",
+  validateData(getArtistPlaylistSchema),
+  getArtistPlaylistHandler
+);
+router.get(
+  "/:id/song",
+  validateData(getArtistSongSchema),
+  getArtistSongHandler
 );
 
 export default router;
