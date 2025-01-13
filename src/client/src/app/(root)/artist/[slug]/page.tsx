@@ -16,6 +16,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useCustomToast } from "@/hooks/useToast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import Empty from "@/components/common/Empty";
 
 const ArtistPage = () => {
   // const [isLoad, setIsLoad] = React.useState(true);
@@ -141,6 +142,7 @@ const ArtistPage = () => {
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
           />
+
           {currentUser && currentUser.id !== artist?.id ? (
             <button
               onClick={() => mutationFollow.mutate(isFollow || false)}
@@ -164,32 +166,40 @@ const ArtistPage = () => {
           )}
         </div>
         <div className={`${styles.ArtistPage_content_body} `}>
-          <div className={`${styles.ArtistPage_content_body_header} `}>
-            <h2>Top Songs By Sơn Tùng MTP</h2>
-          </div>
+          {songsPopular?.length === 0 &&
+            songs?.length === 0 &&
+            playlists?.length === 0 && <Empty />}
 
-          <div className={`${styles.ArtistPage_content_body_list} row`}>
-            <div className={`col pc-4 t-6 m-12`}>
-              {songs &&
-                songs
-                  .slice(0, 2)
-                  .map((_, index) => <TrackShort key={index} song={_} />)}
-            </div>
-            <div className={` col pc-4 t-6 m-12`}>
-              {songs &&
-                songs
-                  .slice(2, 4)
-                  .map((_, index) => <TrackShort key={index} song={_} />)}
-            </div>
-            <div className={` col pc-4 t-0 m-12`}>
-              {songs &&
-                songs
-                  .slice(4, 6)
-                  .map((_, index) => <TrackShort key={index} song={_} />)}
-            </div>
-          </div>
+          {songs && songs?.length > 0 && (
+            <div>
+              <div className={`${styles.ArtistPage_content_body_header} `}>
+                <h2>Top Songs By Sơn Tùng MTP</h2>
+              </div>
 
-          {songsPopular && artist && (
+              <div className={`${styles.ArtistPage_content_body_list} row`}>
+                <div className={`col pc-4 t-6 m-12`}>
+                  {songs &&
+                    songs
+                      .slice(0, 2)
+                      .map((_, index) => <TrackShort key={index} song={_} />)}
+                </div>
+                <div className={` col pc-4 t-6 m-12`}>
+                  {songs &&
+                    songs
+                      .slice(2, 4)
+                      .map((_, index) => <TrackShort key={index} song={_} />)}
+                </div>
+                <div className={` col pc-4 t-0 m-12`}>
+                  {songs &&
+                    songs
+                      .slice(4, 6)
+                      .map((_, index) => <TrackShort key={index} song={_} />)}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {songsPopular && songsPopular.length > 0 && artist && (
             <SectionOneRow
               title="Songs popular"
               path={paths.ARTIST + "/" + artist.slug + paths.SONG}
@@ -200,7 +210,7 @@ const ArtistPage = () => {
             </SectionOneRow>
           )}
 
-          {playlists && artist && (
+          {playlists && playlists.length > 0 && artist && (
             <SectionOneRow
               title="Playlists"
               path={paths.ARTIST + "/" + artist.slug + paths.PLAYLIST}
@@ -212,10 +222,11 @@ const ArtistPage = () => {
           )}
 
           {artists && (
-            <SectionOneRow title="Recommend artist" path={paths.PLAYLIST}>
-              {artists.map((artist, index) => (
-                <CardArtist key={index} artist={artist} />
-              ))}
+            <SectionOneRow title="Recommend artist" path={paths.ARTIST}>
+              {artists.map((_, index) => {
+                if (artist && artist.id !== _.id)
+                  return <CardArtist key={index} artist={_} />;
+              })}
             </SectionOneRow>
           )}
         </div>

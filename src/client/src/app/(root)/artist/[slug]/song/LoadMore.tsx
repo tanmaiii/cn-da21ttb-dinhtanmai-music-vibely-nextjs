@@ -2,22 +2,24 @@
 
 import { Card } from "@/components/Card";
 import loader from "@/public/images/spinner.svg";
-import playlistService from "@/services/playlist.service";
-import { IPlaylist, QueryParams } from "@/types";
+import artistService from "@/services/artist.service";
+import { IArtist, ISong, QueryParams } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 function LoadMorePlaylist({
+  artist,
   params,
   setNextPage,
 }: {
+  artist: IArtist;
   params: QueryParams;
   setNextPage: (page: number) => void;
 }) {
   const { ref, inView } = useInView();
   const [totalPages, setTotalPages] = useState(3);
-  const [data, setData] = useState<IPlaylist[]>([]);
+  const [data, setData] = useState<ISong[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function LoadMorePlaylist({
       const delay = 200;
 
       const timeoutId = setTimeout(async () => {
-        const res = await playlistService.getAll({ ...params });
+        const res = await artistService.getSongs(artist.id, { ...params });
         setData([...data, ...res.data.data]);
         setTotalPages(res.data.totalPages);
         setNextPage(res.data.currentPage + 1);
@@ -41,11 +43,11 @@ function LoadMorePlaylist({
       // Xóa settimeout khi component unmount
       return () => clearTimeout(timeoutId);
     }
-  }, [inView, data, isLoading, params, setNextPage]);
+  }, [inView, data, isLoading, params, setNextPage, artist]);
 
   return (
     <>
-      {data.map((item: IPlaylist, index: number) => (
+      {data.map((item: ISong, index: number) => (
         <Card key={index} data={item} />
       ))}
       {(params.page ?? 2) <= totalPages && (

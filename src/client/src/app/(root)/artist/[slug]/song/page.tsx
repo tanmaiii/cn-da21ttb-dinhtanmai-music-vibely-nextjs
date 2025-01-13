@@ -1,40 +1,64 @@
 "use client";
 import { Card } from "@/components/Card";
+import { FormPlaylist } from "@/components/Form";
 import Modal from "@/components/Modal";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
-import { ButtonIcon } from "@/components/ui/Button";
+import Empty from "@/components/common/Empty";
 import { useCustomToast } from "@/hooks/useToast";
+import artistService from "@/services/artist.service";
 import playlistService from "@/services/playlist.service";
-import { IPlaylist, ISort, PlaylistRequestDto } from "@/types";
+import { ISong, ISort, PlaylistRequestDto } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "../style.module.scss";
 import LoadMore from "./LoadMore";
-import { FormPlaylist } from "@/components/Form";
-import Empty from "@/components/common/Empty";
+import { ButtonIconPrimary } from "@/components/ui";
+import { usePlayer } from "@/context/PlayerContext";
+import TablePlaylist from "@/components/TablePlaylist";
+import { Track } from "@/components/Track";
 
 const DataSort: { id: number; name: string; value: ISort }[] = [
-  { id: 1, name: "Popular", value: "mostLikes" },
-  { id: 2, name: "Newest", value: "newest" },
+  { id: 1, name: "Newest", value: "newest" },
+  { id: 2, name: "Most Likes", value: "mostLikes" },
   { id: 3, name: "Oldest", value: "oldest" },
+  { id: 3, name: "Popular", value: "mostListens" },
 ];
 
-const PlaylistPage = () => {
+const ArtistSongPage = () => {
   const [active, setActive] = useState<ISort>("newest");
   const [nextPage, setNextPage] = useState(2);
   const [showAdd, setShowAdd] = useState(false);
   const { toastError, toastSuccess } = useCustomToast();
   const queryClient = useQueryClient();
+  const params = useParams();
+  const slug = decodeURIComponent((params.slug as string) || "");
+  const { playPlaylist } = usePlayer();
+
+  const { data: artist } = useQuery({
+    queryKey: ["artist", slug],
+    queryFn: async () => {
+      const res = await artistService.getBySlug(slug);
+      return res.data;
+    },
+  });
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["playlist"] });
+    queryClient.invalidateQueries({
+      queryKey: ["artist-song-detail", active, artist],
+    });
   }, [active, queryClient]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["playlist", active],
+    queryKey: ["artist-song-detail", active, artist],
     queryFn: async () => {
-      const res = await playlistService.getAll({ page: 1, sort: active });
+      if (!artist) return;
+      const res = await artistService.getSongs(artist?.id, {
+        page: 1,
+        limit: 0,
+        sort: active,
+      });
       setNextPage(2);
       return res.data.data;
     },
@@ -56,15 +80,21 @@ const PlaylistPage = () => {
     },
   });
 
+  const handlePlay = () => {
+    if (data && data.length > 0) {
+      playPlaylist(data);
+    }
+  };
+
   return (
-    <div className={`${styles.PlaylistPage}`}>
-      <div className={`${styles.PlaylistPage_top}`}>
+    <div className={`${styles.ArtistPlaylistPage}`}>
+      <div className={`${styles.ArtistPlaylistPage_top}`}>
         <div className={styles.header}>
-          <h1>Playlist</h1>
-          <ButtonIcon
-            onClick={() => setShowAdd(true)}
-            dataTooltip="Create playlist"
-            icon={<i className="fa-solid fa-plus"></i>}
+          <h1>{`${artist?.name} - Song`}</h1>
+          <ButtonIconPrimary
+            onClick={handlePlay}
+            size="medium"
+            icon={<i className="fa-solid fa-play"></i>}
           />
         </div>
         <div className={styles.slider}>
@@ -75,17 +105,31 @@ const PlaylistPage = () => {
           />
         </div>
       </div>
-      <div className={`${styles.PlaylistPage_body} row no-gutters`}>
-        {data && data?.length > 0 ? (
-          <Section>
-            {data.map((item: IPlaylist, index: number) => (
-              <Card index={index} key={index} data={item} />
-            ))}
-            <LoadMore
-              setNextPage={setNextPage}
-              params={{ sort: active, page: nextPage }}
-            />
-          </Section>
+      <div className={`${styles.ArtistPlaylistPage_body} row no-gutters`}>
+        {data && data?.length > 0 && artist ? (
+          // <Section>
+          //   {data.map((item: ISong, index: number) => (
+          //     <Card index={index} key={index} data={item} />
+          //   ))}
+          //   <LoadMore
+          //     artist={artist}
+          //     setNextPage={setNextPage}
+          //     params={{ sort: active, page: nextPage, limit: 5 }}
+          //   />
+          // </Section>
+          <TablePlaylist
+            // onChange={(data) =>
+            //   playlist &&
+            //   playlist.creator?.id === currentUser?.id &&
+            //   mutationUpdatePlaylist.mutate({
+            //     songIds: data.map((item) => item.id),
+            //   })
+            // }
+            data={data}
+            renderItem={(item, index) => (
+              <Track key={index} song={item} onPlay={handlePlay} />
+            )}
+          />
         ) : (
           <Empty />
         )}
@@ -101,4 +145,4 @@ const PlaylistPage = () => {
   );
 };
 
-export default PlaylistPage;
+export default ArtistSongPage;

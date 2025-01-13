@@ -135,7 +135,7 @@ export default class SongService {
       where: {
         [Op.and]: [whereCondition, where],
       },
-      limit,
+      limit: limit === 0 ? totalItems : limit,
       offset,
       order,
     } as any);
