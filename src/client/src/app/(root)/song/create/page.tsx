@@ -122,6 +122,7 @@ const UploadPage = () => {
         ) : (
           <FormCreateSong
             onClose={() => setIsExit(true)}
+            open={true}
             file={file}
             onSubmit={(data) => mutationAdd.mutate(data)}
           />

@@ -9,7 +9,7 @@
   @include mobile {
     padding: 0 $space-8 $space-8;
   }
-  
+
   &_header {
     isolation: isolate;
   }
@@ -20,7 +20,40 @@
     &_header {
       padding: $space-16;
       @include flex(center, start, row);
-      gap: $space-8;
+      gap: $space-12;
+
+      .btn_follow {
+        padding: $space-8 $space-20;
+        font-size: $size-16;
+        font-weight: $font-bold;
+        color: var(--text-color-1);
+        // background-color: var(--primary-color);
+        border: 1.4px solid var(--border-color);
+        border-radius: 32px;
+        cursor: pointer;
+        transition: all 0.3s;
+        .btn_folowing {
+          display: block;
+          &:first-child {
+            display: block;
+          }
+          &:last-child {
+            display: none;
+          }
+        }
+        &:hover {
+          // background-color: var(--primary-color-2);
+          border-color: var(--text-color-1);
+          .btn_folowing {
+            &:first-child {
+              display: none;
+            }
+            &:last-child {
+              display: block;
+            }
+          }
+        }
+      }
     }
     &_body {
       // padding: 0 $space-16;
@@ -33,8 +66,31 @@
           font-weight: $font-bold;
         }
       }
-      &_list{
+      &_list {
         width: 100%;
+      }
+    }
+  }
+}
+
+.ArtistPlaylistPage {
+  min-height: 90vh;
+  padding: 0 $space-32 $space-32;
+
+  @include tablet {
+    padding: 0 $space-24 $space-24;
+  }
+  @include mobile {
+    padding: 0 $space-8 $space-8;
+  }
+  &_top {
+    & > .header {
+      @include flex(center, flex-start, row);
+      h1 {
+        font-size: $size-24;
+        color: var(--text-color-1);
+        padding: $space-12;
+        font-weight: $font-bold;
       }
     }
   }

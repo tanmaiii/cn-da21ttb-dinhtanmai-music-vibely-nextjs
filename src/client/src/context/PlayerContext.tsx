@@ -75,9 +75,18 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const removeFromQueue = (song: ISong) => {
-    setQueue((prev) => prev.filter((song) => song !== song)); // Loại bỏ bài hát khỏi queue
-    if (currentSong === song) {
+    const newQueue = queue.filter((item) => item.id !== song.id);
+    // if(newQueue.length === 0) {
+    //   stop();
+    // }
+    if(queue.length === 1) {
+     stop();
+    }
+    if(currentSong?.id === song.id){
       playNext();
+      setQueue(newQueue);
+    }else{
+      setQueue(newQueue);
     }
   };
 
@@ -185,6 +194,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setCurrentSong(null);
     setIsPlaying(false);
     setQueue([]);
+    pause();
   };
 
   const onChangeCurrentTime = (time: number) => {

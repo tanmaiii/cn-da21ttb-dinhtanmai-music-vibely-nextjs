@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { ButtonIconRound } from "@/components/ui/Button";
+import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
 import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES, paths } from "@/lib/constants";
 import { RootState } from "@/lib/store";
-import { apiImage, formatNumber, isSongData } from "@/lib/utils";
+import { apiImage, isSongData } from "@/lib/utils";
 import roomService from "@/services/room.service";
 import { IPlaylist, IRoom, ISong } from "@/types";
 import { IArtist } from "@/types/index";
@@ -20,7 +21,6 @@ import FormEnterRoom from "../Form/FormEnterRoom";
 import Modal from "../Modal";
 import { MotionDiv } from "../Motion";
 import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
 
 // Hook tùy chỉnh độ rộng của cột dựa vào trạng thái của sidebar và waiting
 const useClassNameCol = () => {
@@ -259,9 +259,16 @@ const CardArtist = (props: ICardArtist) => {
               {isLoading ? (
                 <Skeleton width={70} />
               ) : (
-                formatNumber(artist?.followers) + " follow"
+                artist?.role?.name || "User"
               )}
             </p>
+            {/* <p>
+              {isLoading ? (
+                <Skeleton width={70} />
+              ) : (
+                formatNumber(artist?.followers) + " follow"
+              )}
+            </p> */}
           </div>
         </div>
       </div>
@@ -393,3 +400,4 @@ const CardRoom = (props: ICardLive) => {
 };
 
 export { Card, CardArtist, CardRoom };
+

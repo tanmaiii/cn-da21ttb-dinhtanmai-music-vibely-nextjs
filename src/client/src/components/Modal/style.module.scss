@@ -75,6 +75,10 @@
           color: var(--text-color-1);
           margin-bottom: $space-16;
         }
+        span{
+          font-size: $size-14;
+          color: var(--text-color-2);
+        }
       }
     }
 

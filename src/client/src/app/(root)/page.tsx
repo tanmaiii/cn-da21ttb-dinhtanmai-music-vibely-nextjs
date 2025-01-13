@@ -30,7 +30,7 @@ const Home = () => {
     queryFn: async () => {
       const res = await songService.getAllSong({
         page: 1,
-        limit: 10,
+        limit: 20,
         sort: "mostListens",
       });
       return res.data.data;

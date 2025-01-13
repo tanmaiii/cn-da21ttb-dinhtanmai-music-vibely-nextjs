@@ -55,6 +55,14 @@ const Header = () => {
   });
 
   const handleSearch = (value: string) => {
+    // const removeVietnameseTones = (str: string) => {
+    //   return str
+    //   .normalize("NFD")
+    //   .replace(/[\u0300-\u036f]/g, "")
+    //   .replace(/đ/g, "d")
+    //   .replace(/Đ/g, "D");
+    // };
+    // const sanitizedValue = removeVietnameseTones(value);
     setKeyword(value);
     router.push(`${paths.SEARCH}/${value}`);
   };
@@ -109,30 +117,6 @@ const Header = () => {
             onClick={() => setActiveModal(true)}
           />
           {currentUser ? (
-            // <div className={`${styles.Header_right_user}`}>
-            //   <button
-            //     className={`${styles.Header_right_user_image} ${
-            //       currentUser.role?.name === ROLES.ARTIST &&
-            //       styles.Header_right_user_image_artist
-            //     }  ${
-            //       currentUser.role?.name === ROLES.ADMIN &&
-            //       styles.Header_right_user_image_admin
-            //     }
-            //       `}
-            //   >
-            //     <Image
-            //       src={
-            //         currentUser?.imagePath
-            //           ? apiImage(currentUser.imagePath)
-            //           : IMAGES.AVATAR
-            //       }
-            //       alt="avatar"
-            //       width={40}
-            //       height={40}
-            //       quality={50}
-            //     />
-            //   </button>
-            // </div>
             <UserDropDown />
           ) : (
             <ButtonLabel

@@ -22,6 +22,7 @@ const AddSongToPlaylist = ({ song }: Props) => {
   useEffect(() => {
     const rest = subMenuRef.current?.getBoundingClientRect();
     if (subMenuRef.current && rest) {
+      subMenuRef.current.style.display = `none`;
       if (rest?.right + rest?.width > window.innerWidth - 20) {
         subMenuRef.current.style.right = `100%`;
         subMenuRef.current.style.left = `unset`;

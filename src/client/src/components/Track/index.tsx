@@ -265,7 +265,9 @@ const TrackShort = (props: ITrack) => {
   const { num, isLoading, song, dontShowPlay = false } = props;
   const { isPlaying, play, currentSong, pause } = usePlayer();
   const queryClient = useQueryClient();
-
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dispatch = useDispatch();
+  
   const { data: liked } = useQuery({
     queryKey: ["song", song.id],
     queryFn: async () => {
@@ -302,6 +304,24 @@ const TrackShort = (props: ITrack) => {
       return;
     }
     play(song);
+  };
+
+  const handleClickOpenMenu = () => {
+    const rect = btnRef?.current?.getBoundingClientRect();
+    if (rect) {
+      dispatch(
+        openMenu({
+          open: true,
+          song,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -379,10 +399,18 @@ const TrackShort = (props: ITrack) => {
             )}
           </div>
           <div className={`${styles.item_hover}`}>
-            <ButtonIconRound
+            {/* <ButtonIconRound
               size="small"
               icon={<i className="fa-solid fa-ellipsis"></i>}
-            />
+            /> */}
+
+            <button
+              className={`${styles.button_menu}`}
+              ref={btnRef}
+              onClick={handleClickOpenMenu}
+            >
+              <i className="fa-solid fa-ellipsis"></i>
+            </button>
           </div>
           <div className={`${styles.item_default}`}>
             <span className={`${styles.item_default_time}`}>

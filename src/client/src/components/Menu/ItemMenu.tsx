@@ -16,16 +16,17 @@ const ItemMenu = (props: Props) => {
   const [openSubMenu, setOpenSubMenu] = React.useState(false);
 
   useEffect(() => {
+    setOpenSubMenu(false);
     if (MenuRef.current && ParentMenuRef.current && SubmenuRef.current) {
       MenuRef.current.addEventListener("mouseenter", () => {
         setOpenSubMenu(true);
       });
-      ParentMenuRef.current.addEventListener("mouseleave", () => {
+      MenuRef.current.addEventListener("mouseleave", () => {
         setOpenSubMenu(false);
       });
-      SubmenuRef.current.addEventListener("mouseleave", () => {
-        setOpenSubMenu(true);
-      });
+      // SubmenuRef.current.addEventListener("mouseleave", () => {
+      //   setOpenSubMenu(false);
+      // });
     }
   }, []);
 

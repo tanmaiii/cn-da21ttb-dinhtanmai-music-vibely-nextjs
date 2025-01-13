@@ -45,6 +45,12 @@ const FormCreateSong = ({
   const [lyricFile, setLyricFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(fileMp3);
 
+  useEffect(() => {
+    if (fileMp3) {
+      setAudioFile(fileMp3);
+    }
+  }, [fileMp3]);
+
   const initializeForm = React.useCallback((initialData?: ISong) => {
     if (initialData) {
       setForm({
@@ -58,8 +64,6 @@ const FormCreateSong = ({
         duration: initialData.duration,
         public: initialData.public,
       });
-    console.log(initialData);
-
     } else {
       clearForm();
     }
@@ -188,7 +192,7 @@ const FormCreateSong = ({
       public: true,
     });
     setImageFile(null);
-    setAudioFile(null);
+    // setAudioFile(null);
     setLyricFile(null);
   };
 

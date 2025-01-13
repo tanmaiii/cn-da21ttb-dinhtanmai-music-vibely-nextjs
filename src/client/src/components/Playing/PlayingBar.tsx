@@ -141,7 +141,7 @@ const CenterPlayingBar = () => {
       <audio
         ref={audioRef}
         onTimeUpdate={onPlaying}
-        onEnded={queue.length > 0 ? handleSongEnd : handlePlayAgain}
+        onEnded={queue.length > 1 ? handleSongEnd : handlePlayAgain}
         src={
           currentSong && currentSong.songPath
             ? apiConfig.audioURL(currentSong.songPath)

@@ -412,6 +412,22 @@
           text-align: center;
         }
       }
+
+      & .button_menu {
+        --size: 34px;
+        width: var(--size);
+        height: var(--size);
+        font-size: $size-20;
+        cursor: pointer;
+        transition: opacity 0.3s;
+        border-radius: 50%;
+        opacity: 1;
+        background-color: var(--background-color-3);
+        color: var(--text-color-1);
+        &:hover {
+          opacity: 0.8;
+        }
+      }
     }
   }
 }

@@ -90,7 +90,7 @@ const SongPage = () => {
   });
 
   const { data: songs } = useQuery({
-    queryKey: ["songs", song],
+    queryKey: ["songs-genre", song],
     queryFn: async () => {
       if (song) {
         const res = await songService.getAllSong({

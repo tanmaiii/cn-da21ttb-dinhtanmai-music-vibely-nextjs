@@ -6,18 +6,26 @@ import { SectionOneRow } from "@/components/Section";
 import { TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
 import { paths } from "@/lib/constants";
-import { artists, playlists, songs } from "@/lib/data";
+import { artists, playlists } from "@/lib/data";
 import artistService from "@/services/artist.service";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { notFound, useParams, useRouter } from "next/navigation";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import { notFound } from "next/navigation";
+import { usePlayer } from "@/context/PlayerContext";
+import { useCustomToast } from "@/hooks/useToast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const ArtistPage = () => {
   // const [isLoad, setIsLoad] = React.useState(true);
+  const { toastError } = useCustomToast();
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const { playPlaylist } = usePlayer();
+  const currentUser = useSelector((state: RootState) => state.user);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const {
     data: artist,
@@ -28,6 +36,92 @@ const ArtistPage = () => {
     queryFn: async () => {
       const res = await artistService.getBySlug(slug);
       return res.data;
+    },
+  });
+
+  const { data: isFollow } = useQuery({
+    queryKey: ["artist-follow", artist],
+    queryFn: async () => {
+      if (!artist) return;
+      const res = await artistService.checkFollow(artist?.id);
+      return res.data;
+    },
+  });
+
+  const { data: songs } = useQuery({
+    queryKey: ["artist-songs-new", artist],
+    queryFn: async () => {
+      if (!artist) return;
+      const res = await artistService.getSongs(artist?.id, {
+        page: 1,
+        limit: 12,
+        sort: "newest",
+      });
+      return res.data.data;
+    },
+  });
+
+  const { data: songsPopular } = useQuery({
+    queryKey: ["artist-songs-popular", artist],
+    queryFn: async () => {
+      if (!artist) return;
+      const res = await artistService.getSongs(artist?.id, {
+        page: 1,
+        limit: 12,
+        sort: "mostListens",
+      });
+      return res.data.data;
+    },
+  });
+
+  const { data: playlists } = useQuery({
+    queryKey: ["artist-playlists", artist],
+    queryFn: async () => {
+      if (!artist) return;
+      const res = await artistService.getPlaylists(artist?.id, {
+        page: 1,
+        limit: 12,
+        sort: "newest",
+      });
+      return res.data.data;
+    },
+  });
+
+  const { data: artists } = useQuery({
+    queryKey: ["artists"],
+    queryFn: async () => {
+      const res = await artistService.getAll({
+        page: 1,
+        limit: 10,
+        sort: "mostLikes",
+      });
+      return res.data.data;
+    },
+  });
+
+  const handlePlay = () => {
+    console.log("play");
+    if (songs && songs?.length > 0 && artist) {
+      playPlaylist(songs);
+    } else {
+      toastError("No songs to play");
+    }
+  };
+
+  const mutationFollow = useMutation({
+    mutationFn: async (isFollow: boolean) => {
+      if (!artist) return;
+      if (isFollow) {
+        const res = await artistService.unFollow(artist.id);
+        return res.data;
+      } else {
+        const res = await artistService.follow(artist.id);
+        return res.data;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["artist-follow", artist] });
+      queryClient.invalidateQueries({ queryKey: ["artist", artist?.slug] });
     },
   });
 
@@ -43,63 +137,87 @@ const ArtistPage = () => {
       <div className={`${styles.ArtistPage_content}`}>
         <div className={`${styles.ArtistPage_content_header}`}>
           <ButtonIconPrimary
+            onClick={handlePlay}
             size="large"
             icon={<i className="fa-solid fa-play"></i>}
           />
-          <ButtonIcon
-            size="large"
-            icon={<i className="fa-solid fa-heart"></i>}
-          />
-          <ButtonIcon
-            size="large"
-            icon={<i className="fa-solid fa-ellipsis"></i>}
-          />
+          {currentUser && currentUser.id !== artist?.id ? (
+            <button
+              onClick={() => mutationFollow.mutate(isFollow || false)}
+              className={styles.btn_follow}
+            >
+              {isFollow ? (
+                <>
+                  <span className={styles.btn_folowing}>Following</span>
+                  <span className={styles.btn_folowing}>Unfollow</span>
+                </>
+              ) : (
+                <span>Follow</span>
+              )}
+            </button>
+          ) : (
+            <ButtonIcon
+              onClick={() => router.push(paths.SETTINGS)}
+              size="medium"
+              icon={<i className="fa-light fa-pen"></i>}
+            />
+          )}
         </div>
         <div className={`${styles.ArtistPage_content_body} `}>
           <div className={`${styles.ArtistPage_content_body_header} `}>
             <h2>Top Songs By Sơn Tùng MTP</h2>
           </div>
+
           <div className={`${styles.ArtistPage_content_body_list} row`}>
             <div className={`col pc-4 t-6 m-12`}>
-              {songs.slice(0, 4).map((_, index) => (
-                <TrackShort key={index} song={_} />
-              ))}
+              {songs &&
+                songs
+                  .slice(0, 2)
+                  .map((_, index) => <TrackShort key={index} song={_} />)}
             </div>
             <div className={` col pc-4 t-6 m-12`}>
-              {songs.slice(4, 8).map((_, index) => (
-                <TrackShort key={index} song={_} />
-              ))}
+              {songs &&
+                songs
+                  .slice(2, 4)
+                  .map((_, index) => <TrackShort key={index} song={_} />)}
             </div>
             <div className={` col pc-4 t-0 m-12`}>
-              {songs.slice(8, 12).map((_, index) => (
-                <TrackShort key={index} song={_} />
-              ))}
+              {songs &&
+                songs
+                  .slice(4, 6)
+                  .map((_, index) => <TrackShort key={index} song={_} />)}
             </div>
           </div>
-        </div>
 
-        <div>
-          <SectionOneRow title="Songs" path={paths.PLAYLIST}>
-            {songs.map((song, index) => (
-              <Card key={index} data={song} />
-            ))}
-          </SectionOneRow>
-        </div>
+          {songsPopular && artist && (
+            <SectionOneRow
+              title="Songs popular"
+              path={paths.ARTIST + "/" + artist.slug + paths.SONG}
+            >
+              {songsPopular.map((song, index) => (
+                <Card key={index} data={song} />
+              ))}
+            </SectionOneRow>
+          )}
 
-        <div>
-          <SectionOneRow title="Playlists" path={paths.PLAYLIST}>
-            {playlists.map((playlist, index) => (
-              <Card key={index} data={playlist} />
-            ))}
-          </SectionOneRow>
-        </div>
+          {playlists && artist && (
+            <SectionOneRow
+              title="Playlists"
+              path={paths.ARTIST + "/" + artist.slug + paths.PLAYLIST}
+            >
+              {playlists.map((playlist, index) => (
+                <Card key={index} data={playlist} />
+              ))}
+            </SectionOneRow>
+          )}
 
-        <div>
-          <SectionOneRow title="Recommend artist" path={paths.PLAYLIST}>
-            {artists.map((artist, index) => (
-              <CardArtist key={index} artist={artist} />
-            ))}
-          </SectionOneRow>
+          {artists && (
+            <SectionOneRow title="Recommend artist" path={paths.PLAYLIST}>
+              {artists.map((artist, index) => (
+                <CardArtist key={index} artist={artist} />
+              ))}
+            </SectionOneRow>
+          )}
         </div>
       </div>
     </div>

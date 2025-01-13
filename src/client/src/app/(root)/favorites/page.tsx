@@ -11,10 +11,12 @@ import { notFound } from "next/navigation";
 import Loading from "./loading";
 import { Track } from "@/components/Track";
 import { usePlayer } from "@/context/PlayerContext";
+import { ISong } from "@/types";
 
 const Favorites = () => {
   // const [isLoading, setisLoading] = useState(true);
   const { playPlaylist } = usePlayer();
+  const { currentSong, isPlaying, play, pause } = usePlayer();
   
   const { data, isLoading, error } = useQuery({
     queryKey: ["song-favorites"],
@@ -23,6 +25,14 @@ const Favorites = () => {
       return res.data;
     },
   });
+
+    const handlePlay = (song: ISong) => {
+      if (currentSong?.id === song?.id && isPlaying) {
+        pause();
+        return;
+      }
+      play(song);
+    };
 
   if (isLoading) return <Loading />;
 
@@ -50,7 +60,7 @@ const Favorites = () => {
           {data && (
             <TablePlaylist
               data={data}
-              renderItem={(item, index) => <Track key={index} song={item} />}
+              renderItem={(item, index) => <Track key={index} song={item} onPlay={handlePlay} />}
             />
           )}
         </div>

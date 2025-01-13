@@ -1,26 +1,37 @@
 import { usePlayer } from "@/context/PlayerContext";
 import { closeMenu } from "@/features/menuSongSlice";
-import { RootState } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
-import ItemMenu from "./ItemMenu";
-import styles from "./style.module.scss";
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCustomToast } from "@/hooks/useToast";
 import { paths } from "@/lib/constants";
+import { RootState } from "@/lib/store";
+import songService from "@/services/song.service";
+import { ISong } from "@/types";
+import { SongRequestDto } from "@/types/song.type";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FormCreateSong } from "../Form";
+import Modal, { ModalConfirm } from "../Modal";
+import ItemMenu from "./ItemMenu";
 import AddSongToPlaylist from "./MenuAddSongToPlaylist";
+import styles from "./style.module.scss";
 
 const SongMenu = () => {
-  //   const currentUser = useSelector((state: RootState) => state.user);
+  const currentUser = useSelector((state: RootState) => state.user);
+  const { toastSuccess, toastError } = useCustomToast();
   const menuSong = useSelector((state: RootState) => state.menuSong);
   const { addToQueue, queue, removeFromQueue } = usePlayer();
   const SongMenuRef = useRef<HTMLDivElement>(null);
   const SongMenuContentRef = useRef<HTMLDivElement>(null);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const dispatch = useDispatch();
   const [placement, setPlacement] = useState<
     "top-start" | "bottom-start" | "top-end" | "bottom-end"
   >("bottom-start");
   const { position } = menuSong;
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -77,7 +88,38 @@ const SongMenu = () => {
         }
       }
     }
-  }, [position, SongMenuRef]);
+  }, [position, SongMenuRef, window.innerWidth, window.innerHeight]);
+
+  const mutationDelete = useMutation({
+    mutationFn: async (song: ISong) => {
+      await songService.delete(song.id);
+      return song;
+    },
+    onSuccess: (song) => {
+      dispatch(closeMenu());
+      setOpenDelete(false);
+      toastSuccess("Delete song successfully");
+      queryClient.invalidateQueries({ queryKey: ["song"] });
+      queryClient.invalidateQueries({ queryKey: ["song", song.slug] });
+      router.push(paths.HOME);
+    },
+  });
+
+  const mutationEdit = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: SongRequestDto }) => {
+      const res = await songService.update(id, data);
+      return res.data;
+    },
+    onSuccess: (song) => {
+      toastSuccess("Update song success");
+      dispatch(closeMenu());
+      queryClient.invalidateQueries({ queryKey: ["song"] });
+      router.push(paths.SONG + "/" + song.slug);
+    },
+    onError: (error) => {
+      toastError(error.message);
+    },
+  });
 
   if (!menuSong.song) return null;
   return (
@@ -107,12 +149,31 @@ const SongMenu = () => {
           ) : (
             <ItemMenu
               icon={<i className="fa-light fa-trash"></i>}
-              title="Add to queue"
+              title="Remove to queue"
               itemFunc={() => {
                 if (menuSong.song) removeFromQueue(menuSong.song);
                 dispatch(closeMenu());
               }}
             />
+          )}
+          {/* <ItemMenu
+            icon={<i className="fa-regular fa-heart"></i>}
+            title="Add to favorite"
+            itemFunc={() => console.log("Add to favorite")}
+          /> */}
+          {currentUser?.id === menuSong.song?.creator.id && (
+            <>
+              <ItemMenu
+                icon={<i className="fa-regular fa-trash"></i>}
+                title="Delete song"
+                itemFunc={() => setOpenDelete(true)}
+              />
+              <ItemMenu
+                icon={<i className="fa-regular fa-pen"></i>}
+                title="Edit song"
+                itemFunc={() => setOpenEdit(true)}
+              />
+            </>
           )}
           <hr />
           <ItemMenu
@@ -133,6 +194,36 @@ const SongMenu = () => {
             itemFunc={() => console.log("Add to playlist")}
           />
         </div>
+        {openDelete && menuSong.song && (
+          <ModalConfirm
+            show={openDelete}
+            title="Delete song"
+            content="Are you sure you want to delete this song?"
+            onConfirm={() =>
+              menuSong.song && mutationDelete.mutate(menuSong.song)
+            }
+            onClose={() => setOpenDelete(false)}
+          />
+        )}
+        {openEdit && menuSong.song && (
+          <Modal
+            className={styles.modalSong}
+            show={openEdit}
+            onClose={() => setOpenEdit(false)}
+          >
+            <FormCreateSong
+              file={null}
+              open={openEdit}
+              onClose={() => setOpenEdit(false)}
+              initialData={menuSong.song}
+              onSubmit={(data) => {
+                if (menuSong.song?.id) {
+                  mutationEdit.mutate({ id: menuSong.song.id, data });
+                }
+              }}
+            />
+          </Modal>
+        )}
       </div>
     </div>
   );
