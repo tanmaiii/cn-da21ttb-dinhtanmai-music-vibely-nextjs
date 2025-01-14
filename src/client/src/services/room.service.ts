@@ -86,6 +86,13 @@ class RoomService {
     return res.data;
   }
 
+  async removeSong(id: string, songId: string[]): Promise<ResponseAPI<null>> {
+    const res = await this.client.delete<ResponseAPI<null>>(`/${id}/song`, {
+      data: { songId },
+    });
+    return res.data;
+  }
+
   async getSongPlaying(
     id: string
   ): Promise<ResponseAPI<{ startedAt: string; song: ISong }>> {

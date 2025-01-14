@@ -67,6 +67,8 @@ export default class RoomSongService {
       songData.push({ roomId, songId, index });
     }
 
+    await this.addCurrentSongToRoom(roomId, songIds[0], room.userId);
+
     return songData.length > 0 && (await RoomSong.bulkCreate(songData));
   };
 
@@ -81,16 +83,21 @@ export default class RoomSongService {
     });
   };
 
-  static addCurrentSongToRoom = async (roomId: string, songId: string) => {
+  static addCurrentSongToRoom = async (
+    roomId: string,
+    songId: string,
+    userId: string
+  ) => {
     const currentSong = await RoomCurrentPlaying.findOne({ where: { roomId } });
 
     if (currentSong) {
       await RoomCurrentPlaying.destroy({ where: { roomId } });
     }
 
-    await RoomCurrentPlaying.create({
+    return await RoomCurrentPlaying.create({
       roomId,
       songId,
+      userId,
       startedAt: new Date(),
     });
   };
@@ -106,6 +113,19 @@ export default class RoomSongService {
 
     const song = await SongService.getSongById(currentSong.songId);
 
-    return { startedAt: currentSong.startedAt, song };
+    return { startedAt: currentSong.startedAt, song, userId: currentSong.userId };
   };
+
+  static updateUser = async (roomId: string, userId: string) => {
+    const currentSong = await RoomCurrentPlaying.findOne({ where: { roomId } });
+
+    if (!currentSong) {
+      return null;
+    }
+
+    return await RoomCurrentPlaying.update(
+      { userId },
+      { where: { roomId } }
+    );
+  }
 }

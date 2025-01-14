@@ -1,9 +1,7 @@
 import { JwtPayload } from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
 import TokenUtil from "../utils/jwt";
-import {
-  createNewMessageHandler
-} from "./chat.socket";
+import { createNewMessageHandler } from "./chat.socket";
 import { joinRoomHandler, leaveRoomHandler } from "./room.socket";
 import { playSongSocketHandler } from "./song.socket";
 
@@ -30,14 +28,12 @@ export const socketHandler = (io: Server) => {
 
   // Khi người dùng kết nối
   io.on("connection", (socket: Socket) => {
-    console.log("A user connected", socket.data.user);
-
     // Lắng nghe sự kiện "joinRoom" để người dùng tham gia phòng chat
     socket.on("joinRoom", async (roomId: string, userId: string) => {
       console.log("User joined room", roomId, userId);
       socket.data.roomId = roomId;
       socket.data.userId = userId;
-      joinRoomHandler(socket, roomId, userId);
+      joinRoomHandler(socket, io, roomId, userId);
     });
 
     socket.on("leaveRoom", async (roomId: string, userId: string) => {
@@ -58,6 +54,11 @@ export const socketHandler = (io: Server) => {
         playSongSocketHandler(socket, io, { roomId, userId, songId });
       }
     );
+
+    socket.on("onChangeSong", async (roomId: string, userId: string) => {
+      console.log("onChangeSong", roomId, userId);
+      io.to(roomId).emit("onChangeSong");
+    });
 
     socket.on("disconnect", async () => {
       console.log("____________________ User disconnected");

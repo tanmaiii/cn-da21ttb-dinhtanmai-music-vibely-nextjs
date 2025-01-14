@@ -2,6 +2,7 @@
 import { CardRoom } from "@/components/Card";
 import ChatRoom from "@/components/ChatRoom";
 import FormEnterRoom from "@/components/Form/FormEnterRoom";
+import RoomMenu from "@/components/Menu/RoomMenu";
 import Modal from "@/components/Modal";
 import { SectionOneRow } from "@/components/Section";
 import Slider from "@/components/Slider";
@@ -17,13 +18,15 @@ import { IMAGES, paths } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import {
   apiImage,
+  formatDuration,
   formatImg,
   formatNumber,
   toggleFullScreen,
 } from "@/lib/utils";
 import imgBanner from "@/public/images/room-banner2.jpg";
+import roomService from "@/services/room.service";
 import { socket } from "@/services/socket.service";
-import { ISong } from "@/types";
+import { IRoom, ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,7 +35,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import roomService from "@/services/room.service";
 
 const RoomPage = () => {
   const [openChat, setOpenChat] = useState(true);
@@ -115,6 +117,16 @@ const RoomPage = () => {
     },
   });
 
+  const mutationRemoveSong = useMutation({
+    mutationFn: async (songId: string) => {
+      return roomId && (await roomService.removeSong(roomId, [songId]));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["room", roomId, "songs"] });
+      socket.emit("onChangeSong", roomId);
+    },
+  });
+
   // Phát bài hát
   const handlePlaySong = (song: ISong) => {
     if (currentUser?.id !== room?.creator.id) return;
@@ -122,6 +134,15 @@ const RoomPage = () => {
       socket.emit("playSong", roomId, currentUser.id, song.id);
     }
   };
+
+  useEffect(() => {
+    socket.on("onChangeSong", () => {
+      queryClient.invalidateQueries({ queryKey: ["room", roomId, "songs"] });
+    });
+    return () => {
+      socket.off("onChangeSong");
+    };
+  }, [roomId, queryClient]);
 
   if (isLoading) return <Loading />;
 
@@ -158,12 +179,8 @@ const RoomPage = () => {
                   <div className={`${styles.content}`}>
                     <h4>SONG IS PLAYING:</h4>
                     {/* <div className={`${styles.item}`}> */}
-                    {roomId && songs && (
-                      <SongPlaying
-                        songs={songs}
-                        roomId={roomId}
-                        volume={volume}
-                      />
+                    {room && songs && (
+                      <SongPlaying songs={songs} room={room} volume={volume} />
                     )}
                     {/* </div> */}
                     <div className={styles.overlay}></div>
@@ -267,7 +284,7 @@ const RoomPage = () => {
 
                 {/* Info */}
                 <div className={`${styles.info}`}>
-                  <div>
+                  <div className={`${styles.info_left}`}>
                     <Link
                       href={`${paths.ARTIST}/${room?.creator?.slug}`}
                       passHref
@@ -278,12 +295,13 @@ const RoomPage = () => {
                             ? apiImage(room?.creator?.imagePath)
                             : IMAGES.AVATAR
                         }
+                        className={`${styles.info_avatar}`}
                         width={50}
                         height={50}
                         alt="author.png"
                       />
                     </Link>
-                    <div>
+                    <div className={`${styles.info_content}`}>
                       <h6>{room?.title}</h6>
                       <Link
                         href={`${paths.ARTIST}/${room?.creator?.slug}`}
@@ -293,20 +311,19 @@ const RoomPage = () => {
                       </Link>
                     </div>
                   </div>
-                  <div>
-                    {/* <ButtonIconRound
-                      onClick={() => songs && handlePlaySong(songs[0].id)}
-                      dataTooltip="Close"
-                      icon={<i className="fa-solid fa-play"></i>}
-                    /> */}
+                  <div className={`${styles.info_right}`}>
                     <div className={`${styles.quantity}`}>
                       <i className="fa-solid fa-user-vneck"></i>
                       <span>{formatNumber(room?.membersCount ?? 0)}</span>
                     </div>
-                    <ButtonIconRound
-                      icon={<i className="fa-solid fa-ellipsis"></i>}
-                    />
+                    {room && currentUser?.id === room?.creator?.id && (
+                      <RoomMenu room={room} />
+                    )}
                   </div>
+                </div>
+
+                <div className={`${styles.description}`}>
+                  <p>{room?.description}</p>
                 </div>
 
                 {/* Songs */}
@@ -319,6 +336,11 @@ const RoomPage = () => {
                           key={index}
                           song={item}
                           onPlay={handlePlaySong}
+                          removeSong={
+                            currentUser?.id === room?.creator.id
+                              ? () => mutationRemoveSong.mutate(item.id)
+                              : undefined
+                          }
                         />
                       )}
                     />
@@ -357,20 +379,20 @@ const RoomPage = () => {
 export default RoomPage;
 
 const SongPlaying = ({
-  roomId,
+  room,
   songs,
   volume,
 }: {
   songs: ISong[];
-  roomId: string;
+  room: IRoom;
   volume: number;
 }) => {
   const [songPlaying, setSongPlaying] = useState<ISong | null>(null);
   const currentUser = useSelector((state: RootState) => state.user);
-  const { toastSuccess } = useCustomToast();
-  const [startTimer, setStartTimer] = useState<string>();
+  // const [startTimer, setStartTimer] = useState<Date>();
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [currentTimeServer, setCurrentTimeServer] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [userInteracted, setUserInteracted] = useState(false);
 
@@ -382,46 +404,51 @@ const SongPlaying = ({
 
   const handlePlaySong = useCallback(
     (songId: string) => {
-      if (currentUser) socket.emit("playSong", roomId, currentUser.id, songId);
+      setCurrentTimeServer(0);
+      // if (currentUser?.id !== room.id) {
+      //   setSongPlaying(songs.find((song) => song.id === songId) || null);
+      // } else {
+      //   setCurrentTimeServer(0);
+      //   socket.emit("playSong", room.id, currentUser.id, songId);
+      // }
+      if (currentUser) {
+        socket.emit("playSong", room.id, currentUser.id, songId);
+      }
     },
-    [currentUser, roomId]
+    [currentUser, room.id]
   );
 
+  // Lấy bài hát cuối cùng đã phát trong phòng
   const {} = useQuery({
-    queryKey: ["room", roomId, "currentSong"],
+    queryKey: ["room", room.id, "currentSong"],
     queryFn: async () => {
-      const res = await roomService.getSongPlaying(roomId);
-      console.log(res.data);
-
+      const res = await roomService.getSongPlaying(room.id);
       setSongPlaying(res.data.song);
-      setStartTimer(res.data.startedAt);
+      const startedAt = new Date(res.data.startedAt).getTime();
+      if (!isNaN(startedAt)) {
+        setCurrentTimeServer((new Date().getTime() - startedAt) / 1000);
+      }
       return res.data;
     },
     staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
   });
 
   useEffect(() => {
-    // if (startTimer) {
-    //   const timer = setInterval(() => {
-    //     const start = new Date(startTimer).getTime();
-    //     const now = new Date().getTime();
-    //     const diff = now - start;
-    //     const time = new Date(diff);
-    //     console.log(time);
-    //   }, 1000);
-    //   return () => {
-    //     clearInterval(timer);
-    //   };
-    // }
-  }, [startTimer]);
+    // Người dùng tham gia phòng chat
+    socket.emit("joinRoom", room.id, currentUser?.id);
 
-  useEffect(() => {
-    if (!songPlaying) {
-      if (songs.length > 0) {
-        handlePlaySong(songs[0]?.id);
+    socket.on("playReceived", (song: ISong, startedAt: Date) => {
+      setSongPlaying(song);
+      const startedAts = new Date(startedAt).getTime();
+      if (!isNaN(startedAts)) {
+        setCurrentTimeServer((new Date().getTime() - startedAts) / 1000);
       }
-    }
-  }, [handlePlaySong, songPlaying, songs]);
+    });
+
+    return () => {
+      socket.off("playReceived");
+    };
+  }, [room.id, currentUser]);
 
   // Đảm bảo người dùng đã tương tác với trang
   useEffect(() => {
@@ -429,33 +456,30 @@ const SongPlaying = ({
       setUserInteracted(true);
     };
     document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("scroll", handleUserInteraction);
     return () => {
       document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("scroll", handleUserInteraction);
     };
   }, []);
 
   useEffect(() => {
-    // Người dùng tham gia phòng chat
-    socket.emit("joinRoom", roomId, currentUser?.id);
-
-    socket.on("playReceived", (song: ISong) => {
-      toastSuccess("Playing song");
-      setSongPlaying(song);
-    });
-
-    return () => {
-      socket.off("playReceived");
-    };
-  }, [roomId, currentUser, toastSuccess]);
-
-  useEffect(() => {
     if (audioRef.current && songPlaying && userInteracted) {
       audioRef.current.src = apiConfig.audioURL(songPlaying.songPath || "");
-      audioRef.current.play().catch((error) => {
-        console.error("Playback failed:", error);
-      });
+      audioRef.current
+        .play()
+        .then(() => {
+          if (audioRef.current) {
+            if (currentTimeServer > 0) {
+              audioRef.current.currentTime = currentTimeServer;
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Playback failed:", error);
+        });
     }
-  }, [songPlaying, userInteracted]);
+  }, [songPlaying, currentTimeServer, userInteracted]);
 
   const onPlaying = () => {
     const audio = audioRef.current;
@@ -473,12 +497,6 @@ const SongPlaying = ({
     } else {
       handlePlaySong(songs[0].id);
     }
-
-    // if (currentUser) socket.emit("nextSong", roomId, currentUser.id);
-
-    // if (audioRef.current) {
-    //   audioRef.current.currentTime = 0;
-    // }
   };
 
   if (!songPlaying) return null;
@@ -486,15 +504,31 @@ const SongPlaying = ({
   return (
     <div
       className={`${styles.songPlaying}`}
-      onClick={() => audioRef.current?.play()}
+      // onClick={() => audioRef.current?.play()}
     >
+      {!userInteracted && (
+        <div className={styles.songPlaying_overlay}>
+          <div className={styles.songPlaying_overlay_content}>
+            <Image
+              src={IMAGES.LEFT_CLICK}
+              width={60}
+              height={60}
+              alt="img.img"
+            />
+            <h4>Click to continue</h4>
+          </div>
+        </div>
+      )}
       <div className={`${styles.songInfo}`}>
         <TrackShort song={songPlaying} dontShowPlay />
+
         <div className={`${styles.timer}`}>
           <div
             style={{ width: (currentTime / duration) * 100 + "%" }}
             className={`${styles.timerPlay}`}
-          ></div>
+          >
+            <span>{formatDuration(currentTime)}</span>
+          </div>
         </div>
       </div>
       <IconPlay playing />

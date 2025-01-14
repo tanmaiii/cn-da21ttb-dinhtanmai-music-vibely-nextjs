@@ -1,22 +1,21 @@
 "use client";
 
 import { Card, CardArtist } from "@/components/Card";
+import Empty from "@/components/common/Empty";
 import { HeaderPageArtist } from "@/components/HeaderPage";
 import { SectionOneRow } from "@/components/Section";
 import { TrackShort } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
+import { usePlayer } from "@/context/PlayerContext";
+import { useCustomToast } from "@/hooks/useToast";
 import { paths } from "@/lib/constants";
-import { artists, playlists } from "@/lib/data";
+import { RootState } from "@/lib/store";
 import artistService from "@/services/artist.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notFound, useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import Loading from "./loading";
 import styles from "./style.module.scss";
-import { usePlayer } from "@/context/PlayerContext";
-import { useCustomToast } from "@/hooks/useToast";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import Empty from "@/components/common/Empty";
 
 const ArtistPage = () => {
   // const [isLoad, setIsLoad] = React.useState(true);

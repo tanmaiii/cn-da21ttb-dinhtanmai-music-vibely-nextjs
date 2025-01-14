@@ -76,9 +76,9 @@ const FormItem = ({
           />
         )}
         {icon && <div className={`${styles.FormItem_input_icon}`}>{icon}</div>}
-        {max && (
+        {max && value && (
           <span>
-            {value.length}/{max}
+            {value?.length}/{max}
           </span>
         )}
         {defaultType === "password" && (

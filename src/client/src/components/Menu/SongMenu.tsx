@@ -135,6 +135,7 @@ const SongMenu = () => {
     onSuccess: (song) => {
       toastSuccess("Update song success");
       dispatch(closeMenu());
+      setOpenEdit(false);
       queryClient.invalidateQueries({ queryKey: ["song"] });
       router.push(paths.SONG + "/" + song.slug);
     },

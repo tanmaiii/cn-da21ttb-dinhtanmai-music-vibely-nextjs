@@ -1,7 +1,9 @@
 "use client";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { closeMenu, openMenu } from "@/features/menuSongSlice";
 import { IMAGES, paths } from "@/lib/constants";
+import { RootState } from "@/lib/store";
 import {
   apiImage,
   fadeIn,
@@ -10,27 +12,23 @@ import {
   formatNumber,
   padNumber,
 } from "@/lib/utils";
+import artistService from "@/services/artist.service";
 import songService from "@/services/song.service";
 import { IArtist, IPlaylist, ISong } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import Skeleton from "react-loading-skeleton";
+import { useRef } from "react";
+// import Skeleton from "react-loading-skeleton";
+import { useDispatch, useSelector } from "react-redux";
 import { MotionDiv } from "../Motion";
 import { ButtonIcon, ButtonIconRound } from "../ui/Button";
 import IconPlay from "../ui/IconPlay";
 import styles from "./style.module.scss";
-import { useDispatch } from "react-redux";
-import { closeMenu, openMenu } from "@/features/menuSongSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
-import artistService from "@/services/artist.service";
 
 interface Props {
   num?: number;
-  isLoading?: boolean;
+  // isLoading?: boolean;
 }
 
 interface ITrack extends Props {
@@ -48,7 +46,7 @@ interface ITrackArtist extends Props {
 }
 
 const Track = (props: ITrack) => {
-  const { num, primary, isLoading = false, song, addSoong, removeSong } = props;
+  const { num, primary, song, addSoong, removeSong } = props;
   const queryClient = useQueryClient();
   const { currentSong, isPlaying } = usePlayer();
   const dispatch = useDispatch();
@@ -59,7 +57,7 @@ const Track = (props: ITrack) => {
     queryKey: ["song", song.id],
     queryFn: async () => {
       try {
-        const res = await songService.checkLiked(song.id);
+        const res = song && (await songService.checkLiked(song.id));
         return res.data;
       } catch (error) {
         console.log(error);
@@ -120,36 +118,28 @@ const Track = (props: ITrack) => {
       initial="hidden"
       whileInView={"show"}
       viewport={{ once: true }}
-      aria-disabled={isLoading}
       className={`${styles.Track}`}
     >
-      <div
-        aria-disabled={isLoading}
-        className={`${styles.Track_swapper} row no-gutters`}
-      >
+      <div className={`${styles.Track_swapper} row no-gutters`}>
         <div className={`${styles.Track_swapper_col1} pc-6 t-6 m-8`}>
-          {!isLoading && num && (
+          {num && (
             <div
               className={`${styles.Track_swapper_col1_num} ${
                 primary ? styles.Track_swapper_col1_num_main : ""
               }`}
             >
-              <h4>{isLoading ? <Skeleton width={20} /> : num}</h4>
+              <h4>{num}</h4>
               <div className={`${styles.line}`}></div>
             </div>
           )}
           <div className={`${styles.Track_swapper_col1_image}`}>
-            {isLoading ? (
-              <Skeleton height={60} width={60} />
-            ) : (
-              <Image
-                src={song.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
-                alt="image.png"
-                width={50}
-                height={50}
-                quality={90}
-              />
-            )}
+            <Image
+              src={song.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
+              alt="image.png"
+              width={50}
+              height={50}
+              quality={90}
+            />
             {props?.onPlay && (
               <button
                 onClick={handleClickPlay}
@@ -167,41 +157,20 @@ const Track = (props: ITrack) => {
           </div>
           <div className={`${styles.Track_swapper_col1_desc}`}>
             <h4>
-              {isLoading ? (
-                <Skeleton width={"40%"} />
-              ) : (
-                <Link href={`${paths.SONG}/${song.slug}`}>{song.title}</Link>
-              )}
+              <Link href={`${paths.SONG}/${song.slug}`}>{song.title}</Link>
             </h4>
-            {isLoading ? (
-              <Skeleton width={"70%"} height={20} />
-            ) : (
-              <p>
-                {/* {song?.owner.map((owner, index) => (
-                  <Link key={index} href={`${paths.ARTIST}/${owner?.id || 1}`}>
-                    {owner?.name}
-                  </Link>
-                ))} */}
-                <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
-                  {song?.creator?.name}
-                </Link>
-              </p>
-            )}
+            <p>
+              <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
+                {song?.creator?.name}
+              </Link>
+            </p>
           </div>
         </div>
         <div className={`${styles.Track_swapper_col2} pc-2 t-2 m-0`}>
-          <span>
-            {isLoading ? (
-              <Skeleton width={50} />
-            ) : (
-              formatDateTime(new Date(song.createdAt)).dateOnly
-            )}
-          </span>
+          <span>{formatDateTime(new Date(song.createdAt)).dateOnly}</span>
         </div>
         <div className={`${styles.Track_swapper_col3} pc-2 t-2 m-0`}>
-          <span>
-            {isLoading ? <Skeleton width={60} /> : formatNumber(song.listens)}
-          </span>
+          <span>{formatNumber(song.listens)}</span>
         </div>
         <div className={`${styles.Track_swapper_col4} pc-2 t-2 m-4`}>
           <div className={`${liked ? styles.item_default : styles.item_hover}`}>
@@ -221,13 +190,9 @@ const Track = (props: ITrack) => {
 
           <div className={`${styles.item_default}`}>
             <span>
-              {isLoading ? (
-                <Skeleton width={50} />
-              ) : song?.duration ? (
-                formatDuration(parseInt(song?.duration.toString()))
-              ) : (
-                "00:00"
-              )}
+              {song?.duration
+                ? formatDuration(parseInt(song?.duration.toString()))
+                : "04:23"}
             </span>
           </div>
 
@@ -244,11 +209,6 @@ const Track = (props: ITrack) => {
               />
             ) : (
               <>
-                {/* <ButtonIconRound
-                  ref={btnRef}
-                  onClick={handleClickOpenMenu}
-                  icon={<i className="fa-solid fa-ellipsis"></i>}
-                /> */}
                 <button
                   className={`${styles.button_menu}`}
                   ref={btnRef}
@@ -266,7 +226,7 @@ const Track = (props: ITrack) => {
 };
 
 const TrackShort = (props: ITrack) => {
-  const { num, isLoading, song, dontShowPlay = false } = props;
+  const { num, song, dontShowPlay = false } = props;
   const { isPlaying, play, currentSong, pause } = usePlayer();
   const queryClient = useQueryClient();
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -330,27 +290,23 @@ const TrackShort = (props: ITrack) => {
   };
 
   return (
-    <div aria-disabled={isLoading} className={`${styles.TrackShort}`}>
+    <div className={`${styles.TrackShort}`}>
       <div className={`${styles.TrackShort_swapper}`}>
         <div className={`${styles.TrackShort_swapper_left}`}>
-          {!isLoading && num && (
+          {num && (
             <div className={`${styles.TrackShort_swapper_left_num}`}>
               <h2>{padNumber(num)}</h2>
               <div className={`${styles.line}`}></div>
             </div>
           )}
           <div className={`${styles.TrackShort_swapper_left_image}`}>
-            {isLoading || !song ? (
-              <Skeleton height={50} width={50} />
-            ) : (
-              <Image
-                src={song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
-                alt="song"
-                quality={90}
-                width={50}
-                height={50}
-              />
-            )}
+            <Image
+              src={song?.imagePath ? apiImage(song.imagePath) : IMAGES.SONG}
+              alt="song"
+              quality={90}
+              width={50}
+              height={50}
+            />
             {!dontShowPlay && (
               <button
                 onClick={handleClickPlay}
@@ -367,25 +323,16 @@ const TrackShort = (props: ITrack) => {
             )}
           </div>
           <div className={`${styles.TrackShort_swapper_left_desc}`}>
-            {isLoading ? (
-              <>
-                <Skeleton width={"50%"} />
-                <Skeleton width={"30%"} />
-              </>
-            ) : (
-              <>
-                <h4>
-                  <Link href={paths.SONG + "/" + song?.slug}>
-                    {song?.title}
-                  </Link>
-                </h4>
-                <p>
-                  <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
-                    {song?.creator?.name}
-                  </Link>
-                </p>
-              </>
-            )}
+            <>
+              <h4>
+                <Link href={paths.SONG + "/" + song?.slug}>{song?.title}</Link>
+              </h4>
+              <p>
+                <Link href={`${paths.ARTIST}/${song?.creator?.slug || 1}`}>
+                  {song?.creator?.name}
+                </Link>
+              </p>
+            </>
           </div>
         </div>
         <div className={`${styles.TrackShort_swapper_right}`}>
@@ -404,11 +351,6 @@ const TrackShort = (props: ITrack) => {
             )}
           </div>
           <div className={`${styles.item_hover}`}>
-            {/* <ButtonIconRound
-              size="small"
-              icon={<i className="fa-solid fa-ellipsis"></i>}
-            /> */}
-
             <button
               className={`${styles.button_menu}`}
               ref={btnRef}
@@ -419,7 +361,7 @@ const TrackShort = (props: ITrack) => {
           </div>
           <div className={`${styles.item_default}`}>
             <span className={`${styles.item_default_time}`}>
-              {isLoading ? <Skeleton width={60} /> : formatNumber(song.listens)}
+              {formatNumber(song.listens) || 0}
             </span>
           </div>
         </div>
@@ -429,9 +371,8 @@ const TrackShort = (props: ITrack) => {
 };
 
 const TrackArtist = (props: ITrackArtist) => {
-  const { artist, isLoading = false } = props;
+  const { artist } = props;
   const currentUser = useSelector((state: RootState) => state.user);
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const { data: isFollow } = useQuery({
@@ -461,29 +402,23 @@ const TrackArtist = (props: ITrackArtist) => {
   });
 
   return (
-    <div aria-disabled={isLoading} className={`${styles.TrackArtist}`}>
+    <div className={`${styles.TrackArtist}`}>
       <div className={`${styles.TrackArtist_swapper}`}>
         <div className={`${styles.TrackArtist_swapper_left}`}>
           <div className={`${styles.TrackArtist_swapper_left_image}`}>
-            {isLoading ? (
-              <Skeleton height={"100%"} circle />
-            ) : (
-              <Image
-                src={
-                  artist?.imagePath
-                    ? apiImage(artist?.imagePath)
-                    : IMAGES.AVATAR
-                }
-                alt="song"
-                quality={90}
-                width={50}
-                height={50}
-              />
-            )}
+            <Image
+              src={
+                artist?.imagePath ? apiImage(artist?.imagePath) : IMAGES.AVATAR
+              }
+              alt="song"
+              quality={90}
+              width={50}
+              height={50}
+            />
           </div>
           <div className={`${styles.TrackArtist_swapper_left_desc}`}>
-            {isLoading ? <Skeleton width={50} /> : <p>Artist</p>}
-            {isLoading ? <Skeleton width={100} /> : <h4>{artist?.name}</h4>}
+            <p>Artist</p>
+            <h4>{artist?.name}</h4>
           </div>
         </div>
         <div className={`${styles.TrackArtist_swapper_right}`}>

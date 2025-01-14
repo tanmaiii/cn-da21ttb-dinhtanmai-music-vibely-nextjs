@@ -1,7 +1,6 @@
-import { Card } from "@/components/Card";
+import CardSkeleton from "@/components/Card/CardSkeleton";
 import { LoadingTheme } from "@/components/common/Loading";
 import { Section } from "@/components/Section";
-import { exSong } from "@/lib/data";
 
 const loadingPage = () => {
   return (
@@ -9,9 +8,7 @@ const loadingPage = () => {
       <Section>
         {Array.from({ length: 20 }).map((_, index) => {
           return (
-            <Card
-              isLoading={true}
-              data={exSong}
+            <CardSkeleton
               key={index}
             />
           );

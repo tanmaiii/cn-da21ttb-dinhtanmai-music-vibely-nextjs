@@ -34,7 +34,7 @@ const SildeItem = ({ data }: { data: IRoom }) => {
   // Khi thả chuột
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!isDragging) {
-      router.push(paths.ROOM +'/' + data.id);
+      router.push(paths.ROOM + "/" + data.id);
     } else {
       e.preventDefault();
     }
@@ -73,7 +73,7 @@ const SildeItem = ({ data }: { data: IRoom }) => {
             <i className="fa-light fa-headphones"></i>
           </button>
           {/* <span>{formatNumber(data?.membersCount) || 0}</span> */}
-          <span>{formatNumber(234) || 0}</span>
+          <span>{formatNumber(data?.membersCount) || 0}</span>
         </div>
         {/* </Link> */}
       </div>

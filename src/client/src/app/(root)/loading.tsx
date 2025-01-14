@@ -1,7 +1,6 @@
-import { Card } from "@/components/Card";
+import CardSkeleton from "@/components/Card/CardSkeleton";
 import { LoadingTheme } from "@/components/common/Loading";
 import { SectionOneRow } from "@/components/Section";
-import { exSong } from "@/lib/data";
 import Skeleton from "react-loading-skeleton";
 
 const loading = () => {
@@ -11,13 +10,13 @@ const loading = () => {
 
       <SectionOneRow isLoading>
         {Array.from({ length: 20 }).map((_, index) => {
-          return <Card isLoading={true} data={exSong} key={index} />;
+          return <CardSkeleton  />;
         })}
       </SectionOneRow>
 
       <SectionOneRow isLoading>
         {Array.from({ length: 20 }).map((_, index) => {
-          return <Card isLoading={true} data={exSong} key={index} />;
+          return <CardSkeleton  />;
         })}
       </SectionOneRow>
     </LoadingTheme>

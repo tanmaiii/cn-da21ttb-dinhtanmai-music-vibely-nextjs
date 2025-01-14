@@ -39,14 +39,15 @@ const payload = {
 
 const payloadUpdate = {
   body: object({
-    title: string().max(SIZE.TITLE, "Title is too long").optional(),
+    title: string().max(SIZE.TITLE, "Title is too long").optional().nullable(),
     description: string()
       .max(SIZE.DESCRIPTION, "Description is too long")
-      .optional(),
-    public: boolean().optional(),
-    duration: number().optional(),
-    genreId: string().max(SIZE.UUID).optional(),
-    moodIds: array(string()).optional(),
+      .optional()
+      .nullable(),
+    public: boolean().optional().nullable(),
+    duration: number().optional().nullable(),
+    genreId: string().max(SIZE.UUID).optional().nullable(),
+    moodIds: array(string()).optional().nullable(),
   }),
 };
 

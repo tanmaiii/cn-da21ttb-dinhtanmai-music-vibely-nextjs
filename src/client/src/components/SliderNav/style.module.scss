@@ -87,6 +87,8 @@
         cursor: pointer;
         border: 1px solid var(--border-color);
         transition: background-color 0.3s;
+        flex-wrap: nowrap;
+        white-space: nowrap;
         &:hover {
           color: var(--text-color-1);
           background-color: var(--background-color-3);

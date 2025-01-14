@@ -1,9 +1,11 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import RoomMemberService from "../services/RoomMember.service";
+import RoomSongService from "../services/RoomSong.service";
 
 // Tham gia nhóm
 export const joinRoomHandler = async (
   socket: Socket,
+  io: Server,
   roomId: string,
   userId: string
 ) => {
@@ -11,14 +13,12 @@ export const joinRoomHandler = async (
     const existsUser = await RoomMemberService.checkUserToRoom(roomId, userId);
 
     if (existsUser) {
+      await RoomSongService.updateUser(roomId, userId);
       socket.join(roomId); // Người dùng vào phòng chat
     } else {
       console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
-
-    // await RoomMemberService.addUserToRoom(roomId, userId); // Lưu người dùng vào phòng chat
-    // console.log(`User ${userId} joined room ${roomId}`);
   } catch (error) {
     console.error("Error join room:", error);
   }

@@ -161,3 +161,36 @@
     @include text(1);
   }
 }
+
+.RoomMenu {
+  position: relative;
+  &.active {
+    display: flex;
+    position: absolute;
+    z-index: $z-index-menu;
+    opacity: 1;
+    display: flex;
+  }
+
+  .RoomMenu_context {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color-2);
+    width: var(--width);
+    padding: $space-4 0;
+    transition: $transition;
+    height: max-content;
+    border-radius: $radius-8;
+    box-shadow: var(--box-shadow);
+    position: absolute;
+    top: 100%;
+    right: 0;
+    --width: 240px;
+    width: var(--width);
+
+    &_list {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

@@ -18,6 +18,7 @@ import Room from "./Room";
 import RoomChat from "./RoomChat";
 import Song from "./Song";
 import SongPlays from "./SongPlay";
+import RoomCurrentPlaying from "./RoomCurrentPlaying";
 
 @Table({
   timestamps: true,
@@ -73,6 +74,9 @@ class User extends Model {
 
   @HasMany(() => SongPlays)
   plays!: SongPlays[];
+
+  @BelongsToMany(() => Room, () => RoomCurrentPlaying)
+  roomsPlaying!: Room[];
 
   // Người dùng này đang theo dõi ai (followerId)
   @HasMany(() => Follows, "followerId")

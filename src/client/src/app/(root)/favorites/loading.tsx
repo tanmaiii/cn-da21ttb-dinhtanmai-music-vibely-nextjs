@@ -1,16 +1,12 @@
-// import styles from "./style.module.scss";
-
 import { LoadingTheme } from "@/components/common/Loading";
-import { HeaderPage } from "@/components/HeaderPage";
-import { Track } from "@/components/Track";
-import { exSong } from "@/lib/data";
+import HeaderPageSkeleton from "@/components/HeaderPage/Skeleton";
+import TrackSkeleton from "@/components/Track/Skeleton";
 import Skeleton from "react-loading-skeleton";
 
 const loading = () => {
-  
   return (
     <LoadingTheme>
-      <HeaderPage data={exSong} isLoading />
+      <HeaderPageSkeleton />
       <div style={{ padding: "0 24px", marginBottom: "12px" }}>
         <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
           <Skeleton inline height={54} width={54} circle />
@@ -21,7 +17,7 @@ const loading = () => {
           {Array.from({ length: 4 }).map((_, index) => {
             return (
               <div key={index} className="col pc-12 t-12 m-12">
-                <Track song={exSong} isLoading />
+                <TrackSkeleton  />
               </div>
             );
           })}

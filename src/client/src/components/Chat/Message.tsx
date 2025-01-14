@@ -1,9 +1,8 @@
-import Image from "next/image";
-import { ButtonIconRound } from "../ui/Button";
-import styles from "./style.module.scss";
-import { IMessageChat } from "@/types/room.type";
-import { apiImage } from "@/lib/utils";
 import { IMAGES } from "@/lib/constants";
+import { apiImage } from "@/lib/utils";
+import { IMessageChat } from "@/types/room.type";
+import Image from "next/image";
+import styles from "./style.module.scss";
 
 interface MessageProps {
   data: IMessageChat;
@@ -31,10 +30,10 @@ const Message = (props: MessageProps) => {
         <span className={`${styles.Message_content_text}`}>{data.content}</span>
       </div>
       <div className={`${styles.Message_more}`}>
-        <ButtonIconRound
+        {/* <ButtonIconRound
           icon={<i className="fa-solid fa-ellipsis-vertical"></i>}
           size="small"
-        />
+        /> */}
       </div>
     </div>
   );

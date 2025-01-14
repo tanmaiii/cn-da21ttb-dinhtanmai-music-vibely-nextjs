@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import SildeItem from "./ItemSlide";
 import styles from "./style.module.scss";
+import { IRoom } from "@/types";
 
 function SampleNextArrow(props: {
   className?: string;
@@ -59,16 +60,20 @@ const Slideshow = () => {
     queryKey: ["rooms-banner"],
     queryFn: async () => {
       const res = await roomService.getAll({ page: 1, limit: 4 });
-      return res.data.data;
+      const rooms = res.data.data
+        .map((room) => {
+          if (room.public === true) return room;
+        })
+        .filter((room): room is IRoom => room !== undefined);
+      return rooms;
     },
   });
-
-  console.log(rooms);
 
   return (
     <div className={`${styles.Slideshow}`}>
       <Slider {...settings}>
         {rooms &&
+          rooms.length > 0 &&
           rooms.map((room, index) => <SildeItem key={index} data={room} />)}
       </Slider>
     </div>

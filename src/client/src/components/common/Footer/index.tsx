@@ -7,18 +7,24 @@ const Footer = () => {
       <div className={`${styles.Footer_swapper} row`}>
         <div className={`${styles.Footer_swapper_col} col pc-4 t-12 m-12`}>
           <div className={`${styles.Footer_swapper_col_social}`}>
-            <button>
-              <i className={`fa-brands fa-facebook-f`}></i>
-            </button>
-            <button>
-              <i className={` fa-brands fa-youtube`}></i>
-            </button>
-            <button>
-              <i className={` fa-brands fa-steam-symbol`}></i>
-            </button>
+            <a href="https://www.facebook.com/tanmai2003/">
+              <button>
+                <i className={`fa-brands fa-facebook-f`}></i>
+              </button>
+            </a>
+            <a href="https://www.facebook.com/tanmai2003/">
+              <button>
+                <i className={` fa-brands fa-youtube`}></i>
+              </button>
+            </a>
+            <a href="https://www.facebook.com/tanmai2003/">
+              <button>
+                <i className={` fa-brands fa-steam-symbol`}></i>
+              </button>
+            </a>
           </div>
         </div>
-        <div className={`${styles.Footer_swapper_col} col pc-2 t-3 m-12`}>
+        {/* <div className={`${styles.Footer_swapper_col} col pc-2 t-3 m-12`}>
           <h4 className={`${styles.Footer_swapper_col_header}`}>Communities</h4>
           <ul className={`${styles.Footer_swapper_col_list}`}>
             <li>
@@ -85,16 +91,16 @@ const Footer = () => {
               <a href="">F Investors</a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
       <div className={`${styles.Footer_bottom}`}>
         <h4>
-          © 2024 - Đây là đồ án chuyên ngành của <a href="mailto:dinhtanmaivn@gmail.com">Đinh Tấn Mãi - TVU</a>
+          © 2024 - Đây là đồ án chuyên ngành của{" "}
+          <a href="mailto:dinhtanmaivn@gmail.com">Đinh Tấn Mãi - TVU</a>
         </h4>
       </div>
     </div>
   );
 };
-
 
 export default Footer;

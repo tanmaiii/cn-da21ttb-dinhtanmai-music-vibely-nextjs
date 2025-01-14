@@ -1,26 +1,25 @@
 "use client";
 
+import Empty from "@/components/common/Empty";
+import { FormPlaylist } from "@/components/Form";
 import { HeaderPage } from "@/components/HeaderPage";
 import Modal from "@/components/Modal";
 import Table from "@/components/TablePlaylist";
+import { Track } from "@/components/Track";
 import { ButtonIcon, ButtonIconPrimary } from "@/components/ui/Button";
+import { usePlayer } from "@/context/PlayerContext";
+import { closeMenu, openMenu } from "@/features/menuPlaylistSlice";
 import { useCustomToast } from "@/hooks/useToast";
 import { RootState } from "@/lib/store";
 import playlistService from "@/services/playlist.service";
 import { ISong, PlaylistRequestDto } from "@/types";
+import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notFound, useParams } from "next/navigation";
 import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import styles from "./style.module.scss";
-import { FormPlaylist } from "@/components/Form";
-import { Track } from "@/components/Track";
-import { PlaylistRequestUpdateDto } from "@/types/playlist.type";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading";
-import Empty from "@/components/common/Empty";
-import { usePlayer } from "@/context/PlayerContext";
-import { useDispatch } from "react-redux";
-import { closeMenu, openMenu } from "@/features/menuPlaylistSlice";
+import styles from "./style.module.scss";
 
 const PlaylistPage = () => {
   const [showEdit, setShowEdit] = useState(false);
@@ -215,6 +214,7 @@ const PlaylistPage = () => {
               data={dataSong}
               renderItem={(item, index) => (
                 <Track
+                  num={index + 1}
                   key={index}
                   song={item}
                   playlist={playlist}

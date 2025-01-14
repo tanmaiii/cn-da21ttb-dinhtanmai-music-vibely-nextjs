@@ -1,6 +1,7 @@
 import ChatInput from "@/components/Chat/Input";
 import useDebounce from "@/hooks/useDebounce";
 import { IMAGES, navRoomPage, paths } from "@/lib/constants";
+import { socket } from "@/lib/socket";
 import { RootState } from "@/lib/store";
 import { apiImage } from "@/lib/utils";
 import chatSerive from "@/services/chat.service";
@@ -17,7 +18,7 @@ import Message from "../Chat/Message";
 import { ButtonIcon } from "../ui/Button";
 import Input from "../ui/Input";
 import styles from "./style.module.scss";
-import { socket } from "@/lib/socket";
+import { useCustomToast } from "@/hooks/useToast";
 
 interface IChatRoom {
   onClose: () => void;
@@ -34,7 +35,9 @@ const ChatRoom = (props: IChatRoom) => {
   const [message, setMessage] = useState<IMessageChat[] | []>([]);
 
   const handleSubmit = (message: string) => {
-    currentUser && socket.emit("newMessage", room.id, currentUser.id, message);
+    if (currentUser) {
+      socket.emit("newMessage", room.id, currentUser.id, message);
+    }
   };
 
   useEffect(() => {
@@ -49,7 +52,6 @@ const ChatRoom = (props: IChatRoom) => {
 
     // Lắng nghe sự kiện "messageReceived" để nhận tin nhắn mới
     socket.on("messageReceived", (message: IMessageChat) => {
-      console.log("messageReceived", message);
       setMessage((prevMessages) => [message, ...prevMessages]);
     });
 
@@ -143,9 +145,12 @@ const ChatRoomRequest = ({ roomId }: { roomId: string }) => {
   const [keyword, setKeyword] = React.useState("");
   const [songs, setSongs] = React.useState<ISong[]>([]);
   const [page, setPage] = React.useState(1);
+  const { toastError } = useCustomToast();
   const queryClient = useQueryClient();
+  const currentUser = useSelector((state: RootState) => state.user);
 
   const handleSearch = (value: string) => {
+    setPage(1);
     setKeyword(value);
   };
 
@@ -176,12 +181,16 @@ const ChatRoomRequest = ({ roomId }: { roomId: string }) => {
   });
 
   const mutionAdd = useMutation({
-    mutationFn: async (songId: string) => {
-      const res = await roomService.addSong(roomId, [songId]);
+    mutationFn: async (song: ISong) => {
+      if (song?.public === false) {
+        return toastError("Song is private");
+      }
+      const res = await roomService.addSong(roomId, [song.id]);
       return res.data;
     },
     onSuccess: () => {
       console.log("Add song success");
+      socket.emit("onChangeSong", roomId, currentUser?.id);
       queryClient.invalidateQueries({ queryKey: ["room", roomId, "songs"] });
     },
   });
@@ -248,7 +257,7 @@ const ChatRoomRequest = ({ roomId }: { roomId: string }) => {
                     </div>
                     <div className={`${styles.item_action}`}>
                       <ButtonIcon
-                        onClick={() => mutionAdd.mutate(song.id)}
+                        onClick={() => mutionAdd.mutate(song)}
                         dataTooltip="Add"
                         className={`${styles.item_action_add}`}
                         icon={
@@ -314,7 +323,10 @@ const ChatRoomMember = ({ roomId }: { roomId: string }) => {
             <Input
               type="text"
               placeholder="Search for member..."
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                setPage(1);
+              }}
             />
           </div>
         </div>

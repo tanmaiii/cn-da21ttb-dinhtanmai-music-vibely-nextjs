@@ -5,6 +5,7 @@ import playlist from "@/public/images/playlist.png";
 import song from "@/public/images/song.png";
 import logo from "@/public/images/logo.png";
 import google from "@/public/images/google.png";
+import leftClick from "@/public/images/left-click.png";
 
 export const MAX_MEMBERS = 50;
 
@@ -59,8 +60,8 @@ export const paths = {
   USERS: "/users",
   ROLES: "/roles",
   CREATE: "/create",
-  ACCOUNT: '/account',
-  PASSWORD: '/password',
+  ACCOUNT: "/account",
+  PASSWORD: "/password",
 };
 
 export const sidebarLinks = [
@@ -191,6 +192,7 @@ export const IMAGES = {
   ERROR: error,
   LOGO: logo,
   GOOGLE: google,
+  LEFT_CLICK: leftClick,
 };
 
 export const navRoomPage = [

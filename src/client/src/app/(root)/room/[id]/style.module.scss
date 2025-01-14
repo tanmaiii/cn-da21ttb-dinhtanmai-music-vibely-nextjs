@@ -176,7 +176,7 @@
           height: 100%;
           & > h4 {
             font-size: $size-16;
-            color: $color-white-1;
+            color: var(--text-color-1);
             font-weight: $font-medium;
             @include text(1);
             margin-bottom: $space-12;
@@ -189,9 +189,10 @@
             left: 0;
             width: 60%;
             height: 100%;
+            opacity: 0.8;
             background: linear-gradient(
               to right,
-              rgba(255, 255, 255, 0.2),
+              var(--background-color-3),
               transparent
             );
             z-index: 1;
@@ -203,41 +204,61 @@
         padding: $space-18 0;
         @include flex(center, space-between, row);
 
-        & > div {
+        & > .info_left {
           @include flex(center, start, row);
           gap: $space-12;
-          img {
+          & .info_avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             border: 2px solid $color-primary;
           }
 
-          h6 {
-            font-size: $size-20;
-            color: var(--text-color-1);
-            font-weight: $font-medium;
-            @include text(1);
-          }
+          & .info_content {
+            h6 {
+              font-size: $size-20;
+              color: var(--text-color-1);
+              font-weight: $font-medium;
+              @include text(1);
+            }
 
-          h4 {
-            font-size: $size-16;
-            color: var(--text-color-2);
-            font-weight: $font-medium;
-            @include text(1);
+            span {
+              font-size: $size-16;
+              color: var(--text-color-2);
+              font-weight: $font-light;
+            }
+
+            h4 {
+              font-size: $size-16;
+              color: var(--text-color-2);
+              font-weight: $font-medium;
+              @include text(1);
+            }
           }
         }
 
-        .quantity {
+        & > .info_right {
           @include flex(center, center, row);
-          gap: $space-4;
-          font-size: $size-16;
-          font-weight: $font-medium;
-          color: $color-primary;
-          i {
-            font-size: $size-18;
+          .quantity {
+            gap: $space-4;
+            font-size: $size-16;
+            font-weight: $font-medium;
             color: $color-primary;
+            i {
+              margin-right: $space-4;
+              font-size: $size-18;
+              color: $color-primary;
+            }
           }
+        }
+      }
+
+      & > .description {
+        p {
+          font-size: $size-16;
+          color: var(--text-color-2);
+          font-weight: $font-light;
+          @include text(3);
         }
       }
     }
@@ -267,6 +288,32 @@
 .songPlaying {
   @include flex(center, flex-start, row);
   gap: $space-12;
+
+  .songPlaying_overlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: $z-index-room;
+    @include flex(center, center, row);
+    &_content {
+      @include flex(center, center, row);
+      gap: $space-12;
+      animation: scaleAnimation 0.6s linear 0s infinite alternate;
+
+      img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+      h4 {
+        font-size: $size-18;
+        color: $color-black-1;
+      }
+    }
+  }
   .songInfo {
     border-radius: $radius-8;
     background-color: $color-dark-rgba;
@@ -277,14 +324,35 @@
     z-index: 2;
     width: 300px;
     overflow: hidden;
+
     .timer {
       height: 4px;
       width: 100%;
       background-color: $color-white-3;
+
       .timerPlay {
         height: 100%;
         background-color: $color-primary;
-        // width: 60%;
+        position: relative;
+        width: 0;
+        &:hover {
+          span {
+            display: block;
+          }
+        }
+        span {
+          display: none;
+          position: absolute;
+          bottom: calc(100% + 4px);
+          left: 100%;
+          transform: translateX(-50%);
+          z-index: 2;
+          font-size: 12px;
+          color: var(--text-color-3);
+          background-color: var(--background-color-1);
+          padding: 2px;
+          border-radius: 4px;
+        }
       }
     }
   }

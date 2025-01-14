@@ -28,13 +28,13 @@ const DataSort: { id: number; name: string; value: ISort }[] = [
 
 const ArtistSongPage = () => {
   const [active, setActive] = useState<ISort>("newest");
-  const [nextPage, setNextPage] = useState(2);
   const [showAdd, setShowAdd] = useState(false);
   const { toastError, toastSuccess } = useCustomToast();
   const queryClient = useQueryClient();
   const params = useParams();
   const slug = decodeURIComponent((params.slug as string) || "");
   const { playPlaylist } = usePlayer();
+  const { currentSong, pause, play, isPlaying } = usePlayer();
 
   const { data: artist } = useQuery({
     queryKey: ["artist", slug],
@@ -50,7 +50,7 @@ const ArtistSongPage = () => {
     });
   }, [active, queryClient]);
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["artist-song-detail", active, artist],
     queryFn: async () => {
       if (!artist) return;
@@ -59,7 +59,6 @@ const ArtistSongPage = () => {
         limit: 0,
         sort: active,
       });
-      setNextPage(2);
       return res.data.data;
     },
     staleTime: 1000 * 60 * 5, // Dữ liệu được xem là "fresh" trong 5 phút
@@ -80,10 +79,18 @@ const ArtistSongPage = () => {
     },
   });
 
-  const handlePlay = () => {
+  const handlePlayPlaylist = () => {
     if (data && data.length > 0) {
       playPlaylist(data);
     }
+  };
+
+  const handlePlay = (song: ISong) => {
+    if (currentSong?.id === song?.id && isPlaying) {
+      pause();
+      return;
+    }
+    play(song);
   };
 
   return (
@@ -92,7 +99,7 @@ const ArtistSongPage = () => {
         <div className={styles.header}>
           <h1>{`${artist?.name} - Song`}</h1>
           <ButtonIconPrimary
-            onClick={handlePlay}
+            onClick={handlePlayPlaylist}
             size="medium"
             icon={<i className="fa-solid fa-play"></i>}
           />
@@ -107,24 +114,7 @@ const ArtistSongPage = () => {
       </div>
       <div className={`${styles.ArtistPlaylistPage_body} row no-gutters`}>
         {data && data?.length > 0 && artist ? (
-          // <Section>
-          //   {data.map((item: ISong, index: number) => (
-          //     <Card index={index} key={index} data={item} />
-          //   ))}
-          //   <LoadMore
-          //     artist={artist}
-          //     setNextPage={setNextPage}
-          //     params={{ sort: active, page: nextPage, limit: 5 }}
-          //   />
-          // </Section>
           <TablePlaylist
-            // onChange={(data) =>
-            //   playlist &&
-            //   playlist.creator?.id === currentUser?.id &&
-            //   mutationUpdatePlaylist.mutate({
-            //     songIds: data.map((item) => item.id),
-            //   })
-            // }
             data={data}
             renderItem={(item, index) => (
               <Track key={index} song={item} onPlay={handlePlay} />

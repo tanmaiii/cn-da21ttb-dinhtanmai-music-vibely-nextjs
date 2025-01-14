@@ -19,6 +19,15 @@
   }
 }
 
+@keyframes scaleAnimation {
+  from {
+    transform: scale(0.96);
+  }
+  to {
+    transform: scale(1)
+  }
+}
+
 /* Padding Utilities */
 .p-0 {
   padding: 0;

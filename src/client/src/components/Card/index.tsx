@@ -3,8 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
-
 import { ButtonIconRound } from "@/components/ui/Button";
 import { usePlayer } from "@/context/PlayerContext";
 import { useUI } from "@/context/UIContext";
@@ -53,7 +51,6 @@ const variants = {
 interface Props {
   index?: number;
   path?: string;
-  isLoading?: boolean;
   className?: string;
   data: ISong | IPlaylist;
 }
@@ -61,20 +58,18 @@ interface Props {
 interface ICardArtist {
   index?: number;
   className?: string;
-  isLoading?: boolean;
   path?: string;
   artist: IArtist;
 }
 
 interface ICardLive {
   index?: number;
-  isLoading?: boolean;
   className?: string;
   room: IRoom;
 }
 
 const Card = (props: Props) => {
-  const { index = 1, path, isLoading = false, data, className } = props;
+  const { index = 1, path, data, className } = props;
   const classNameCol = useClassNameCol();
   const isSong = data && isSongData(data);
   const link = path || `${isSong ? paths.SONG : paths.PLAYLIST}/${data?.slug}`;
@@ -103,36 +98,29 @@ const Card = (props: Props) => {
       viewport={{ amount: 0 }}
       className={`${styles.Card} ${className} ${classNameCol}`}
     >
-      <div
-        className={`${styles.Card_swapper}`}
-        aria-disabled={isLoading ? "true" : "false"}
-      >
+      <div className={`${styles.Card_swapper}`}>
         <div className={`${styles.Card_swapper_container}`}>
           <div className={`${styles.Card_swapper_container_image}`}>
-            {isLoading ? (
-              <Skeleton height={"100%"} />
-            ) : (
-              <Image
-                src={
-                  data?.imagePath
-                    ? apiImage(data?.imagePath)
-                    : isSong
-                    ? IMAGES.SONG
-                    : IMAGES.PLAYLIST
-                }
-                alt="image.png"
-                width={200}
-                height={200}
-                quality={100}
-              />
-            )}
+            <Image
+              src={
+                data?.imagePath
+                  ? apiImage(data?.imagePath)
+                  : isSong
+                  ? IMAGES.SONG
+                  : IMAGES.PLAYLIST
+              }
+              alt="image.png"
+              width={200}
+              height={200}
+              quality={100}
+            />
 
             <Link href={link}>
               <div
                 className={`${styles.Card_swapper_container_image_overlay}`}
               ></div>
             </Link>
-            {!isLoading && isSong && (
+            {isSong && (
               <div className={`${styles.Card_swapper_container_image_buttons}`}>
                 <ButtonIconRound
                   onClick={() => handlePlay()}
@@ -150,59 +138,31 @@ const Card = (props: Props) => {
           </div>
           <div className={`${styles.Card_swapper_container_desc}`}>
             <>
-              {isLoading ? (
-                <Skeleton width={"90%"} height={20} />
-              ) : (
-                <Link href={link}>
-                  {!data?.public && <i className="fa-light fa-lock"></i>}
-                  <h4>{data?.title}</h4>
-                </Link>
-              )}
+              <Link href={link}>
+                {!data?.public && <i className="fa-light fa-lock"></i>}
+                <h4>{data?.title}</h4>
+              </Link>
             </>
-            {isLoading ? (
-              <Skeleton
-                style={{ marginTop: "6px" }}
-                width={"70%"}
-                height={20}
-              />
-            ) : (
-              <p className={styles.artists}>
-                {/* {data?.c?.map((owner, index) => (
+
+            <p className={styles.artists}>
+              {/* {data?.c?.map((owner, index) => (
                   <Link key={index} href={`${paths.ARTIST}/${owner?.id || 1}`}>
                     {owner?.name}
                   </Link>
                 ))} */}
-                <Link
-                  href={`${paths.ARTIST}/${data?.creator?.slug || "artist"}`}
-                >
-                  {data?.creator?.name || "Artist"}
-                </Link>
-              </p>
-            )}
-            {isLoading ? (
-              <div style={{ marginTop: "6px" }}>
-                <Skeleton
-                  style={{ marginRight: "12px" }}
-                  inline
-                  width={"20%"}
-                  height={20}
-                />
-                <Skeleton inline width={"30%"} height={20} />
-              </div>
-            ) : (
-              <>
-                <div className={`${styles.tags}`}>
-                  {data?.moods &&
-                    data?.moods.slice(0, 3).map((mood) => (
-                      <div key={mood.id} data-tooltip={mood.title}>
-                        <span className={`${styles.tags_tag}`}>
-                          {mood.title}
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
+              <Link href={`${paths.ARTIST}/${data?.creator?.slug || "artist"}`}>
+                {data?.creator?.name || "Artist"}
+              </Link>
+            </p>
+
+            <div className={`${styles.tags}`}>
+              {data?.moods &&
+                data?.moods.slice(0, 3).map((mood) => (
+                  <div key={mood.id} data-tooltip={mood.title}>
+                    <span className={`${styles.tags_tag}`}>{mood.title}</span>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       </div>
@@ -211,7 +171,7 @@ const Card = (props: Props) => {
 };
 
 const CardArtist = (props: ICardArtist) => {
-  const { index, className, path, isLoading = false, artist } = props;
+  const { index, className, path, artist } = props;
   const router = useRouter();
   const classNameCol = useClassNameCol();
 
@@ -239,36 +199,19 @@ const CardArtist = (props: ICardArtist) => {
       <div onClick={handleClick} className={`${styles.CardArtist_swapper}`}>
         <div className={`${styles.CardArtist_swapper_container}`}>
           <div className={`${styles.CardArtist_swapper_container_image}`}>
-            {isLoading ? (
-              <Skeleton circle height={"100%"} />
-            ) : (
-              <Image
-                src={
-                  artist?.imagePath ? apiImage(artist.imagePath) : IMAGES.AVATAR
-                }
-                alt="image.png"
-                width={200}
-                height={200}
-                quality={100}
-              />
-            )}
+            <Image
+              src={
+                artist?.imagePath ? apiImage(artist.imagePath) : IMAGES.AVATAR
+              }
+              alt="image.png"
+              width={200}
+              height={200}
+              quality={100}
+            />
           </div>
           <div className={`${styles.CardArtist_swapper_container_desc}`}>
-            <h4>{isLoading ? <Skeleton width={50} /> : artist?.name}</h4>
-            <p>
-              {isLoading ? (
-                <Skeleton width={70} />
-              ) : (
-                artist?.role?.name || "User"
-              )}
-            </p>
-            {/* <p>
-              {isLoading ? (
-                <Skeleton width={70} />
-              ) : (
-                formatNumber(artist?.followers) + " follow"
-              )}
-            </p> */}
+            <h4>{artist?.name}</h4>
+            <p>{artist?.role?.name || "User"}</p>
           </div>
         </div>
       </div>
@@ -277,7 +220,7 @@ const CardArtist = (props: ICardArtist) => {
 };
 
 const CardRoom = (props: ICardLive) => {
-  const { index = 1, room, className, isLoading } = props;
+  const { index = 1, room, className } = props;
   const { toastError } = useCustomToast();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -339,10 +282,7 @@ const CardRoom = (props: ICardLive) => {
         viewport={{ amount: 0 }}
         className={`${styles.CardRoom} ${className} ${classNameCol}`}
       >
-        <div
-          className={`${styles.CardRoom_swapper}`}
-          aria-disabled={isLoading ? "true" : "false"}
-        >
+        <div className={`${styles.CardRoom_swapper}`}>
           <div className={`${styles.CardRoom_swapper_container}`}>
             <div className={`${styles.CardRoom_swapper_container_image}`}>
               <Image
@@ -382,7 +322,9 @@ const CardRoom = (props: ICardLive) => {
                 {!room?.public && <i className="fa-light fa-lock"></i>}
                 <h4>{room.title}</h4>
               </Link>
-              <p>{room.membersCount || 0} are listening</p>
+              <Link href={`${paths.ARTIST}/${room.creator?.slug}`}>
+                <p>{room.creator?.name}</p>
+              </Link>
             </div>
           </div>
         </div>
@@ -400,4 +342,3 @@ const CardRoom = (props: ICardLive) => {
 };
 
 export { Card, CardArtist, CardRoom };
-

@@ -1,16 +1,11 @@
+import fs from "fs";
+import { Op, WhereOptions } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import Room from "../models/Room";
-import RoomMember from "../models/RoomMember";
 import User from "../models/User";
-import { attributesUser } from "./User.service";
-import fs from "fs";
-import RoomSong from "../models/RoomSong";
 import { SortOptions } from "../utils/commonUtils";
-import { WhereOptions } from "sequelize";
-import { Op } from "sequelize";
-import Song from "../models/Song";
-import { songQueryOptions } from "./Song.service";
 import passwordUtil from "../utils/passwordUtil";
+import { attributesUser } from "./User.service";
 
 interface GetAllOptions {
   page: number;

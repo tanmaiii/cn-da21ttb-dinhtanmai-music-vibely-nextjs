@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { get } from "lodash";
+import { IIdentity } from "../middleware/auth.middleware";
 import {
   AddSongToPlaylistInput,
   CheckSongToPlaylistInput,
@@ -13,16 +14,14 @@ import {
   unLikePlaylistInput,
   UpdatePlaylistInput,
 } from "../schema/playlist.schema";
-import MoodService from "../services/Mood.service";
-import PlaylistService from "../services/Playlist.service";
-import SongService from "../services/Song.service";
-import ApiError from "../utils/ApiError";
-import { getFilePath, SortOptions } from "../utils/commonUtils";
 import GenreService from "../services/Genre.service";
 import LikeService from "../services/Like.service";
+import MoodService from "../services/Mood.service";
+import PlaylistService from "../services/Playlist.service";
 import PlaylistSongService from "../services/PlaylistSong.service";
-import { IIdentity } from "../middleware/auth.middleware";
-import PlaylistSong from "../models/PlaylistSong";
+import SongService from "../services/Song.service";
+import ApiError from "../utils/ApiError";
+import { SortOptions } from "../utils/commonUtils";
 
 // Lấy tất cả playlist
 export const getAllPlaylistHandler = async (
@@ -222,7 +221,10 @@ export const addSongToPlaylistHandler = async (
 ) => {
   try {
     const userInfo = get(req, "identity") as IIdentity;
-    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
+    const existPlaylist = await PlaylistService.getById(
+      req.params.id,
+      userInfo.id
+    );
     const songIds = req.body.songIds;
 
     if (!existPlaylist || !songIds) {
@@ -264,7 +266,10 @@ export const checkSongToPlaylistHandler = async (
 ) => {
   try {
     const userInfo = get(req, "identity") as IIdentity;
-    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
+    const existPlaylist = await PlaylistService.getById(
+      req.params.id,
+      userInfo.id
+    );
     const songId = req.body.songId;
 
     if (!existPlaylist || !songId) {
@@ -299,7 +304,10 @@ export const removeSongToPlaylistHandler = async (
 ) => {
   try {
     const userInfo = get(req, "identity") as IIdentity;
-    const existPlaylist = await PlaylistService.getById(req.params.id, userInfo.id);
+    const existPlaylist = await PlaylistService.getById(
+      req.params.id,
+      userInfo.id
+    );
     const songIds = req.body.songIds;
 
     if (!existPlaylist || !songIds) {
@@ -325,9 +333,9 @@ export const getSongInPlaylistHandler = async (
   next: NextFunction
 ) => {
   try {
-    const playlistId = req.params.id;
-    const playlist = await PlaylistService.getById(playlistId);
     const userInfo = get(req, "identity") as IIdentity;
+    const playlistId = req.params.id;
+    const playlist = await PlaylistService.getById(playlistId, userInfo?.id);
 
     if (!playlist) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Playlist not found");

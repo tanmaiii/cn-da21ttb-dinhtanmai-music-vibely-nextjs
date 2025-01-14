@@ -1,19 +1,7 @@
 import { Server, Socket } from "socket.io";
-import SongService from "../services/Song.service";
+import RoomService from "../services/Room.service";
 import RoomSongService from "../services/RoomSong.service";
-
-// export const updateSongSocketHandler = (
-//   socket: Socket,
-//   io: Server,
-//   data: { userId: string; roomId: string; songId: string; currentTime: number }
-// ) => {
-//   const { userId, roomId, songId, currentTime } = data;
-
-//   // Emit sự kiện tới tất cả người dùng trong phòng ngoại trừ người gửi
-//   console.log("Phát sự kiện songUpdated cho tất cả người trong phòng");
-
-//   io.to(roomId).emit("songUpdated", { songId, currentTime });
-// };
+import SongService from "../services/Song.service";
 
 export const playSongSocketHandler = async (
   socket: Socket,
@@ -22,17 +10,38 @@ export const playSongSocketHandler = async (
 ) => {
   try {
     const { roomId, songId, userId } = data;
+    const room = await RoomService.getById(roomId);
 
-    console.log("New message:", data);
-
-    // const chat = await RoomChatService.create({ userId, roomId, songId });
     const song = await SongService.getSongById(songId);
 
-    // const newChat = await RoomChatService.getById(chat.id);
+    const currentSong = await RoomSongService.getCurrentSongInRoom(roomId);
 
-    await RoomSongService.addCurrentSongToRoom(roomId, songId);
+    if (room.userId === userId) {
+      await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
+      const startedAt = new Date().toISOString();
+      io.to(roomId).emit("playReceived", song, startedAt, userId);
+      return;
+    }
 
-    io.to(roomId).emit("playReceived", song); // Phát sự kiện "messageReceived" đến tất cả người dùng trong phòng chat
+    if (currentSong.userId === userId) {
+      const startedAt = new Date().toISOString();
+      await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
+      io.to(roomId).emit("playReceived", song, startedAt, userId);
+      return;
+    }
+
+    const startedAt = new Date().toISOString();
+    io.to(roomId).emit("playReceived", song, startedAt, currentSong.userId);
+
+    // if (currentSong.userId !== userId) {
+    //   await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
+    //   const startedAt = new Date().toISOString();
+    //   io.to(roomId).emit("playReceived", song, startedAt, userId); // Phát sự kiện "messageReceived" đến tất cả người dùng trong phòng chat
+    //   return;
+    // } else {
+    //   const startedAt = new Date().toISOString();
+    //   io.to(roomId).emit("playReceived", song, startedAt, userId); // Phát sự kiện "messageReceived" đến tất cả người dùng trong phòng chat
+    // }
   } catch (error) {
     console.error("Error sending message:", error);
   }

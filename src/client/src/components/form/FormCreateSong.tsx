@@ -61,7 +61,7 @@ const FormCreateSong = ({
         imagePath: initialData.imagePath,
         songPath: initialData.songPath,
         lyricPath: initialData.lyricPath,
-        duration: initialData.duration,
+        duration: initialData.duration || 0,
         public: initialData.public,
       });
     } else {
@@ -173,6 +173,7 @@ const FormCreateSong = ({
         const lyric = await uploadService.upload(formData);
         formValues.lyricPath = lyric.data.path;
       }
+      onClose && onClose();
       await onSubmit(formValues);
     } catch (error) {
       console.error("Error submitting form:", error);
