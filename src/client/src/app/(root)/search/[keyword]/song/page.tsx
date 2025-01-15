@@ -1,14 +1,14 @@
 "use client"; // eslint-disable-line
 
+import LoadMore from "@/app/(root)/song/LoadMore";
 import { Card } from "@/components/Card";
+import Empty from "@/components/common/Empty";
 import { Section } from "@/components/Section";
 import songService from "@/services/song.service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import styles from "../style.module.scss";
-import LoadMore from "@/app/(root)/song/LoadMore";
 import { useState } from "react";
-import Empty from "@/components/common/Empty";
+import styles from "../style.module.scss";
 
 const PageSearchSong = () => {
   const params = useParams();
@@ -32,9 +32,6 @@ const PageSearchSong = () => {
 
   return (
     <div className={styles.DetailPage}>
-      {/* <div>
-        <h1 className="text-2xl font-bold mb-4">{`Search for "${searchTerm}"`}</h1>
-      </div> */}
       <Section>
         {data && data.length > 0 ? (
           <>

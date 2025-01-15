@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createGenreHandler,
   deleteGenreHandler,
+  getGenreHandler,
   getGenresHandler,
   updateGenreHandler,
 } from "../controllers/genre.controller";
@@ -10,6 +11,7 @@ import {
   createGenreSchema,
   deleteGenreSchema,
   getAllGenreShema,
+  getGenreSchema,
   updateGenreSchema,
 } from "../schema/genre.schema";
 import { PERMISSIONS } from "../utils/contants";
@@ -17,6 +19,7 @@ import { PERMISSIONS } from "../utils/contants";
 const router = Router();
 
 router.get("/", validateData(getAllGenreShema), getGenresHandler);
+router.get("/:id", validateData(getGenreSchema), getGenreHandler);
 router.post(
   "/",
   authorize(PERMISSIONS.MANAGE_GENRE),

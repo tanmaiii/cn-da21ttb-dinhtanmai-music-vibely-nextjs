@@ -1,18 +1,18 @@
 "use client";
 import { Card } from "@/components/Card";
+import Empty from "@/components/common/Empty";
 import { Section } from "@/components/Section";
 import SliderNav from "@/components/SliderNav";
-import { ButtonIcon } from "@/components/ui/Button";
+import { paths } from "@/lib/constants";
 import songService from "@/services/song.service";
 import { ISong, ISort } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
 import LoadMore from "./LoadMore";
 import styles from "./style.module.scss";
-import { useRouter, useSearchParams } from "next/navigation";
-import { paths } from "@/lib/constants";
-import Empty from "@/components/common/Empty";
+import genreService from "@/services/genre.service";
 
 const DataSort: { id: number; name: string; value: string }[] = [
   { id: 1, name: "Newest", value: "newest" },
@@ -21,7 +21,7 @@ const DataSort: { id: number; name: string; value: string }[] = [
   { id: 4, name: "Popular", value: "mostListens" },
 ];
 
-const SongPage = () => {
+const GenrePage = () => {
   const [active, setActive] = useState<string>("newest");
   const [nextPage, setNextPage] = useState(2);
   const queryClient = useQueryClient();
@@ -29,13 +29,25 @@ const SongPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = Object.fromEntries(searchParams.entries());
+  const params = useParams();
+  const genreId = decodeURIComponent((params.id as string) || "");
+
+  const { data: genre } = useQuery({
+    queryKey: ["genre", genreId],
+    queryFn: async () => {
+      const res = await genreService.getById(genreId);
+      return res.data;
+    },
+  });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["song", active],
+    queryKey: ["song", active, genreId],
     queryFn: async () => {
       const res = await songService.getAllSong({
         page: 1,
         sort: active as ISort,
+        genreId: genreId,
+        limit: 2,
       });
       setNextPage(2);
       return res.data.data;
@@ -61,19 +73,14 @@ const SongPage = () => {
 
   const onChangeSort = (value: string) => {
     setActive(value);
-    router.push(paths.SONG + `?sort=${value}`);
+    router.push(paths.GENRE + "/" + genreId + `?sort=${value}`);
   };
 
   return (
-    <div className={`${styles.SongPage}`}>
-      <div className={`${styles.SongPage_top}`}>
+    <div className={`${styles.GenrePage}`}>
+      <div className={`${styles.GenrePage_top}`}>
         <div className={styles.header}>
-          <h1>Song</h1>
-          <ButtonIcon
-            onClick={() => router.push(paths.SONG + "/create")}
-            dataTooltip="Create playlist"
-            icon={<i className="fa-solid fa-plus"></i>}
-          />
+          <h1>{`Genre - ${genre?.title || ""}`}</h1>
         </div>
         <div className={styles.slider}>
           <SliderNav
@@ -94,7 +101,12 @@ const SongPage = () => {
               ))}
               <LoadMore
                 setNextPage={setNextPage}
-                params={{ sort: active as ISort, page: nextPage }}
+                params={{
+                  sort: active as ISort,
+                  page: nextPage,
+                  genreId: genreId,
+                  limit: 2,
+                }}
               />
             </Section>
           ) : (
@@ -106,4 +118,4 @@ const SongPage = () => {
   );
 };
 
-export default SongPage;
+export default GenrePage;

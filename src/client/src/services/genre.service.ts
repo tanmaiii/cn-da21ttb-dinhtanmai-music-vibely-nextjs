@@ -24,6 +24,11 @@ class GenreService {
     return res.data;
   }
 
+  async getById(id: string): Promise<ResponseAPI<IGenre>> {
+    const res = await this.client.get<ResponseAPI<IGenre>>(`/${id}`);
+    return res.data;
+  }
+
   async create(data: GenreRequestDto): Promise<ResponseAPI<IGenre>> {
     const res = await this.client.post<ResponseAPI<IGenre>>("", data);
     return res.data;

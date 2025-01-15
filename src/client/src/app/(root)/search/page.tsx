@@ -1,19 +1,17 @@
 "use client";
 
 import { IMAGES, paths } from "@/lib/constants";
-import Image from "next/image";
-import styles from "./style.module.scss";
-import { useQuery } from "@tanstack/react-query";
-import genreService from "@/services/genre.service";
 import { apiImage } from "@/lib/utils";
+import genreService from "@/services/genre.service";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import styles from "./style.module.scss";
 
 const Search = () => {
   const [history, setHistory] = useState<string[]>(["We don", "EDM", "Jack"]);
   const router = useRouter();
-  const params = useParams();
-  const searchTerm = decodeURIComponent((params.keyword as string) || "");
   const { data: genres } = useQuery({
     queryKey: ["genre"],
     queryFn: async () => {
@@ -23,7 +21,7 @@ const Search = () => {
   });
 
   useEffect(() => {
-    let prev = JSON.parse(localStorage.getItem("search-history") || "[]");
+    const prev = JSON.parse(localStorage.getItem("search-history") || "[]");
     if (prev) {
       setHistory(prev);
     }
@@ -54,7 +52,8 @@ const Search = () => {
           {genres &&
             genres.map((item, index) => (
               <div key={index} className={`col pc-2-4 t-4 m-6`}>
-                <div
+                <button
+                  onClick={() => router.push(paths.GENRE + "/" + item.id)}
                   className={`${styles.Search_genre_list_item}`}
                   style={{ backgroundColor: `${item.color}` }}
                 >
@@ -67,7 +66,7 @@ const Search = () => {
                     width={300}
                     height={300}
                   />
-                </div>
+                </button>
               </div>
             ))}
         </div>
