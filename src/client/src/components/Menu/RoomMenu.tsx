@@ -112,7 +112,7 @@ const RoomMenu = (props: Props) => {
           )}
           {openEdit && room && (
             <Modal
-              className={styles.modalSong}
+              className={styles.modalEditRoom}
               show={openEdit}
               onClose={() => setOpenEdit(false)}
             >

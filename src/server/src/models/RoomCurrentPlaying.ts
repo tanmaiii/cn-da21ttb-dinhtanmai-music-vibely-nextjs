@@ -11,7 +11,12 @@ import Room from "./Room";
 import Song from "./Song";
 import User from "./User";
 
-@Table({ tableName: "room_current_playing", timestamps: true })
+@Table({
+  tableName: "room_current_playing",
+  modelName: "RoomCurrentPlaying",
+  timestamps: true,
+  indexes: [],
+})
 class RoomCurrentPlaying extends Model {
   @ForeignKey(() => Room)
   @Column({
@@ -30,7 +35,7 @@ class RoomCurrentPlaying extends Model {
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
-    allowNull: false,
+    allowNull: true,
   })
   userId!: string;
 
@@ -40,12 +45,6 @@ class RoomCurrentPlaying extends Model {
     defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   })
   startedAt!: Date; // Thời gian bắt đầu phát
-
-  @BelongsTo(() => Room)
-  room: Room;
-
-  @BelongsTo(() => Song)
-  song!: Song;
 }
 
 export default RoomCurrentPlaying;

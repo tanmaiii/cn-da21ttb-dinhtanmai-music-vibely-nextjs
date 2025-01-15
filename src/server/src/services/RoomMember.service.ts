@@ -84,4 +84,8 @@ export default class RoomMemberService {
   static removeUserToRoom = async (roomId: string, userId: string) => {
     return RoomMember.destroy({ where: { roomId, userId } });
   };
+
+  static removeAllMembersInRoom = async (roomId: string) => {
+    return RoomMember.destroy({ where: { roomId } });
+  };
 }

@@ -9,8 +9,6 @@ export const createNewMessageHandler = async (
   try {
     const { roomId, content, userId } = data;
 
-    console.log("New message:", data);
-
     const chat = await RoomChatService.create({ userId, roomId, content });
 
     const newChat = await RoomChatService.getById(chat.id);

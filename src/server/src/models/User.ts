@@ -75,8 +75,8 @@ class User extends Model {
   @HasMany(() => SongPlays)
   plays!: SongPlays[];
 
-  @BelongsToMany(() => Room, () => RoomCurrentPlaying)
-  roomsPlaying!: Room[];
+  @HasMany(() => RoomCurrentPlaying)
+  roomCurrentPlaying!: RoomCurrentPlaying[];
 
   // Người dùng này đang theo dõi ai (followerId)
   @HasMany(() => Follows, "followerId")

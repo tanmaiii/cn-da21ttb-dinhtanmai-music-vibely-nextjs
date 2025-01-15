@@ -11,37 +11,11 @@ export const playSongSocketHandler = async (
   try {
     const { roomId, songId, userId } = data;
     const room = await RoomService.getById(roomId);
-
     const song = await SongService.getSongById(songId);
-
-    const currentSong = await RoomSongService.getCurrentSongInRoom(roomId);
-
-    if (room.userId === userId) {
-      await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
-      const startedAt = new Date().toISOString();
-      io.to(roomId).emit("playReceived", song, startedAt, userId);
-      return;
-    }
-
-    if (currentSong.userId === userId) {
-      const startedAt = new Date().toISOString();
-      await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
-      io.to(roomId).emit("playReceived", song, startedAt, userId);
-      return;
-    }
-
     const startedAt = new Date().toISOString();
-    io.to(roomId).emit("playReceived", song, startedAt, currentSong.userId);
-
-    // if (currentSong.userId !== userId) {
-    //   await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
-    //   const startedAt = new Date().toISOString();
-    //   io.to(roomId).emit("playReceived", song, startedAt, userId); // Phát sự kiện "messageReceived" đến tất cả người dùng trong phòng chat
-    //   return;
-    // } else {
-    //   const startedAt = new Date().toISOString();
-    //   io.to(roomId).emit("playReceived", song, startedAt, userId); // Phát sự kiện "messageReceived" đến tất cả người dùng trong phòng chat
-    // }
+    await RoomSongService.addCurrentSongToRoom(roomId, song.id, userId);
+    io.to(roomId).emit("playReceived", song, startedAt, userId);
+    return;
   } catch (error) {
     console.error("Error sending message:", error);
   }

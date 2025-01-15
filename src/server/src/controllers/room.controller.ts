@@ -59,20 +59,11 @@ export const getDetailRoomHandler = async (
       res.status(StatusCodes.NOT_FOUND).json({ message: "Room not found" });
     }
 
-    if (
-      !(await RoomMemberService.checkUserToRoom(req.params.id, userInfo.id))
-    ) {
-      throw new ApiError(
-        StatusCodes.FORBIDDEN,
-        "You are not authorized to get this room"
-      );
-    }
-
-    const { password, ...data } = room;
+    const { password, ...data } = room.toJSON();
 
     res
       .status(StatusCodes.OK)
-      .json({ data: room, message: "Get room detail successfully" });
+      .json({ data, message: "Get room detail successfully" });
   } catch (error) {
     next(error);
   }
@@ -124,6 +115,9 @@ export const updateRoomHandler = async (
   try {
     const room = await RoomService.getById(req.params.id);
     const songIds = req.body.songIds;
+    const hashedPassword = req.body.password
+      ? PasswordUtil.hash(req.body.password)
+      : undefined;
 
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Room not found");
@@ -131,6 +125,7 @@ export const updateRoomHandler = async (
 
     const data = {
       ...req.body,
+      password: hashedPassword,
     };
 
     await RoomService.update(req.params.id, data);
@@ -249,6 +244,7 @@ export const getSongsInRoomHandler = async (
   next: NextFunction
 ) => {
   try {
+    const userInfo = get(req, "identity") as IIdentity;
     const room = await RoomService.getById(req.params.id);
 
     if (!room) {

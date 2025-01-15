@@ -31,6 +31,7 @@ const payloadUpdate = {
       .optional(),
     songIds: array(string().max(SIZE.UUID, "Id is too long")).optional(),
     imagePath: string().optional(),
+    password: string().min(1).max(20, "Password is too long").optional(),
   }),
 };
 

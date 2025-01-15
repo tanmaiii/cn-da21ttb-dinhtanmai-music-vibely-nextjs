@@ -111,12 +111,12 @@ class Song extends Model {
 
   @BelongsToMany(() => Room, () => RoomSong)
   rooms!: Room[];
- 
-  @BelongsToMany(() => Room, () => RoomCurrentPlaying)
-  roomsPlaying!: Room[];
 
   @HasMany(() => SongPlay)
   plays!: SongPlay[];
+
+  @HasMany(() => RoomCurrentPlaying)
+  currentPlaying!: RoomCurrentPlaying;
 
   @BelongsToMany(() => User, () => SongLikes)
   likes!: User[];

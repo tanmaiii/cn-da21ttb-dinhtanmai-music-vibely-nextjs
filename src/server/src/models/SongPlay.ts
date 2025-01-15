@@ -14,7 +14,6 @@ import User from "./User";
   tableName: "song_plays",
   modelName: "SongPlays",
   timestamps: false,
-   
   indexes: [],
 })
 class SongPlays extends Model {

@@ -16,8 +16,6 @@ const HeaderPage = (props: Props) => {
   const { data, onEdit } = props;
   const isSong = data && isSongData(data);
 
-  console.log(data && data.imagePath && apiImage(data.imagePath));
-
   return (
     <div className={`${styles.HeaderPage}`}>
       <div className={`${styles.HeaderPage_blur}`}>

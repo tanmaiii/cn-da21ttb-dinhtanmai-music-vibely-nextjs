@@ -26,7 +26,6 @@
     height: max-content;
     border-radius: $radius-8;
     box-shadow: var(--box-shadow);
-    // border: 1px solid var(--border-color);
     &_list {
       display: flex;
       flex-direction: column;
@@ -191,6 +190,14 @@
     &_list {
       display: flex;
       flex-direction: column;
+    }
+  }
+
+  .modalEditRoom{
+    background-color: var(--background-color-2);
+    width: 80vw;
+    @include mobile{
+      width: 100%;
     }
   }
 }

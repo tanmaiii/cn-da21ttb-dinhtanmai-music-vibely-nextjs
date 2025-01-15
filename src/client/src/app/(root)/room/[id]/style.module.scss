@@ -356,4 +356,12 @@
       }
     }
   }
+
+  &_waiting{
+    span{
+      font-size: $size-16;
+      color: $color-white-1;
+      font-weight: $font-medium;
+    }
+  }
 }

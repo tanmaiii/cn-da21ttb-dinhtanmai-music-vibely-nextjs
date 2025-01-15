@@ -39,6 +39,7 @@ export const leaveRoomHandler = async (
       console.log(`User ${userId} not in room ${roomId}`);
       return;
     }
+
     // await RoomMemberService.removeUserToRoom(roomId, userId); //Lưu người dùng vào phòng chat
   } catch (error) {
     console.error("Error leave room:", error);

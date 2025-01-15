@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useUI } from "@/context/UIContext";
-import { useCustomToast } from "@/hooks/useToast";
 import { IMAGES, paths, PERMISSIONS, ROLES } from "@/lib/constants";
 import { RootState } from "@/lib/store";
 import { apiImage, hasPermission } from "@/lib/utils";
@@ -26,7 +25,6 @@ const Header = () => {
   const [activeModal, setActiveModal] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>("");
   const router = useRouter();
-  const { toastSuccess } = useCustomToast();
   const currentUser = useSelector((state: RootState) => state.user);
   const params = useParams();
   const searchTerm = decodeURIComponent((params.keyword as string) || "");
@@ -111,14 +109,14 @@ const Header = () => {
               onClick={() => router.push(paths.SONG + paths.CREATE)}
             />
           )}
-          <ButtonIconRound
+          {/* <ButtonIconRound
             onClick={() => toastSuccess("Hello")}
             icon={<i className="fa-regular fa-gear"></i>}
           />
           <ButtonIconRound
             icon={<i className="fa-regular fa-bell"></i>}
             onClick={() => setActiveModal(true)}
-          />
+          /> */}
           {currentUser ? (
             <UserDropDown />
           ) : (

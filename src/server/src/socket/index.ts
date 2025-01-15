@@ -51,6 +51,8 @@ export const socketHandler = (io: Server) => {
     socket.on(
       "playSong",
       async (roomId: string, userId: string, songId: string) => {
+        console.log(" ▶️ playSong", roomId, userId, songId);
+        
         playSongSocketHandler(socket, io, { roomId, userId, songId });
       }
     );

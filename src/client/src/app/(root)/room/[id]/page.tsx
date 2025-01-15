@@ -75,10 +75,8 @@ const RoomPage = () => {
   const { data: room } = useQuery({
     queryKey: ["room", roomId, isMember],
     queryFn: async () => {
-      if (isMember) {
-        const res = await roomService.getById(roomId);
-        return res && res.data;
-      }
+      const res = await roomService.getById(roomId);
+      return res && res.data;
     },
   });
 
@@ -129,8 +127,7 @@ const RoomPage = () => {
 
   // Phát bài hát
   const handlePlaySong = (song: ISong) => {
-    if (currentUser?.id !== room?.creator.id) return;
-    if (currentUser) {
+    if (currentUser && room && currentUser.id === room.creator.id) {
       socket.emit("playSong", roomId, currentUser.id, song.id);
     }
   };
@@ -144,13 +141,15 @@ const RoomPage = () => {
     };
   }, [roomId, queryClient]);
 
+  useEffect(() => {}, [roomId, queryClient, isMember]);
+
   if (isLoading) return <Loading />;
 
   if (isError) return notFound();
 
   return (
     <div className={`${styles.RoomPage}`}>
-      {isMember === false ? (
+      {isMember === false && room?.public === false ? (
         <Modal show={true} onClose={() => router.push(paths.ROOM)}>
           <FormEnterRoom
             onClose={() => router.push(paths.ROOM)}
@@ -190,7 +189,9 @@ const RoomPage = () => {
                     <div className={`${styles.header}`}>
                       <div className={`${styles.left}`}>
                         <ButtonIconRound
-                          onClick={() => router.push(paths.ROOM)}
+                          onClick={() => {
+                            router.push(paths.ROOM);
+                          }}
                           dataTooltip="Black"
                           icon={
                             <i
@@ -298,7 +299,7 @@ const RoomPage = () => {
                         className={`${styles.info_avatar}`}
                         width={50}
                         height={50}
-                        alt="author.png"
+                        alt="authorId.png"
                       />
                     </Link>
                     <div className={`${styles.info_content}`}>
@@ -389,7 +390,6 @@ const SongPlaying = ({
 }) => {
   const [songPlaying, setSongPlaying] = useState<ISong | null>(null);
   const currentUser = useSelector((state: RootState) => state.user);
-  // const [startTimer, setStartTimer] = useState<Date>();
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentTimeServer, setCurrentTimeServer] = useState(0);
@@ -405,17 +405,11 @@ const SongPlaying = ({
   const handlePlaySong = useCallback(
     (songId: string) => {
       setCurrentTimeServer(0);
-      // if (currentUser?.id !== room.id) {
-      //   setSongPlaying(songs.find((song) => song.id === songId) || null);
-      // } else {
-      //   setCurrentTimeServer(0);
-      //   socket.emit("playSong", room.id, currentUser.id, songId);
-      // }
-      if (currentUser) {
+      if (currentUser && currentUser.id === room.creator.id) {
         socket.emit("playSong", room.id, currentUser.id, songId);
       }
     },
-    [currentUser, room.id]
+    [currentUser, room.id, room.creator.id]
   );
 
   // Lấy bài hát cuối cùng đã phát trong phòng
@@ -491,15 +485,13 @@ const SongPlaying = ({
 
   const onEnd = () => {
     const index = songs.findIndex((song) => song.id === songPlaying?.id);
-
+    setSongPlaying(null);
     if (index < songs.length - 1) {
       handlePlaySong(songs[index + 1].id);
     } else {
       handlePlaySong(songs[0].id);
     }
   };
-
-  if (!songPlaying) return null;
 
   return (
     <div
@@ -519,19 +511,27 @@ const SongPlaying = ({
           </div>
         </div>
       )}
-      <div className={`${styles.songInfo}`}>
-        <TrackShort song={songPlaying} dontShowPlay />
+      {songPlaying ? (
+        <>
+          <div className={`${styles.songInfo}`}>
+            <TrackShort song={songPlaying} dontShowPlay />
 
-        <div className={`${styles.timer}`}>
-          <div
-            style={{ width: (currentTime / duration) * 100 + "%" }}
-            className={`${styles.timerPlay}`}
-          >
-            <span>{formatDuration(currentTime)}</span>
+            <div className={`${styles.timer}`}>
+              <div
+                style={{ width: (currentTime / duration) * 100 + "%" }}
+                className={`${styles.timerPlay}`}
+              >
+                <span>{formatDuration(currentTime)}</span>
+              </div>
+            </div>
           </div>
+          <IconPlay playing />
+        </>
+      ) : (
+        <div className={styles.songPlaying_waiting}>
+          <span>Waiting for the host to play music ...</span>
         </div>
-      </div>
-      <IconPlay playing />
+      )}
       <audio
         ref={audioRef}
         onTimeUpdate={onPlaying}
